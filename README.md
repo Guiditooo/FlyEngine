@@ -22,8 +22,8 @@
     * Get Input with poll events
     * Extract the shaders from Renderer and create a Shader class.
     * Additionaly, create a Material class.
-        The material is component of the different shapes and models.
-        There can be more than a shader applied at once on the same mat.
+        - The material is component of the different shapes and models.
+        - There can be more than a shader applied at once on the same mat.
 
  4) Create Shape classes
     * Entity2D : Entity
@@ -35,7 +35,7 @@
 
  5) Sprites Update
     * Create Importer. 
-        It will provide the control on the game as well as on the engine.
+        - It will provide the control on the game as well as on the engine.
     * Sprite : Entity2D
     * Create Texture class just to change the sprite img on runtime...
     * Create Animation class just to let the sprite move.
@@ -43,13 +43,13 @@
 
  6) Tilemap Update
     * Tilemap : Entity2D
-        This should make collision if that tile is wall or inwalkable.
+        - This should make collision if that tile is wall or inwalkable.
     * Create Tile class
-        A tilemap is just a matrix of tiles. 
+        - A tilemap is just a matrix of tiles. 
     * Atlas reader 
-        This should be capable to get tile from a XML file using TINYXML2 
+        - This should be capable to get tile from a XML file using TINYXML2 
     * Set multiple layers.
-        Sometimes there are some layes as foliage that can be walkable or rocks that cant be walkable through, but at background it has a grass tile.
+        - Sometimes there are some layes as foliage that can be walkable or rocks that cant be walkable through, but at background it has a grass tile.
 
 
 # Second Part
