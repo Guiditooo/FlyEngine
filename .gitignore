@@ -31,6 +31,8 @@
 *.out
 *.app
 
+# Custom
 bin*/
 obj*/
 .vs*/
+*.help
