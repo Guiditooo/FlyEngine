@@ -106,7 +106,9 @@
       </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(ProjectDir)Dependencies\GLFW\dll\glfw3.dll" "$(ProjectDir)bin\$(Configuration)" /h /y
+      <Command>IF EXIST "$(ProjectDir)bin$(Configuration)\FlyEngine.dll" ( XCOPY "$(ProjectDir)bin$(Configuration)\FlyEngine.dll" "$(SolutionDir)Testing\bin$(Configuration)" /h /y /s )
+IF EXIST "$(ProjectDir)bin$(Configuration)\FlyEngine.lib" ( XCOPY "$(ProjectDir)bin$(Configuration)\FlyEngine.lib" "$(SolutionDir)Testing\bin$(Configuration)" /h /y /s )
+XCOPY "$(ProjectDir)Dependencies\GLFW\dll" "$(ProjectDir)bin\$(Configuration)" /e /h /y /s
 MKDIR "$(SolutionDir)bin\$(Configuration)\shaders"
 
 XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)bin\$(Configuration)\shaders" /e /h /y /s</Command>
