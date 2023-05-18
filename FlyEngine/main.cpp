@@ -1,5 +1,11 @@
-#include <glfw3.h>
+/*#include <iostream>
+void main()
+{
+    std::cout << "Hola";
+}
+*/
 
+#include <glfw3.h>
 int main(void)
 {
     GLFWwindow* window;
@@ -35,3 +41,4 @@ int main(void)
     glfwTerminate();
     return 0;
 }
+
