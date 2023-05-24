@@ -4,10 +4,10 @@
 
 # First Part
  1) Set up Libraries - * Am here * 
-    * GLFW
-    * GLEW
-    * GLM
-    * STB
+    * GLFW - DONE
+    * GLEW - DONE
+    * GLM - DONE
+    * STB - ONGOING
     * TINYXML2
     * ASSIMP
  
