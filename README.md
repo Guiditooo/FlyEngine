@@ -7,8 +7,8 @@
     * GLFW - DONE
     * GLEW - DONE
     * GLM - DONE
-    * STB - ONGOING
-    * TINYXML2
+    * STB - DONE
+    * TINYXML2 - ONGOING
     * ASSIMP
  
  2) Place a rectangle

@@ -1,4 +1,14 @@
+#include <stb_include.h>
+#include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+void main()
+{
+    std::cout << "Helloworld";
+    
+}
 
 /*
 
