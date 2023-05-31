@@ -4,11 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void main()
-{
-    std::cout << "Helloworld";
-    
-}
+#include "TinyXML2/tinyxml2.h"
 
 /*
 
@@ -48,13 +44,21 @@ void main()
 }
 */
 
-/*
+
 
 #include <glfw3.h>
+
+using namespace tinyxml2;
+using namespace std;
 
 int main(void)
 {
     GLFWwindow* window;
+    XMLDocument doc;
+
+    string test = doc.LoadFile("") == XML_SUCCESS ? "Exists" : "Does not exist";
+
+    cout << endl << test;
 
     // Initialize the library 
     if (!glfwInit())
@@ -87,7 +91,7 @@ int main(void)
     glfwTerminate();
     return 0;
 }
-*/
+
 
 /*
 #include <glm/vec2.hpp>           // vec2
