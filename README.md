@@ -8,8 +8,8 @@
     * GLEW - DONE
     * GLM - DONE
     * STB - DONE
-    * TINYXML2 - ONGOING
-    * ASSIMP
+    * TINYXML2 - DONE
+    * ASSIMP - ONGOING
  
  2) Place a rectangle
     * Entity
