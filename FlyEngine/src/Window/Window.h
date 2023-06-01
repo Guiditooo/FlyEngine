@@ -14,6 +14,8 @@ private:
 	std::string windowTitle;
 	bool shouldClose;
 
+	static int windowCount;
+
 public:
 	Window(int width, int height, std::string title);
 	~Window();
@@ -23,9 +25,8 @@ public:
 	std::string GetWindowName();
 	glm::vec2 GetWindowSize();
 	GLFWwindow* GetWindow();
-
-
-
+	
+	static int GetWindowCount();
 
 };
 

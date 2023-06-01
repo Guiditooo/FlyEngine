@@ -5,6 +5,7 @@
 # First Part
  1) Set up Libraries /*DONE*\ Note: I learnt using cmake to install some libs
     * GLFW - DONE
+    * GLAD - DONE (Added ongoing)
     * GLEW - DONE
     * GLM - DONE
     * STB - DONE
@@ -12,6 +13,7 @@
     * ASSIMP - DONE
  
  2) Place a rectangle - * Am here *
+    * Input - DONE
     * Renderer (Shader inside just for testing purpose) - ONGOING
     * Window
     * Entity

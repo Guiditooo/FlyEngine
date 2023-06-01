@@ -1,6 +1,8 @@
 #include "Window.h"
 #include <string>
 
+int Window::windowCount = 0;
+
 Window::Window(int width, int height, std::string title)
 {
 	windowWidth = width;
@@ -8,11 +10,13 @@ Window::Window(int width, int height, std::string title)
 	windowTitle = title;
 	//if(GL)
 	window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), NULL, NULL);
+	
+	windowCount++;
 }
 
 Window::~Window()
 {
-	
+	windowCount--;
 }
 
 void Window::Resize(int width, int height)
@@ -34,3 +38,9 @@ GLFWwindow* Window::GetWindow()
 {
 	return window;
 }
+
+int Window::GetWindowCount()
+{
+	return windowCount;
+}
+

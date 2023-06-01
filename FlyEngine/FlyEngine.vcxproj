@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
+    <ClCompile Include="src\FlyFunctions\Commons\Commons.cpp" />
     <ClCompile Include="src\FlyFunctions\Debugger\Debugger.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input\Input.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="src\BaseGame\BaseGame.h" />
     <ClInclude Include="src\Exports\Exports.h" />
+    <ClInclude Include="src\FlyFunctions\Commons\Commons.h" />
     <ClInclude Include="src\FlyFunctions\Debugger\Debugger.h" />
     <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
     <ClInclude Include="src\Input\Input.h" />
