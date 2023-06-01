@@ -18,17 +18,32 @@
     <Filter Include="Window">
       <UniqueIdentifier>{e99a21b7-fff7-4df5-9476-ac918ae0df7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BaseGame">
+      <UniqueIdentifier>{10b85faf-b7cd-4540-ab41-e0f67c9b2f2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\TinyXML2\tinyxml2.cpp">
       <Filter>TinyXML2</Filter>
     </ClCompile>
+    <ClCompile Include="src\Window\Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseGame\BaseGame.cpp">
+      <Filter>BaseGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Exports\Exports.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h">
       <Filter>TinyXML2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window\Window.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseGame\BaseGame.h">
+      <Filter>BaseGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

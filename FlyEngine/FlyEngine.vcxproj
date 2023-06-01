@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BaseGame\BaseGame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\TinyXML2\tinyxml2.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseGame\BaseGame.h" />
     <ClInclude Include="src\Exports\Exports.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h" />
+    <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
