@@ -1,17 +1,15 @@
 #ifndef BASEGAME_H
 #define BASEGAME_H
 
-#include <GLFW/glfw3.h>
+#define FLY_EXPORTS
 
-class BaseGame
+#include <GLFW/glfw3.h>
+#include <Exports/Exports.h>
+
+class FLY_API BaseGame
 {
 private:
 	static bool isRunning;
-
-	void Init();
-	void Update();
-	void Draw();
-	void Deinit();
 
 public:
 	BaseGame();
@@ -19,6 +17,13 @@ public:
 
 	void RunGame();
 	static bool IsGameRunning();
+
+protected:
+	void Init();
+	void Update();
+	void Draw();
+	void Deinit();
+
 };
 
 #endif // !
