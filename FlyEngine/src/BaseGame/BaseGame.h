@@ -5,11 +5,14 @@
 
 #include <GLFW/glfw3.h>
 #include <Exports/Exports.h>
+#include "Window/Window.h"
+
 
 class FLY_API BaseGame
 {
 private:
 	static bool isRunning;
+	Window* window;
 
 public:
 	BaseGame();

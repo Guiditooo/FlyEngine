@@ -27,6 +27,12 @@
     <Filter Include="Fly Functions\Debugger">
       <UniqueIdentifier>{20895c9f-50a5-44b9-9b52-8134f38da2c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{ddaba63b-f771-4cbe-95b2-1e049dde4cbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fly Functions\KeyCode">
+      <UniqueIdentifier>{a7ad10ac-bf5d-4bb9-9f69-6d4aa0e1bcee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -42,6 +48,13 @@
     <ClCompile Include="src\FlyFunctions\Debugger\Debugger.cpp">
       <Filter>Fly Functions\Debugger</Filter>
     </ClCompile>
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Renderer\Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Exports\Exports.h" />
@@ -56,6 +69,15 @@
     </ClInclude>
     <ClInclude Include="src\FlyFunctions\Debugger\Debugger.h">
       <Filter>Fly Functions\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h">
+      <Filter>Fly Functions\KeyCode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

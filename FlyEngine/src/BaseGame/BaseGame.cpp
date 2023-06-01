@@ -5,6 +5,7 @@ bool BaseGame::isRunning = false;
 
 BaseGame::BaseGame()
 {
+	window = new Window(800, 600, "Fly Engine");;
 	isRunning = false;
 }
 
