@@ -33,7 +33,7 @@
     * Rectangle : Entity2D
     * Triangle : Entity2D
 
- 5) Sprites Update
+ 5) Sprites Update (Just for Graficos 1's Final / OPTIONAL)
     * Create Importer. 
         - It will provide the control on the game as well as on the engine.
     * Sprite : Entity2D
