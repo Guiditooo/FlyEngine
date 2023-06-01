@@ -3,18 +3,18 @@
  Image Campus Signature: Graficos I, II & III.
 
 # First Part
- 1) Set up Libraries - * Am here * 
+ 1) Set up Libraries /*DONE*\ Note: I learnt using cmake to install some libs
     * GLFW - DONE
     * GLEW - DONE
     * GLM - DONE
     * STB - DONE
     * TINYXML2 - DONE
-    * ASSIMP - ONGOING
+    * ASSIMP - DONE
  
- 2) Place a rectangle
-    * Entity
-    * Renderer (Shader inside just for testing purpose)
+ 2) Place a rectangle - * Am here *
+    * Renderer (Shader inside just for testing purpose) - ONGOING
     * Window
+    * Entity
     * Additionaly, create a Timer class.
 
  3) Take action in window
@@ -41,7 +41,7 @@
     * Create Animation class just to let the sprite move.
         - Sprite Sheet Reader class just to make it easier and more friendly.
 
- 6) Tilemap Update
+ 6) Tilemap Update (Just for Graficos 1's Final / OPTIONAL)
     * Tilemap : Entity2D
         - This should make collision if that tile is wall or inwalkable.
     * Create Tile class
