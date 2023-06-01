@@ -15,6 +15,9 @@
     <Filter Include="TinyXML2">
       <UniqueIdentifier>{3a8bc8dc-886a-4c25-83f3-1dd8b6c35269}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{e99a21b7-fff7-4df5-9476-ac918ae0df7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />

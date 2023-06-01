@@ -103,13 +103,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\library;$(ProjectDir)Dependencies\GLFW\library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3dll.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\library;$(ProjectDir)Dependencies\GLFW\library;$(ProjectDir)Dependencies\ASSIMP\library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3dll.lib;glew32.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
@@ -118,6 +118,7 @@
 IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
 IF NOT EXIST "$(ProjectDir)bin\Debug\glfw3.dll" (XCOPY "$(ProjectDir)Dependencies\GLFW\dll\glfw3.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
 IF NOT EXIST "$(ProjectDir)bin\Debug\glew32.dll" (XCOPY "$(ProjectDir)Dependencies\GLEW\dll\glew32.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)Dependencies\ASSIMP\dll\assimp-vc142-mtd.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
 IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
@@ -136,23 +137,28 @@ ECHO SHADERS SUCCESSFULLY COPIED TO TESTING
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\library;$(ProjectDir)Dependencies\GLFW\library;$(ProjectDir)Dependencies\ASSIMP\library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3dll.lib;glew32.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(ProjectDir)bin\$(Configuration)\GT_GraphicEngine_dll.dll" "$(SolutionDir)bin\$(Configuration)" /e /h /y /s
-XCOPY "$(SolutionDir)lib\GLFW\lib\glfw3.lib" "$(SolutionDir)bin\$(Configuration)" /e /h /y /s
-MKDIR "$(SolutionDir)bin\$(Configuration)\shaders"
-XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)bin\$(Configuration)\shaders" /e /h /y /s</Command>
+      <Command>IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+IF NOT EXIST "$(ProjectDir)bin\Debug\glfw3.dll" (XCOPY "$(ProjectDir)Dependencies\GLFW\dll\glfw3.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\glew32.dll" (XCOPY "$(ProjectDir)Dependencies\GLEW\dll\glew32.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)Dependencies\ASSIMP\dll\assimp-vc142-mtd.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
