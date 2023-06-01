@@ -21,7 +21,10 @@
   <ItemGroup>
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
     <ClCompile Include="src\FlyFunctions\Debugger\Debugger.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\TinyXML2\tinyxml2.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
@@ -29,6 +32,9 @@
     <ClInclude Include="src\BaseGame\BaseGame.h" />
     <ClInclude Include="src\Exports\Exports.h" />
     <ClInclude Include="src\FlyFunctions\Debugger\Debugger.h" />
+    <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
+    <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
@@ -109,7 +115,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLAD\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +149,7 @@ ECHO SHADERS SUCCESSFULLY COPIED TO TESTING
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLAD\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
