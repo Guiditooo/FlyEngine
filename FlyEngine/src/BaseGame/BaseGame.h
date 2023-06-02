@@ -8,24 +8,25 @@
 #include "Window/Window.h"
 
 
-class FLY_API BaseGame
+class BaseGame
 {
 private:
 	static bool isRunning;
-	Window* window;
+	static Window* window;
 
 public:
 	BaseGame();
 	~BaseGame();
 
-	void RunGame();
+	static void RunGame();
 	static bool IsGameRunning();
 
+
 protected:
-	void Init();
-	void Update();
-	void Draw();
-	void Deinit();
+	static void Init();
+	static void Update();
+	static void Draw();
+	static void Deinit();
 
 };
 

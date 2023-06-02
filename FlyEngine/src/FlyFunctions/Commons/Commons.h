@@ -6,6 +6,7 @@
 
 namespace FLY_ENGINE
 {
+
 	class FLY_API Commons
 	{
 	private:

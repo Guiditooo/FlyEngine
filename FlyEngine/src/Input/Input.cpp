@@ -1,16 +1,23 @@
 #include "Input.h"
 
-bool Input::GetKeyUp(GLFWwindow* window, FLY_ENGINE::KeyCode key)
+Window* Input::window = nullptr;
+
+void Input::SetContextWindow(Window* newWindow)
 {
-	return glfwGetKey(window, static_cast<int>(key)) == GLFW_RELEASE;
+	window = newWindow;
 }
 
-bool Input::GetKeyPressed(GLFWwindow* window, FLY_ENGINE::KeyCode key)
+bool Input::GetKeyUp(FLY_ENGINE::KeyCode key)
 {
-	return glfwGetKey(window, static_cast<int>(key)) == GLFW_REPEAT;
+	return glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_RELEASE;
 }
 
-bool Input::GetKeyDown(GLFWwindow* window, FLY_ENGINE::KeyCode key)
+bool Input::GetKeyPressed(FLY_ENGINE::KeyCode key)
 {
-	return glfwGetKey(window, static_cast<int>(key)) == GLFW_PRESS;
+	return glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_REPEAT;
+}
+
+bool Input::GetKeyDown(FLY_ENGINE::KeyCode key)
+{
+	return glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_PRESS;
 }
