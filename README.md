@@ -16,7 +16,7 @@
     * Input - DONE
     * Window - DONE
     * Renderer (Shader inside just for testing purpose) - ONGOING
-    * Entity - 
+    * Entity 
     * Additionaly, create a Timer class.
 
  3) Take action in window
