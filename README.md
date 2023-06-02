@@ -14,9 +14,9 @@
  
  2) Place a rectangle - * Am here *
     * Input - DONE
+    * Window - DONE
     * Renderer (Shader inside just for testing purpose) - ONGOING
-    * Window
-    * Entity
+    * Entity - 
     * Additionaly, create a Timer class.
 
  3) Take action in window
