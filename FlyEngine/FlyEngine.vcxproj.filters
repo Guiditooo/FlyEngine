@@ -36,6 +36,12 @@
     <Filter Include="Fly Functions\Commons">
       <UniqueIdentifier>{9466c06d-e8f7-4967-a042-c441127568ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fly Functions\ColorCode">
+      <UniqueIdentifier>{d3cad21f-f719-49ad-b39e-b15a0fa7eaf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fly Functions\Color">
+      <UniqueIdentifier>{f0d07718-5831-4e7c-8a7a-962c74f1b108}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -60,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="src\FlyFunctions\Commons\Commons.cpp">
       <Filter>Fly Functions\Commons</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlyFunctions\Color\Color.cpp">
+      <Filter>Fly Functions\Color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +96,12 @@
     </ClInclude>
     <ClInclude Include="src\FlyFunctions\Commons\Commons.h">
       <Filter>Fly Functions\Commons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlyFunctions\ColorCode\ColorCode.h">
+      <Filter>Fly Functions\ColorCode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlyFunctions\Color\Color.h">
+      <Filter>Fly Functions\Color</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
