@@ -42,6 +42,15 @@
     <Filter Include="Fly Functions\Color">
       <UniqueIdentifier>{f0d07718-5831-4e7c-8a7a-962c74f1b108}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{f802b383-8ac6-465e-97de-f4cb52922fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{d7f5a1a7-d00b-4cbd-ac89-7d1105f562ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity3D">
+      <UniqueIdentifier>{c1652657-eb12-4b28-be6c-daa0aae93bf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -69,6 +78,18 @@
     </ClCompile>
     <ClCompile Include="src\FlyFunctions\Color\Color.cpp">
       <Filter>Fly Functions\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Component.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity\Entity.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\Shader.cpp">
+      <Filter>Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity3D\Entity3D.cpp">
+      <Filter>Entity3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +123,18 @@
     </ClInclude>
     <ClInclude Include="src\FlyFunctions\Color\Color.h">
       <Filter>Fly Functions\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\Component.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\Entity.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\Shader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity3D\Entity3D.h">
+      <Filter>Entity3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

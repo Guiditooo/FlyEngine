@@ -1,7 +1,9 @@
 #include "BaseGame.h"
+
+#include <Renderer/Renderer.h>
+
 #include <FlyFunctions/Debugger/Debugger.h>
 #include <FlyFunctions/Commons/Commons.h>
-#include <FlyFunctions/Color/Color.h>
 #include <FlyFunctions/ColorCode/ColorCode.h>
 #include <Input/Input.h>
 
@@ -19,6 +21,11 @@ BaseGame::~BaseGame()
 {
 }
 
+void BaseGame::ResizeViewport(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
 void BaseGame::Init()
 {
 	Debugger::ConsoleMessage("Starting Fly Engine.", 2, 0, 1, 0);
@@ -31,7 +38,7 @@ void BaseGame::Init()
 	glfwMakeContextCurrent(window->GetWindow());
 
 	Input::SetContextWindow(window);
-
+	glfwSetFramebufferSizeCallback(window->GetWindow(), ResizeViewport);
 }
 
 void BaseGame::Update()
@@ -44,12 +51,11 @@ void BaseGame::Update()
 
 void BaseGame::Draw()
 {	
-	glm::vec4 bgColor = Color::GetColor(COLOR::RAYWHITE);
+	Renderer::SetBackgroundColor(Color::GetColor(FLY_ENGINE::COLOR::RAYWHITE));
 
-	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
-	glClear(GL_COLOR_BUFFER_BIT);
+	Renderer::DrawRenderizableObjects();
 
-	glfwSwapBuffers(window->GetWindow());
+	SwapBuffers();
 }
 
 void BaseGame::Deinit()
@@ -64,9 +70,17 @@ void BaseGame::Deinit()
 	delete window;
 }
 
+void BaseGame::SwapBuffers()
+{
+	glfwSwapBuffers(window->GetWindow());
+}
+
 void BaseGame::RunGame()
 {
 	isRunning = true;
+
+	//FLY_ENGINE::Debugger::ConsoleMessage("Type of isRunning: ", 2, 0, 2, 0);
+	//FLY_ENGINE::Debugger::ConsoleMessage(typeid(isRunning).name(), 0, 0, 0, 2);
 
 	Init();
 	
@@ -84,4 +98,5 @@ bool BaseGame::IsGameRunning()
 {
 	return isRunning;
 }
+
 

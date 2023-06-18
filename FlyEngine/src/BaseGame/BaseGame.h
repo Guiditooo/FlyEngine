@@ -8,11 +8,15 @@
 #include "Window/Window.h"
 
 
-class BaseGame
+class FLY_API BaseGame
 {
 private:
 	static bool isRunning;
 	static Window* window;
+
+	static void ResizeViewport(GLFWwindow* window, int width, int height);
+
+	static void SwapBuffers();
 
 public:
 	BaseGame();
