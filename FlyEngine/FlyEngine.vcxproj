@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Entity2D\Entity2D.cpp" />
     <ClCompile Include="src\Entity3D\Entity3D.cpp" />
     <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\FlyFunctions\Color\Color.cpp" />
@@ -29,14 +30,18 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Rectangle\Rectangle.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
+    <ClCompile Include="src\Shape\Shape.cpp" />
     <ClCompile Include="src\TinyXML2\tinyxml2.cpp" />
+    <ClCompile Include="src\Triangle\Triangle.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseGame\BaseGame.h" />
     <ClInclude Include="src\Component\Component.h" />
+    <ClInclude Include="src\Entity2D\Entity2D.h" />
     <ClInclude Include="src\Entity3D\Entity3D.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\Exports\Exports.h" />
@@ -46,9 +51,12 @@
     <ClInclude Include="src\FlyFunctions\Debugger\Debugger.h" />
     <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
     <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\Shader.h" />
+    <ClInclude Include="src\Shape\Shape.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h" />
+    <ClInclude Include="src\Triangle\Triangle.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

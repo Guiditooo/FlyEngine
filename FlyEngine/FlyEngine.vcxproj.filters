@@ -51,6 +51,15 @@
     <Filter Include="Entity3D">
       <UniqueIdentifier>{c1652657-eb12-4b28-be6c-daa0aae93bf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shapes">
+      <UniqueIdentifier>{dca0c685-c6e2-4130-85f4-4309e3e5061f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shapes\Triangle">
+      <UniqueIdentifier>{796fd516-d9ac-42bf-b584-5c1c90ffe2ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shapes\Rectagle">
+      <UniqueIdentifier>{2115725a-ef99-4ee8-8205-b7ce5e76e383}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -90,6 +99,18 @@
     </ClCompile>
     <ClCompile Include="src\Entity3D\Entity3D.cpp">
       <Filter>Entity3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity2D\Entity2D.cpp">
+      <Filter>Entity2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shape\Shape.cpp">
+      <Filter>Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Triangle\Triangle.cpp">
+      <Filter>Shapes\Triangle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rectangle\Rectangle.cpp">
+      <Filter>Shapes\Rectagle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +156,18 @@
     </ClInclude>
     <ClInclude Include="src\Entity3D\Entity3D.h">
       <Filter>Entity3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity2D\Entity2D.h">
+      <Filter>Entity2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shape\Shape.h">
+      <Filter>Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Triangle\Triangle.h">
+      <Filter>Shapes\Triangle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rectangle\Rectangle.h">
+      <Filter>Shapes\Rectagle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
