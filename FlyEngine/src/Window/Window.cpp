@@ -14,14 +14,34 @@ Window::Window(int width, int height, std::string title)
 	windowCount++;
 }
 
+Window::Window(std::string title)
+{
+	windowWidth = INITIAL_WIDTH;
+	windowHeight = INITIAL_HEIGHT;
+	windowTitle = title;
+	//if(GL)
+	window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), NULL, NULL);
+
+	windowCount++;
+}
+
 Window::~Window()
 {
 	windowCount--;
 }
 
-void Window::Resize(int width, int height)
+void Window::Resize(int newWidth, int newHeight)
 {
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, newWidth, newHeight);
+	windowHeight = newHeight;
+	windowWidth = newWidth;
+}
+
+void Window::Resize(glm::vec2 newDim)
+{
+	glViewport(0, 0, newDim.y, newDim.x);
+	windowHeight = newDim.y;
+	windowWidth = newDim.x;
 }
 
 std::string Window::GetWindowName()

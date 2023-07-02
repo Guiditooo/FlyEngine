@@ -16,11 +16,16 @@ private:
 
 	static int windowCount;
 
+	const int INITIAL_HEIGHT = 720;
+	const int INITIAL_WIDTH = 1080;
+
 public:
 	Window(int width, int height, std::string title);
+	Window(std::string title);
 	~Window();
 
-	void Resize(int width, int height);
+	void Resize(int newWidth, int newHeight);
+	void Resize(glm::vec2 newDim);
 
 	std::string GetWindowName();
 	glm::vec2 GetWindowSize();
