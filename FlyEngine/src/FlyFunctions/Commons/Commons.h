@@ -2,7 +2,7 @@
 #define COMMONS_H
 
 #include <Exports/Exports.h>
-#include <GLFW/glfw3.h>
+#include <Window/Window.h>
 
 namespace FLY_ENGINE
 {
@@ -10,7 +10,6 @@ namespace FLY_ENGINE
 	class FLY_API Commons
 	{
 	private:
-
 	public:
 		static float RandomFloat(float initRange, float endRange);
 	};
