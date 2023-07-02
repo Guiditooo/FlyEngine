@@ -30,11 +30,11 @@ void BaseGame::Init()
 {
 	Debugger::ConsoleMessage("Starting Fly Engine.", 2, 0, 1, 0);
 	Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
-	std::cin.get();
-	system("cls");
+	//std::cin.get();
+	//system("cls");
 
 	glfwInit();
-	window = new Window(800, 600, "Fly Engine");
+	window = new Window("Fly Engine");
 	glfwMakeContextCurrent(window->GetWindow());
 
 	Input::SetContextWindow(window);
@@ -51,7 +51,7 @@ void BaseGame::Update()
 
 void BaseGame::Draw()
 {	
-	Renderer::SetBackgroundColor(Color::GetColor(FLY_ENGINE::COLOR::RAYWHITE));
+	Renderer::SetBackgroundColor(Color::GetColor(FLY_ENGINE::COLOR::RAYBLACK));
 
 	Renderer::DrawRenderizableObjects();
 
@@ -64,7 +64,7 @@ void BaseGame::Deinit()
 
 	FLY_ENGINE::Debugger::ConsoleMessage("Ending Fly Engine.", 2, 0, 1, 0);
 	FLY_ENGINE::Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
-	std::cin.get();
+	//std::cin.get();
 	system("cls");
 
 	delete window;

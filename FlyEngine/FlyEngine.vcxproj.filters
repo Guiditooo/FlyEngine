@@ -60,6 +60,15 @@
     <Filter Include="Shapes\Rectagle">
       <UniqueIdentifier>{2115725a-ef99-4ee8-8205-b7ce5e76e383}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Line">
+      <UniqueIdentifier>{b16acf0c-f455-47fd-9e4e-2ce33832b61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fly Functions\Vertice">
+      <UniqueIdentifier>{179464a7-2c40-4325-bafa-1db93ed0f5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{e993099a-da1c-4f0f-b03e-574b0c5ac331}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -111,6 +120,15 @@
     </ClCompile>
     <ClCompile Include="src\Rectangle\Rectangle.cpp">
       <Filter>Shapes\Rectagle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Line\Line.cpp">
+      <Filter>Line</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FlyFunctions\Vertices\Vertice.cpp">
+      <Filter>Fly Functions\Vertice</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera\Camera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +186,15 @@
     </ClInclude>
     <ClInclude Include="src\Rectangle\Rectangle.h">
       <Filter>Shapes\Rectagle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Line\Line.h">
+      <Filter>Line</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlyFunctions\Vertices\Vertice.h">
+      <Filter>Fly Functions\Vertice</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
