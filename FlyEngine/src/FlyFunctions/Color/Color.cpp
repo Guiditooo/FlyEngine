@@ -168,6 +168,11 @@ glm::vec4 FLY_ENGINE::Color::GetColorV4(COLOR color)
 		newColor.g = 1.0f;
 		newColor.b = 1.0f;
 		break;
+	case FLY_ENGINE::COLOR::RAYBLACK:
+		newColor.r = 0.02f;
+		newColor.g = 0.02f;
+		newColor.b = 0.02f;
+		break;
 	case FLY_ENGINE::COLOR::BLACK:
 		newColor.r = 0.0f;
 		newColor.g = 0.0f;

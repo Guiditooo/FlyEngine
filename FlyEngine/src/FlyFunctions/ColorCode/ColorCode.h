@@ -18,6 +18,7 @@ namespace FLY_ENGINE
 		MAGENTA,
 		YELLOW,
 		CYAN,
+		RAYBLACK,
 		BLACK
 	};
 }
