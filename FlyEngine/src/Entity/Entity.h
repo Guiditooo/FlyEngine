@@ -4,6 +4,9 @@
 class Entity
 {
 private:	
+	
+	float vertices[2];
+
 	int drawLayer;
 
 public:
@@ -11,7 +14,7 @@ public:
 	
 	int GetDrawLayer();
 
-	virtual void Draw();
+	virtual void Draw() = 0;
 };
 
 #endif // !ENTITY_H
