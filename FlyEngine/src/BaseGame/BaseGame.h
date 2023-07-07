@@ -3,6 +3,7 @@
 
 #define FLY_EXPORTS
 
+#include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 #include <Exports/Exports.h>
 #include "Window/Window.h"

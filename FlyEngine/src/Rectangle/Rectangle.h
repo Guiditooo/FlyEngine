@@ -3,12 +3,19 @@
 
 #include <Shape/Shape.h>
 
-class Rectangle : Shape
+class Rectangle : public Shape
 {
 private:
-
+	
 public:
+	Rectangle();
+	~Rectangle();
 
+	//static int GetRectangleCount();
+
+	
+
+	void Draw();
 };
 
 #endif // !RECTANGLE_H

@@ -6,6 +6,11 @@
 #include <FlyFunctions/Commons/Commons.h>
 #include <FlyFunctions/ColorCode/ColorCode.h>
 #include <Input/Input.h>
+#include <Shader/Shader.h>
+
+//#include <Shape/Shape.h>
+#include <Triangle/Triangle.h>
+#include <Rectangle/Rectangle.h>
 
 bool BaseGame::isRunning = false;
 Window* BaseGame::window = nullptr;
@@ -19,6 +24,7 @@ BaseGame::BaseGame()
 
 BaseGame::~BaseGame()
 {
+
 }
 
 void BaseGame::ResizeViewport(GLFWwindow* window, int width, int height)
@@ -34,8 +40,11 @@ void BaseGame::Init()
 	//system("cls");
 
 	glfwInit();
+
 	window = new Window("Fly Engine");
 	glfwMakeContextCurrent(window->GetWindow());
+
+	glewInit();
 
 	Input::SetContextWindow(window);
 	glfwSetFramebufferSizeCallback(window->GetWindow(), ResizeViewport);
@@ -78,12 +87,25 @@ void BaseGame::SwapBuffers()
 void BaseGame::RunGame()
 {
 	isRunning = true;
+	Init();
 
 	//FLY_ENGINE::Debugger::ConsoleMessage("Type of isRunning: ", 2, 0, 2, 0);
 	//FLY_ENGINE::Debugger::ConsoleMessage(typeid(isRunning).name(), 0, 0, 0, 2);
 
-	Init();
+	//Shader* test = new Shader("C:\\Users\\usuario\\source\\repos\\FlyEngine\\FlyEngine\\res\\Shaders\\fragment.shader", "C:\\Users\\usuario\\source\\repos\\FlyEngine\\FlyEngine\\res\\Shaders\\vertex.shader");
+	Rectangle* test1 = new Rectangle();
+	//Triangle* test2 = new Triangle();
+	//Rectangle* test3 = new Rectangle();
+
+	Material* rectangleMat = new Material();
+	test1->SetMaterial(rectangleMat);
+
 	
+	//FLY_ENGINE::Debugger::ConsoleMessage(&(test->UseShader())[0], 2, 0, 2, 0);
+
+
+
+
 	while (isRunning && !glfwWindowShouldClose(window->GetWindow()))
 	{
 		Update();

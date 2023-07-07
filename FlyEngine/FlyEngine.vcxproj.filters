@@ -69,6 +69,12 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{e993099a-da1c-4f0f-b03e-574b0c5ac331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Material">
+      <UniqueIdentifier>{699aa9d2-34f3-4724-93cf-dff8fa47a101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VertexAttribute">
+      <UniqueIdentifier>{1b7df20c-863f-42bd-8aba-1e00a996e955}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -129,6 +135,9 @@
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material\Material.cpp">
+      <Filter>Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +204,12 @@
     </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material\Material.h">
+      <Filter>Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Attribute\VertexAttribute.h">
+      <Filter>VertexAttribute</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

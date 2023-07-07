@@ -3,12 +3,17 @@
 
 #include <Shape/Shape.h>
 
-class Triangle : Shape
+class Triangle : public Shape
 {
 private:
-
+	//int* triangleCount;
 public:
+	Triangle();
+	~Triangle();
 
+	//int GetTriangleCount();
+
+	void Draw();
 };
 
 #endif // !TRIANGLE_H

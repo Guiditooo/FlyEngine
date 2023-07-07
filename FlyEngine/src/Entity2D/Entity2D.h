@@ -3,9 +3,11 @@
 
 #include <Entity/Entity.h>
 
-class Entity2D : Entity
+class Entity2D : public Entity
 {
 private:
+
+
 public:
 };
 

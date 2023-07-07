@@ -1,11 +1,18 @@
 #ifndef VERTICES_H
 #define VERTICES_H
 
+#include <GLFW/glfw3.h>
+#include <
+
 namespace FLY_ENGINE
 {
 
 	struct Vertice
 	{
+		int 
+		int
+		
+		
 		float posX;
 		float posY;
 		float posZ;
