@@ -16,9 +16,6 @@ private:
 
 	static int windowCount;
 
-	const int INITIAL_HEIGHT = 720;
-	const int INITIAL_WIDTH = 1080;
-
 public:
 	Window(int width, int height, std::string title);
 	Window(std::string title);

@@ -1,6 +1,8 @@
 #include "Window.h"
 #include <string>
 
+const int INITIAL_HEIGHT = 720;
+const int INITIAL_WIDTH = 1080;
 int Window::windowCount = 0;
 
 Window::Window(int width, int height, std::string title)

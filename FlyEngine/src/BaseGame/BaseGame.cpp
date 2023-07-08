@@ -8,7 +8,6 @@
 #include <Input/Input.h>
 #include <Shader/Shader.h>
 
-//#include <Shape/Shape.h>
 #include <Triangle/Triangle.h>
 #include <Rectangle/Rectangle.h>
 
@@ -16,6 +15,10 @@ bool BaseGame::isRunning = false;
 Window* BaseGame::window = nullptr;
 
 using namespace FLY_ENGINE;
+
+std::string BaseGame::initialWindowName = "FlyEngine";
+int BaseGame::initialWindowWidth = 0;
+int BaseGame::initialWindowHeight = 0;
 
 BaseGame::BaseGame()
 {
@@ -25,6 +28,13 @@ BaseGame::BaseGame()
 BaseGame::~BaseGame()
 {
 
+}
+
+void BaseGame::SetWindowParameters(int width, int height, std::string name)
+{
+	initialWindowWidth = width;
+	initialWindowHeight = height;
+	initialWindowName = name;
 }
 
 void BaseGame::ResizeViewport(GLFWwindow* window, int width, int height)
@@ -41,7 +51,14 @@ void BaseGame::Init()
 
 	glfwInit();
 
-	window = new Window("Fly Engine");
+	if (initialWindowHeight < 0 || initialWindowWidth < 0)
+	{
+		window = new Window(initialWindowName);
+	}
+	else
+	{
+		window = new Window(initialWindowWidth, initialWindowHeight, initialWindowName);
+	}
 	glfwMakeContextCurrent(window->GetWindow());
 
 	glewInit();
@@ -89,22 +106,25 @@ void BaseGame::RunGame()
 	isRunning = true;
 	Init();
 
-	//FLY_ENGINE::Debugger::ConsoleMessage("Type of isRunning: ", 2, 0, 2, 0);
-	//FLY_ENGINE::Debugger::ConsoleMessage(typeid(isRunning).name(), 0, 0, 0, 2);
+	//Tengo que hacer una funcion que me resizee el objeto en pixeles, como raylib.
+	/*
+		Necesito el tamaño de la ventana
+		Necesito el tamaño en pixeles de lo que quiero depositar
+		Necesito un tamaño base del objeto el cual presettear en el constructor
 
-	//Shader* test = new Shader("C:\\Users\\usuario\\source\\repos\\FlyEngine\\FlyEngine\\res\\Shaders\\fragment.shader", "C:\\Users\\usuario\\source\\repos\\FlyEngine\\FlyEngine\\res\\Shaders\\vertex.shader");
-	Rectangle* test1 = new Rectangle();
-	//Triangle* test2 = new Triangle();
-	//Rectangle* test3 = new Rectangle();
+		tamaño de 1 pixel * tamaño del objeto en pixeles = tamaño fixeado del objeto en pantalla
+		widthInWindow = 1/windowWidth * modelWidth
+		heightInWindow = 1/windowHeight * modelHeight
 
-	Material* rectangleMat = new Material();
-	test1->SetMaterial(rectangleMat);
-
+		Donde pongo esto?
+	*/
 	
-	//FLY_ENGINE::Debugger::ConsoleMessage(&(test->UseShader())[0], 2, 0, 2, 0);
+	Rectangle* test1 = new Rectangle();
+	Triangle* test2 = new Triangle();
 
-
-
+	test1->SetColor(FLY_ENGINE::COLOR::CYAN);
+	test2->SetColor(FLY_ENGINE::COLOR::YELLOW);
+	test1->SetDrawLayer(1);
 
 	while (isRunning && !glfwWindowShouldClose(window->GetWindow()))
 	{

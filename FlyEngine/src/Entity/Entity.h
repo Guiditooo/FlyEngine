@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Exports/Exports.h>
 #include <Material/Material.h>
+#include <FlyFunctions/Color/Color.h>
 
 
 class Entity
@@ -23,6 +24,8 @@ protected:
 	Material* material;
 
 	glm::mat4 model;
+
+	FLY_ENGINE::Color color;
 
 	glm::mat4 translateMatrix;
 	glm::mat4 rotationMatrix;
@@ -48,8 +51,12 @@ public:
 	bool IsActive();
 
 	void SetDrawLayer(int newDrawLayer);
-
 	int GetDrawLayer();
+
+	void SetColor(FLY_ENGINE::Color newColor);
+	void SetColor(glm::vec3 newColor);
+	void SetColor(float r, float g, float b);
+	void SetColor(FLY_ENGINE::COLOR newColor);
 
 	void UpdateModelMatrix();
 	glm::mat4 GetModelMatrix();

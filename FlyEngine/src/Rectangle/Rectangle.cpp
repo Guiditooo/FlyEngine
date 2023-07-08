@@ -11,6 +11,8 @@ const int INDEX_COUNT = 6;
 Rectangle::Rectangle()
 {
 
+	material = new Material();
+
 	float vertex[] =
 	{
 		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA IZQ
@@ -45,7 +47,11 @@ Rectangle::Rectangle()
 
 Rectangle::~Rectangle()
 {
-	//rectangleCount--;
+	if (material != nullptr)
+	{
+		delete material;
+		material = nullptr;
+	}
 }
 
 /*int Rectangle::GetRectangleCount()
@@ -57,5 +63,7 @@ void Rectangle::Draw()
 {
 	//std::cout << " Estoy dibujando un cuadrao \n";
 	material->Apply();
+	Renderer::SetMatrixUniform(material->GetShaderID(),"modelMatrix", model);
+	Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
 	Renderer::DrawRequest(VAO, INDEX_COUNT);
 }

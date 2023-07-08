@@ -14,6 +14,7 @@ public:
 	Material(const char* fragmentShaderPath, const char* vertexShaderPath);
 	~Material();
 
+	int GetShaderID();
 	void Apply();
 };
 

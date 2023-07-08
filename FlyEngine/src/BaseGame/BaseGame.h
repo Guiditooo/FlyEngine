@@ -15,6 +15,10 @@ private:
 	static bool isRunning;
 	static Window* window;
 
+	static int initialWindowWidth;
+	static int initialWindowHeight;
+	static std::string initialWindowName;
+
 	static void ResizeViewport(GLFWwindow* window, int width, int height);
 
 	static void SwapBuffers();
@@ -25,7 +29,7 @@ public:
 
 	static void RunGame();
 	static bool IsGameRunning();
-
+	static void SetWindowParameters(int width, int height, std::string name = "FlyEngine");
 
 protected:
 	static void Init();

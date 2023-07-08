@@ -6,16 +6,10 @@
 class Rectangle : public Shape
 {
 private:
-	
 public:
 	Rectangle();
 	~Rectangle();
-
-	//static int GetRectangleCount();
-
-	
-
-	void Draw();
+	void Draw() override;
 };
 
 #endif // !RECTANGLE_H

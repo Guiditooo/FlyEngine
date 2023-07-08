@@ -1,7 +1,9 @@
 #include "Renderer.h"
 #include <Entity/Entity.h>
+
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
 #include <iostream>
@@ -43,7 +45,7 @@ void Renderer::AddToRenderizableList(Entity* newRenderizableObject)
 void Renderer::SetBackgroundColor(Color* newBgColor)
 {
 	bgColor = newBgColor;
-	glClearColor(bgColor->GetColor().r, bgColor->GetColor().g, bgColor->GetColor().b, bgColor->GetColor().a);
+	glClearColor(bgColor->GetColorV4().r, bgColor->GetColorV4().g, bgColor->GetColorV4().b, bgColor->GetColorV4().a);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -90,4 +92,17 @@ void Renderer::DrawRequest(unsigned int VAO, unsigned int indexCount)
 {
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+}
+
+void Renderer::SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix)
+{
+	GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Renderer::SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec)
+{
+	GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
+	//glUniform3fv(uniformLocation, 1, glm::value_ptr(vec));
+	glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
 }

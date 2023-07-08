@@ -6,14 +6,10 @@
 class Triangle : public Shape
 {
 private:
-	//int* triangleCount;
 public:
 	Triangle();
 	~Triangle();
-
-	//int GetTriangleCount();
-
-	void Draw();
+	void Draw() override;
 };
 
 #endif // !TRIANGLE_H

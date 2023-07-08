@@ -9,6 +9,8 @@ Entity::Entity()
 {
 	model = glm::mat4(1.0f);
 
+	color = glm::vec3(1.0f);
+
 	translateMatrix = glm::mat4(1.0f);
 	rotationMatrix = glm::mat4(1.0f);
 	scaleMatrix = glm::mat4(1.0f);
@@ -208,6 +210,26 @@ void Entity::SetDrawLayer(int newDrawLayer)
 int Entity::GetDrawLayer()
 {
 	return drawLayer;
+}
+
+void Entity::SetColor(FLY_ENGINE::Color newColor)
+{
+	color = newColor;
+}
+
+void Entity::SetColor(glm::vec3 newColor)
+{
+	color = Color(newColor);
+}
+
+void Entity::SetColor(float r, float g, float b)
+{
+	color = Color(r, g, b);
+}
+
+void Entity::SetColor(FLY_ENGINE::COLOR newColor)
+{
+	color = Color(newColor);
 }
 
 void Entity::UpdateModelMatrix()

@@ -1,7 +1,7 @@
 #include "Material.h"
 
-const char* DEFAULT_VERTEX_PATH = "C:/Users/usuario/source/repos/FlyEngine/FlyEngine/res/Shaders/vertex.shader";
-const char* DEFAULT_FRAGMENT_PATH = "C:/Users/usuario/source/repos/FlyEngine/FlyEngine/res/Shaders/fragment.shader";
+const char* DEFAULT_VERTEX_PATH = "res/Shaders/vertex.shader";
+const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/fragment.shader";
 
 Material::Material()
 {
@@ -16,6 +16,11 @@ Material::Material(const char* fragmentShaderPath, const char* vertexShaderPath)
 Material::~Material()
 {
 
+}
+
+int Material::GetShaderID()
+{
+	return shader->GetShaderID();
 }
 
 void Material::Apply()

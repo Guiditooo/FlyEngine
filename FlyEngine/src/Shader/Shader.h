@@ -13,6 +13,7 @@ public:
 	Shader(const char* fragmentShaderPath, const char* vertexShaderPath);
 	~Shader();
 
+	int GetShaderID();
 	void UseShader();
 };
 

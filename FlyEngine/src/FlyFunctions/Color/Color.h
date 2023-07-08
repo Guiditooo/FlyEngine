@@ -2,8 +2,7 @@
 #define COLOR_H
 
 #include <FlyFunctions/ColorCode/ColorCode.h>
-#include <glm/vec4.hpp>
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 const int MAX_COLOR_SCALER = 256;
 
@@ -36,9 +35,12 @@ namespace FLY_ENGINE
 		void SetColor(Color color);
 		void SetColor(COLOR color);
 		
-		glm::vec4 GetColor();
+		Color GetColor();
+		glm::vec4 GetColorV4();
+		glm::vec3 GetColorV3();
 
 		static glm::vec4 GetColorV4(COLOR color);
+		static glm::vec3 GetColorV3(COLOR color);
 		static Color* GetColor(COLOR color);
 		static glm::vec4 GetRandomColor();
 		

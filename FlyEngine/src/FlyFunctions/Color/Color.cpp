@@ -116,15 +116,33 @@ void FLY_ENGINE::Color::SetColor(COLOR color)
 	SetColor(*GetColor(color));
 }
 
-glm::vec4 FLY_ENGINE::Color::GetColor()
+FLY_ENGINE::Color FLY_ENGINE::Color::GetColor()
+{
+	return Color(red,green,blue,alpha);
+}
+
+glm::vec4 FLY_ENGINE::Color::GetColorV4()
 {
 	return glm::vec4(red, green, blue, alpha);
 }
 
+glm::vec3 FLY_ENGINE::Color::GetColorV3()
+{
+	glm::vec3 color;
+	color.r = red;
+	color.g = green;
+	color.b = blue;
+	return color;
+}
+
 glm::vec4 FLY_ENGINE::Color::GetColorV4(COLOR color)
 {
-	glm::vec4 newColor;
-	newColor.a = 1.0f;
+	return glm::vec4(GetColorV3(color), 1.0f);
+}
+
+glm::vec3 FLY_ENGINE::Color::GetColorV3(COLOR color)
+{
+	glm::vec3 newColor;
 
 	switch (color)
 	{
@@ -186,7 +204,6 @@ glm::vec4 FLY_ENGINE::Color::GetColorV4(COLOR color)
 	}
 
 	return newColor;
-
 }
 
 FLY_ENGINE::Color* FLY_ENGINE::Color::GetColor(COLOR color)
