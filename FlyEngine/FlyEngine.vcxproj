@@ -78,7 +78,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -143,7 +143,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FLY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)src;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLAD\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\ASSIMP\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -164,6 +164,15 @@ IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)
 IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
+XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )
 </Command>
     </PostBuildEvent>
     <PreBuildEvent>

@@ -9,7 +9,7 @@
 #include <FlyFunctions/Color/Color.h>
 
 
-class Entity
+class FLY_API Entity
 {
 protected:
 

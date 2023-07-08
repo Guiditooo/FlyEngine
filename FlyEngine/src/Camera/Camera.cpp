@@ -2,14 +2,13 @@
 
 Camera::Camera()
 {
-	orthographic = false;
 }
 
 Camera::~Camera()
 {
+
 }
 
-void Camera::SwitchMode()
+void Camera::Draw()
 {
-	orthographic = !orthographic;
 }

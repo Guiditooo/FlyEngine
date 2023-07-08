@@ -1,41 +1,57 @@
 #ifndef BASEGAME_H
 #define BASEGAME_H
 
-#define FLY_EXPORTS
-
-#include <GLEW/glew.h>
-#include <GLFW/glfw3.h>
 #include <Exports/Exports.h>
-#include "Window/Window.h"
-
+#include <iostream>
+/*
+#include <FlyFunctions/ColorCode/ColorCode.h>
+#include <FlyFunctions/Debugger/Debugger.h>
+#include <FlyFunctions/Commons/Commons.h>
+#include <FlyFunctions/KeyCode/KeyCode.h>
+#include <FlyFunctions/Color/Color.h>
+#include <Rectangle/Rectangle.h>
+#include <Material/Material.h>
+#include <Triangle/Triangle.h>
+#include <Camera/Camera.h>
+#include <Input/Input.h>
+#include <Line/Line.h>
+*/
+struct GLFWwindow;
+class Window;
 
 class FLY_API BaseGame
 {
 private:
-	static bool isRunning;
-	static Window* window;
+	bool isRunning;
+	bool checkEsc;
+	Window* window;
 
-	static int initialWindowWidth;
-	static int initialWindowHeight;
-	static std::string initialWindowName;
+	int initialWindowWidth;
+	int initialWindowHeight;
+	std::string initialWindowName;
 
-	static void ResizeViewport(GLFWwindow* window, int width, int height);
+	void SwapBuffers();
 
-	static void SwapBuffers();
+	void InternalInit();
+	void InternalUpdate();
+	void InternalDraw();
+	void InternalDeinit();
+
 
 public:
 	BaseGame();
 	~BaseGame();
 
-	static void RunGame();
-	static bool IsGameRunning();
-	static void SetWindowParameters(int width, int height, std::string name = "FlyEngine");
+	void RunGame();
+	bool IsGameRunning();
+	void SetWindowParameters(int width, int height, std::string name = "FlyEngine");
+
+	void ToggleClosingWithEsc();
 
 protected:
-	static void Init();
-	static void Update();
-	static void Draw();
-	static void Deinit();
+	virtual void Init() = 0;
+	virtual void Update() = 0;
+	virtual void Deinit() = 0;
 
 };
 

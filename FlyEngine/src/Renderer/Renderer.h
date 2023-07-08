@@ -18,6 +18,7 @@ private:
 	static std::list<Entity*> renderizableObjectList;
 	static void ReOrderRenderizableList();
 
+	static glm::mat4 view;
 
 public:
 	static void DrawRenderizableObjects();
