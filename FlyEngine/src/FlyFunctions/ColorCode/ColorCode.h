@@ -3,24 +3,30 @@
 
 #include <Exports/Exports.h>
 
-namespace FLY_ENGINE
+namespace FlyEngine
 {
-	
-//#define COLOR_RED 1.0f, 0.0f, 0.0f, 1.0f
-//#define COLOR_FRANCE_BLUE 0.1f, 0.4f, 0.9f, 1.0f
-	enum class FLY_API COLOR
+
+	namespace Utils 
 	{
-		WHITE,
-		RAYWHITE,
-		RED,
-		GREEN,
-		BLUE,
-		MAGENTA,
-		YELLOW,
-		CYAN,
-		RAYBLACK,
-		BLACK
-	};
+
+		//#define COLOR_RED 1.0f, 0.0f, 0.0f, 1.0f
+		//#define COLOR_FRANCE_BLUE 0.1f, 0.4f, 0.9f, 1.0f
+		enum class FLY_API COLOR
+		{
+			WHITE,
+			RAYWHITE,
+			RED,
+			GREEN,
+			BLUE,
+			MAGENTA,
+			YELLOW,
+			CYAN,
+			RAYBLACK,
+			BLACK
+		};
+
+	}
+
 }
 
 #endif

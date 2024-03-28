@@ -3,13 +3,22 @@
 
 #include <Shape/Shape.h>
 
-class Triangle : public Shape
+namespace FlyEngine
 {
-private:
-public:
-	Triangle();
-	~Triangle();
-	void Draw() override;
-};
+
+	namespace Entities
+	{
+
+		class FLY_API Triangle : public Shape
+		{
+		private:
+		public:
+			Triangle();
+			~Triangle();
+			void Draw() override;
+		};
+
+	}
+}
 
 #endif // !TRIANGLE_H

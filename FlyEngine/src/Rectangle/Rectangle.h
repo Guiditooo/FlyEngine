@@ -3,13 +3,21 @@
 
 #include <Shape/Shape.h>
 
-class Rectangle : public Shape
+namespace FlyEngine
 {
-private:
-public:
-	Rectangle();
-	~Rectangle();
-	void Draw() override;
-};
+	namespace Entities
+	{
 
+		class FLY_API Rectangle : public Shape
+		{
+		private:
+		public:
+			Rectangle();
+			~Rectangle();
+			void Draw() override;
+		};
+
+	}
+
+}
 #endif // !RECTANGLE_H

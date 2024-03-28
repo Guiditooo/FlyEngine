@@ -1,12 +1,17 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-class Component
+namespace FlyEngine
 {
-private:
 
-public:
+	class Component
+	{
+	private:
 
-};
+	public:
 
-#endif // !COMPONENT_H
+	};
+
+}
+
+#endif // !COMPONENT_H`

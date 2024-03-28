@@ -3,12 +3,22 @@
 
 #include <Entity/Entity.h>
 
-class Entity2D : public Entity
+namespace FlyEngine
 {
-private:
+
+	namespace Entities
+	{
+
+		class Entity2D : public Entity
+		{
+		private:
 
 
-public:
-};
+		public:
+		};
+
+	}
+
+}
 
 #endif // !ENTITY2D_H

@@ -1,27 +1,37 @@
 #include "Debugger.h"
 #include <iostream>
 
-FLY_ENGINE::Debugger::Debugger()
+namespace FlyEngine
 {
-}
 
-FLY_ENGINE::Debugger::~Debugger()
-{
-}
+	namespace Utils
+	{
 
-void FLY_ENGINE::Debugger::ConsoleMessage(const char* text, short beforeSpacesCount, short afterSpacesCount, short beforeEndlCount, short afterEndlCount)
-{
-	for (short i = 0; i < beforeEndlCount; i++)
-		std::cout << std::endl;
+		Debugger::Debugger()
+		{
+		}
 
-	for (short i = 0; i < beforeSpacesCount; i++)
-		std::cout << " ";
+		Debugger::~Debugger()
+		{
+		}
 
-	std::cout << text;
+		void Debugger::ConsoleMessage(const char* text, short beforeSpacesCount, short afterSpacesCount, short beforeEndlCount, short afterEndlCount)
+		{
+			for (short i = 0; i < beforeEndlCount; i++)
+				std::cout << std::endl;
 
-	for (short i = 0; i < afterSpacesCount; i++)
-		std::cout << " ";
+			for (short i = 0; i < beforeSpacesCount; i++)
+				std::cout << " ";
 
-	for (short i = 0; i < afterEndlCount; i++)
-		std::cout << std::endl;
+			std::cout << text;
+
+			for (short i = 0; i < afterSpacesCount; i++)
+				std::cout << " ";
+
+			for (short i = 0; i < afterEndlCount; i++)
+				std::cout << std::endl;
+		}
+
+	}
+
 }

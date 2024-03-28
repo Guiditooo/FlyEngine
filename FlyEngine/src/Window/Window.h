@@ -5,31 +5,37 @@
 #include <glm/vec2.hpp>
 #include <iostream>
 
-class Window
+namespace FlyEngine
 {
-private:
-	GLFWwindow* window;
-	int windowWidth;
-	int windowHeight;
-	std::string windowTitle;
-	bool shouldClose;
 
-	static int windowCount;
+	class Window
+	{
+	private:
+		GLFWwindow* window;
+		int windowWidth;
+		int windowHeight;
+		std::string windowTitle;
+		bool shouldClose;
 
-public:
-	Window(int width, int height, std::string title);
-	Window(std::string title);
-	~Window();
+		static int windowCount;
+		void CreateWindow();
 
-	void Resize(int newWidth, int newHeight);
-	void Resize(glm::vec2 newDim);
+	public:
+		Window(int width, int height, std::string title);
+		Window(std::string title);
+		~Window();
 
-	std::string GetWindowName();
-	glm::vec2 GetWindowSize();
-	GLFWwindow* GetWindow();
-	
-	static int GetWindowCount();
+		void Resize(int newWidth, int newHeight);
+		void Resize(glm::vec2 newDim);
 
-};
+		std::string GetWindowName();
+		glm::vec2 GetWindowSize();
+		GLFWwindow* GetWindow();
+
+		static int GetWindowCount();
+
+	};
+
+}
 
 #endif // !

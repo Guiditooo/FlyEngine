@@ -6,36 +6,43 @@
 #include <Attribute/VertexAttribute.h>
 #include <glm/glm.hpp>
 
-using namespace FLY_ENGINE;
-
-class Entity;
-
-class Renderer
+namespace FlyEngine
 {
-private:
-	static Color* bgColor;
+	using namespace Utils;
+	
+	namespace Entities
+	{
+		class Entity;
+	}
 
-	static std::list<Entity*> renderizableObjectList;
-	static void ReOrderRenderizableList();
+	class Renderer
+	{
+	private:
+		static Color* bgColor;
 
-	static glm::mat4 view;
+		static std::list<Entities::Entity*> renderizableObjectList;
+		static void ReOrderRenderizableList();
 
-public:
-	static void DrawRenderizableObjects();
-	static void AddToRenderizableList(Entity* newRenderizableObject);
+		static glm::mat4 view;
 
-	static void SetBackgroundColor(Color* newBgColor);
-	static Color* GetBackgroundColor();
+	public:
+		static void DrawRenderizableObjects();
+		static void AddToRenderizableList(Entities::Entity* newRenderizableObject);
 
-	static void CreateBaseBuffers(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO);
-	static void BindBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
-	static void SetVertexAttributes(VertexAttribute vertexAttributes[], unsigned int vertexAttributesSize);
+		static void SetBackgroundColor(Color* newBgColor);
+		static Color* GetBackgroundColor();
 
-	static void SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
-	static void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);
+		static void CreateBaseBuffers(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO);
+		static void BindBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
+		static void SetVertexAttributes(VertexAttribute vertexAttributes[], unsigned int vertexAttributesSize);
 
-	static void DrawRequest(unsigned int VAO, unsigned int indexCount);
+		static void SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
+		static void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);
 
-};
+		static void DrawRequest(unsigned int VAO, unsigned int indexCount);
+
+	};
+
+}
 
 #endif // !

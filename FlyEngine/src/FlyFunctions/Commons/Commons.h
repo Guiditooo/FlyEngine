@@ -4,14 +4,20 @@
 #include <Exports/Exports.h>
 #include <Window/Window.h>
 
-namespace FLY_ENGINE
+namespace FlyEngine
 {
 
-	class FLY_API Commons
+	namespace Utils
 	{
-	private:
-	public:
-		static float RandomFloat(float initRange, float endRange);
-	};
+
+		class FLY_API Commons
+		{
+		private:
+		public:
+			static float RandomFloat(float initRange, float endRange);
+		};
+
+	}
+
 }
 #endif // !

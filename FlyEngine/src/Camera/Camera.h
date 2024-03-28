@@ -3,17 +3,21 @@
 
 #include <Entity/Entity.h>
 
-class FLY_API Camera : public Entity
+namespace FlyEngine
 {
-private:
-	//glm::mat4 perspective;
 
-public:
-	Camera();
-	~Camera();
+	class FLY_API Camera : public Entities::Entity
+	{
+	private:
+		//glm::mat4 perspective;
 
-	void Draw() override;
-};
+	public:
+		Camera();
+		~Camera();
 
+		void Draw() override;
+
+	};
+}
 
 #endif // !CAMERA_H

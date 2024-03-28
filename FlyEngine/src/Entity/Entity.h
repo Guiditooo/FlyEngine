@@ -8,75 +8,83 @@
 #include <Material/Material.h>
 #include <FlyFunctions/Color/Color.h>
 
-
-class FLY_API Entity
+namespace FlyEngine
 {
-protected:
 
-	unsigned int VBO; //Vertex Buffer Object
-	unsigned int VAO; //Vertex Array Object
-	unsigned int EBO; //Elements Buffer Object
+	namespace Entities
+	{
 
-	//float vertices[2];
-	int drawLayer;
-	bool active;
+		class FLY_API Entity
+		{
+		protected:
 
-	Material* material;
+			unsigned int VBO; //Vertex Buffer Object
+			unsigned int VAO; //Vertex Array Object
+			unsigned int EBO; //Elements Buffer Object
 
-	glm::mat4 model;
+			//float vertices[2];
+			int drawLayer;
+			bool active;
 
-	FLY_ENGINE::Color color;
+			Material* material;
 
-	glm::mat4 translateMatrix;
-	glm::mat4 rotationMatrix;
-	glm::mat4 scaleMatrix;
+			glm::mat4 model;
 
-	glm::vec3 positionVector;
-	glm::vec3 rotationVector;
-	glm::quat rotationQuaternion;
-	glm::vec3 scaleVector;
+			Utils::Color color;
 
-	glm::quat EulerToQuat(glm::vec3 euler);
-	glm::mat4 EulerToMat4(glm::vec3 euler);
-	glm::vec3 QuaternionToEuler(glm::quat quat);
-	glm::vec3 QuatToVec(glm::quat quat, glm::vec3 euler);
-	glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
+			glm::mat4 translateMatrix;
+			glm::mat4 rotationMatrix;
+			glm::mat4 scaleMatrix;
 
-	
-public:
-	Entity();
-	~Entity();
+			glm::vec3 positionVector;
+			glm::vec3 rotationVector;
+			glm::quat rotationQuaternion;
+			glm::vec3 scaleVector;
 
-	void SetActive(bool isActive);
-	bool IsActive();
+			glm::quat EulerToQuat(glm::vec3 euler);
+			glm::mat4 EulerToMat4(glm::vec3 euler);
+			glm::vec3 QuaternionToEuler(glm::quat quat);
+			glm::vec3 QuatToVec(glm::quat quat, glm::vec3 euler);
+			glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
 
-	void SetDrawLayer(int newDrawLayer);
-	int GetDrawLayer();
+			std::string name;
 
-	void SetColor(FLY_ENGINE::Color newColor);
-	void SetColor(glm::vec3 newColor);
-	void SetColor(float r, float g, float b);
-	void SetColor(FLY_ENGINE::COLOR newColor);
+		public:
+			Entity();
+			~Entity();
 
-	void UpdateModelMatrix();
-	glm::mat4 GetModelMatrix();
+			void SetActive(bool isActive);
+			bool IsActive();
 
-	void SetPosition(float x, float y, float z);
-	void SetRotation(float x, float y, float z);
-	void SetScale(float x, float y, float z);
+			void SetDrawLayer(int newDrawLayer);
+			int GetDrawLayer();
 
-	glm::vec3 GetPosition();
-	glm::vec3 GetRotation();
-	glm::vec3 GetScale();
+			void SetColor(Utils::Color newColor);
+			void SetColor(glm::vec3 newColor);
+			void SetColor(float r, float g, float b);
+			void SetColor(Utils::COLOR newColor);
 
-	void Translate(float x, float y, float z);
-	void Rotate(float x, float y, float z);
-	void Scale(float x, float y, float z);
+			void UpdateModelMatrix();
+			glm::mat4 GetModelMatrix();
 
-	void SetMaterial(Material* newMaterial);
-	Material* GetMaterial();
+			void SetPosition(float x, float y, float z);
+			void SetRotation(float x, float y, float z);
+			void SetScale(float x, float y, float z);
 
-	virtual void Draw() = 0;
-};
+			glm::vec3 GetPosition();
+			glm::vec3 GetRotation();
+			glm::vec3 GetScale();
 
+			void Translate(float x, float y, float z);
+			void Rotate(float x, float y, float z);
+			void Scale(float x, float y, float z);
+
+			void SetMaterial(Material* newMaterial);
+			Material* GetMaterial();
+
+			virtual void Draw() = 0;
+		};
+
+	}
+}
 #endif // !ENTITY_H

@@ -4,16 +4,26 @@
 #include <Window/Window.h>
 #include <FlyFunctions/KeyCode/KeyCode.h>
 
-class /*FLY_API*/ Input //SI PONGO LA API, TIRA ERROR PREGUNTAR
+
+namespace FlyEngine
 {
-private:
-	static Window* window;
-public:
-	static void SetContextWindow(Window* newWindow);
 
-	static bool GetKeyUp(FLY_ENGINE::KeyCode key);
-	static bool GetKeyPressed(FLY_ENGINE::KeyCode key);
-	static bool GetKeyDown(FLY_ENGINE::KeyCode key);
-};
+	namespace Utils
+	{
 
+		class FLY_API Input //SI PONGO LA API, TIRA ERROR PREGUNTAR
+		{
+		private:
+			static Window* window;
+		public:
+			static void SetContextWindow(Window* newWindow);
+
+			static bool GetKeyUp(KeyCode key);
+			static bool GetKeyPressed(KeyCode key);
+			static bool GetKeyDown(KeyCode key);
+		};
+
+	}
+
+}
 #endif // !

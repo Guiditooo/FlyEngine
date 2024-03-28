@@ -1,14 +1,19 @@
 #include "Camera.h"
 
-Camera::Camera()
-{
-}
-
-Camera::~Camera()
+namespace FlyEngine
 {
 
-}
+	Camera::Camera()
+	{
+	}
 
-void Camera::Draw()
-{
+	Camera::~Camera()
+	{
+
+	}
+
+	void Camera::Draw()
+	{
+	}
+
 }

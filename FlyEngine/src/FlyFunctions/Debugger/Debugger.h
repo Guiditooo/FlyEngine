@@ -4,17 +4,22 @@
 #include <Exports/Exports.h>
 
 
-namespace FLY_ENGINE
+namespace FlyEngine
 {
-	class FLY_API Debugger
+	namespace Utils
 	{
-	public:
-		Debugger();
-		~Debugger();
 
-		static void ConsoleMessage(const char* text, short beforeSpacesCount = 0, short afterSpacesCount = 0, short beforeEndlCount = 0, short afterEndlCount = 0);
+		class FLY_API Debugger
+		{
+		public:
+			Debugger();
+			~Debugger();
 
-	};
+			static void ConsoleMessage(const char* text, short beforeSpacesCount = 0, short afterSpacesCount = 0, short beforeEndlCount = 0, short afterEndlCount = 0);
+
+		};
+
+	}
 
 }
 

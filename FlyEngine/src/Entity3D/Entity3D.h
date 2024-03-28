@@ -1,12 +1,22 @@
 #ifndef ENTITY3D_H
 #define ENTITY3D_H
 
-class Entity3D
+namespace FlyEngine
 {
-private:
 
-public:
+	namespace Entities
+	{
 
-};
+		class Entity3D
+		{
+		private:
+
+		public:
+
+		};
+
+	}
+
+}
 
 #endif // !ENTITY3D_H
