@@ -1,16 +1,31 @@
 #ifndef GAME_H
 #define GAME_H
 
-//#include <../../FlyEngine/src/BaseGame/BaseGame.h>
+#include "FlyEngine.h"
 
-class Game
+using namespace FlyEngine;
+
+namespace FlyGame
 {
-public:
-protected:
-	//static void Init();
-	//static void Update();
-	//static void Draw();
-	//static void Deinit();
-};
 
+	class Game : public BaseGame
+	{
+	private:
+		int winWidth = 800;
+		int winHeight = 600;
+		std::string gameName = "NaN%";
+
+		Entities::Rectangle* rec = nullptr;
+		int aux = 0;
+
+	public:
+		Game(int width, int height, std::string name);
+		Game(int width, int height);
+		~Game();
+		void Init() override;
+		void Update() override;
+		void Deinit() override;
+	};
+
+}
 #endif // !GAME_H

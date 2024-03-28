@@ -100,7 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\FLY;$(ProjectDir)Dependencies\GLM;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\FLY;$(ProjectDir)Dependencies\ASSIMP\include;$(ProjectDir)Dependencies\GLEW\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\GLAD\include;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\GLM;$(SolutionDir)FlyEngine\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +108,26 @@
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\FLY;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FlyEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+IF NOT EXIST "$(ProjectDir)bin\Debug\glfw3.dll" (XCOPY "$(ProjectDir)Dependencies\GLFW\dll\glfw3.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\glew32.dll" (XCOPY "$(ProjectDir)Dependencies\GLEW\dll\glew32.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)Dependencies\ASSIMP\dll\assimp-vc142-mtd.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
+XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -126,6 +146,26 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FlyEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" ( XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\bin\Debug\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+IF NOT EXIST "$(ProjectDir)bin\Debug\glfw3.dll" (XCOPY "$(ProjectDir)Dependencies\GLFW\dll\glfw3.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\glew32.dll" (XCOPY "$(ProjectDir)Dependencies\GLEW\dll\glew32.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)Dependencies\ASSIMP\dll\assimp-vc142-mtd.dll" "$(ProjectDir)bin\Debug\" /e /h /y /s) ELSE (ECHO GLFW DLL ALREADY LOADED)
+IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
+ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
+XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

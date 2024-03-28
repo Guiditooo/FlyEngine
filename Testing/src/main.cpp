@@ -1,7 +1,12 @@
 #include <iostream>
 
+#include "Game/Game.h"
+
+using namespace FlyGame;
+
 void main()
 {
-	std::cout << "Hola";
-	std::cin.get();
+	Game* game = new Game(800, 600, "Testing Environment");
+	game->RunGame();
+	delete game;
 }
