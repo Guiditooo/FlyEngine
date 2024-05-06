@@ -157,7 +157,7 @@ namespace FlyEngine
 				newColor.g = 1.0f;
 				newColor.b = 1.0f;
 				break;
-			case COLOR::RAYWHITE:
+			case COLOR::FLYWHITE:
 				newColor.r = 0.92f;
 				newColor.g = 0.92f;
 				newColor.b = 0.92f;
@@ -192,7 +192,7 @@ namespace FlyEngine
 				newColor.g = 1.0f;
 				newColor.b = 1.0f;
 				break;
-			case COLOR::RAYBLACK:
+			case COLOR::FLYBLACK:
 				newColor.r = 0.02f;
 				newColor.g = 0.02f;
 				newColor.b = 0.02f;

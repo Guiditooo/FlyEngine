@@ -7,7 +7,6 @@
 
 namespace FlyEngine
 {
-
 	class Window
 	{
 	private:

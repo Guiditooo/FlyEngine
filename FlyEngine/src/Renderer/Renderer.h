@@ -23,7 +23,8 @@ namespace FlyEngine
 		static std::list<Entities::Entity*> renderizableObjectList;
 		static void ReOrderRenderizableList();
 
-		static glm::mat4 view;
+		static glm::mat4 viewMat;
+		static glm::mat4 projectionMat;
 
 	public:
 		static void DrawRenderizableObjects();
@@ -35,6 +36,9 @@ namespace FlyEngine
 		static void CreateBaseBuffers(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO);
 		static void BindBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
 		static void SetVertexAttributes(VertexAttribute vertexAttributes[], unsigned int vertexAttributesSize);
+
+		static void AssignViewMatrix(glm::mat4 viewM);
+		static void AssignProjectionMatrix(glm::mat4 projectionM);
 
 		static void SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
 		static void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);

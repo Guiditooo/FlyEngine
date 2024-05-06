@@ -13,5 +13,4 @@ struct VertexAttribute
 	unsigned int offset = 0;
 };
 
-
 #endif // !ATTRIBUTE_H

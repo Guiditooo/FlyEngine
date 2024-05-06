@@ -4,10 +4,10 @@
 #include <FlyFunctions/ColorCode/ColorCode.h>
 #include <glm/glm.hpp>
 
-const int MAX_COLOR_SCALER = 256;
-
 namespace FlyEngine
 {
+
+	const int MAX_COLOR_SCALER = 256;
 
 	namespace Utils
 	{

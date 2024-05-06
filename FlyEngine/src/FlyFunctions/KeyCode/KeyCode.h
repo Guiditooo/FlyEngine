@@ -5,10 +5,8 @@
 
 namespace FlyEngine
 {
-
 	namespace Utils
 	{
-
 		enum class FLY_API KeyCode
 		{
 			KEY_SPACE = 32,

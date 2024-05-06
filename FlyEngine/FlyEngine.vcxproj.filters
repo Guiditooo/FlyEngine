@@ -63,9 +63,6 @@
     <Filter Include="Line">
       <UniqueIdentifier>{b16acf0c-f455-47fd-9e4e-2ce33832b61f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fly Functions\Vertice">
-      <UniqueIdentifier>{179464a7-2c40-4325-bafa-1db93ed0f5a7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{e993099a-da1c-4f0f-b03e-574b0c5ac331}</UniqueIdentifier>
     </Filter>
@@ -74,6 +71,27 @@
     </Filter>
     <Filter Include="VertexAttribute">
       <UniqueIdentifier>{1b7df20c-863f-42bd-8aba-1e00a996e955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fly Functions\Vertex">
+      <UniqueIdentifier>{179464a7-2c40-4325-bafa-1db93ed0f5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importers">
+      <UniqueIdentifier>{c80e8adc-d416-47aa-a88d-25e0dcfbb76f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importers\TextureImporter">
+      <UniqueIdentifier>{95f57e52-d3ab-4f49-9fee-d08acae88609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{fcaafd85-3812-4377-b4c5-4960a7f4965d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cube">
+      <UniqueIdentifier>{9afa8c4a-7ff2-4ec2-94b6-36135c70252e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Shaders">
+      <UniqueIdentifier>{bb20ed88-944a-4ebb-ad8f-3944db711c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CameraController">
+      <UniqueIdentifier>{c170d493-739a-417e-90d6-1f005b5db66b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -130,14 +148,26 @@
     <ClCompile Include="src\Line\Line.cpp">
       <Filter>Line</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlyFunctions\Vertices\Vertice.cpp">
-      <Filter>Fly Functions\Vertice</Filter>
+    <ClCompile Include="src\FlyFunctions\Vertices\Vertex.cpp">
+      <Filter>Fly Functions\Vertex</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Material\Material.cpp">
       <Filter>Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureImporter\TextureImporter.cpp">
+      <Filter>Importers\TextureImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture\Texture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cube\Cube.cpp">
+      <Filter>Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraController\CameraController.cpp">
+      <Filter>CameraController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,8 +229,8 @@
     <ClInclude Include="src\Line\Line.h">
       <Filter>Line</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlyFunctions\Vertices\Vertice.h">
-      <Filter>Fly Functions\Vertice</Filter>
+    <ClInclude Include="src\FlyFunctions\Vertices\Vertex.h">
+      <Filter>Fly Functions\Vertex</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>Camera</Filter>
@@ -211,5 +241,25 @@
     <ClInclude Include="src\Attribute\VertexAttribute.h">
       <Filter>VertexAttribute</Filter>
     </ClInclude>
+    <ClInclude Include="src\TextureImporter\TextureImporter.h">
+      <Filter>Importers\TextureImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture\Texture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cube\Cube.h">
+      <Filter>Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraController\CameraController.h">
+      <Filter>CameraController</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shaders\fragment.shader">
+      <Filter>Shader\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\vertex.shader">
+      <Filter>Shader\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

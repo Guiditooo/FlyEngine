@@ -17,6 +17,7 @@
 
 namespace FlyEngine
 {
+	Input innerInputSystem;
 
 	BaseGame::BaseGame()
 	{
@@ -79,7 +80,8 @@ namespace FlyEngine
 
 		glewInit();
 
-		Input::SetContextWindow(window);
+		innerInputSystem = Input(window);
+
 		glfwSetFramebufferSizeCallback(window->GetWindow(), ResizeViewport);
 
 		Init();
@@ -89,7 +91,7 @@ namespace FlyEngine
 	{
 		if (checkEsc)
 		{
-			if (Input::GetKeyDown(KeyCode::KEY_ESCAPE))
+			if (innerInputSystem.GetKeyDown(KeyCode::KEY_ESCAPE))
 			{
 				glfwSetWindowShouldClose((window->GetWindow()), true);
 			}
@@ -99,7 +101,7 @@ namespace FlyEngine
 
 	void BaseGame::InternalDraw()
 	{
-		Renderer::SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::RAYBLACK));
+		Renderer::SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
 
 		Renderer::DrawRenderizableObjects();
 

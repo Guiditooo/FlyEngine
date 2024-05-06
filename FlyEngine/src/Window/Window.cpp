@@ -3,7 +3,6 @@
 
 namespace FlyEngine
 {
-
 	const int INITIAL_HEIGHT = 720;
 	const int INITIAL_WIDTH = 1080;
 	int Window::windowCount = 0;

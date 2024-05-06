@@ -6,6 +6,8 @@
 #include <iostream>
 
 const int INDEX_COUNT = 6;
+const int VERTEX_COUNT = 2;
+const int VERTEX_SIZE = 6;
 
 namespace FlyEngine
 {
@@ -21,10 +23,10 @@ namespace FlyEngine
 
 			float vertex[] =
 			{
-				-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA IZQ
-				 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA DER
-				-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, //ABAJO IZQ
-				 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f  //ABAJO DER
+				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA IZQ
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA DER
+				-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ABAJO IZQ
+				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f  //ABAJO DER
 			};
 
 			unsigned int index[] =
@@ -36,18 +38,18 @@ namespace FlyEngine
 			Renderer::CreateBaseBuffers(VAO, VBO, EBO);
 			Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
 
-			VertexAttribute vertexAttributes[2];
+			VertexAttribute vertexAttributes[VERTEX_COUNT];
 
-			for (short i = 0; i < 2; i++)
+			for (short i = 0; i < VERTEX_COUNT; i++)
 			{
 				vertexAttributes[i].elementSize = 3;
 				vertexAttributes[i].variableType = GL_FLOAT;
-				vertexAttributes[i].isNormalized = GL_FALSE;
-				vertexAttributes[i].sizeOfVertex = sizeof(float) * 6;
+				vertexAttributes[i].isNormalized = GL_TRUE;
+				vertexAttributes[i].sizeOfVertex = sizeof(float) * VERTEX_SIZE;
 				vertexAttributes[i].offset = i * sizeof(float) * 3;
 			}
 
-			Renderer::SetVertexAttributes(vertexAttributes, 2);
+			Renderer::SetVertexAttributes(vertexAttributes, VERTEX_COUNT);
 
 			Utils::Debugger::ConsoleMessage("Rectangle Created!", 2, 0, 1, 1);
 		}

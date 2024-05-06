@@ -25,6 +25,9 @@ namespace FlyEngine
 		}
 	}
 
+	glm::mat4 Renderer::viewMat;
+	glm::mat4 Renderer::projectionMat;
+
 #pragma region ORDER RENDERIZABLE OBJECTS
 
 	bool CompareByDrawLayer(Entities::Entity* a, Entities::Entity* b)
@@ -91,6 +94,16 @@ namespace FlyEngine
 		}
 	}
 
+	void Renderer::AssignViewMatrix(glm::mat4 viewM)
+	{
+		viewMat = viewM;
+	}
+
+	void Renderer::AssignProjectionMatrix(glm::mat4 projectionM)
+	{
+		projectionMat = projectionM;
+	}
+
 	void Renderer::DrawRequest(unsigned int VAO, unsigned int indexCount)
 	{
 		glBindVertexArray(VAO);
@@ -99,8 +112,14 @@ namespace FlyEngine
 
 	void Renderer::SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix)
 	{
-		GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
-		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+		GLint modelUniformLocation = glGetUniformLocation(shaderID, variableName);
+		glUniformMatrix4fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+
+		GLint viewUniformLocation = glGetUniformLocation(shaderID, "viewMatrix");
+		glUniformMatrix4fv(viewUniformLocation, 1, GL_FALSE, glm::value_ptr(viewMat));
+
+		GLint projectionUniformLocation = glGetUniformLocation(shaderID, "projectionMatrix");
+		glUniformMatrix4fv(projectionUniformLocation, 1, GL_FALSE, glm::value_ptr(projectionMat));
 	}
 
 	void Renderer::SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec)

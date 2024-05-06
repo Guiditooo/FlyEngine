@@ -14,11 +14,6 @@ namespace FlyEngine
 	private:
 		bool isRunning;
 		bool checkEsc;
-		Window* window;
-
-		int initialWindowWidth;
-		int initialWindowHeight;
-		std::string initialWindowName;
 
 		void SwapBuffers();
 
@@ -39,6 +34,12 @@ namespace FlyEngine
 		void ToggleClosingWithEsc();
 
 	protected:
+		std::string initialWindowName;
+		int initialWindowWidth;
+		int initialWindowHeight;
+
+		Window* window;
+
 		virtual void Init() = 0;
 		virtual void Update() = 0;
 		virtual void Deinit() = 0;

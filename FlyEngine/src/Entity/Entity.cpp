@@ -316,11 +316,11 @@ namespace FlyEngine
 
 			std::string auxText = name;
 			auxText += " Rotated (";
-			auxText += std::to_string(x);
+			auxText += std::to_string(rotationVector.x);
 			auxText += ",";
-			auxText += std::to_string(y);
+			auxText += std::to_string(rotationVector.y);
 			auxText += ",";
-			auxText += std::to_string(z);
+			auxText += std::to_string(rotationVector.z);
 			auxText += ").";
 
 			Utils::Debugger::ConsoleMessage(auxText.c_str(),2,0,1,1);
@@ -332,6 +332,17 @@ namespace FlyEngine
 			scaleMatrix = glm::scale(scaleMatrix, glm::vec3(x, y, z));
 			scaleVector = glm::vec3(scaleMatrix[0].x, scaleMatrix[1].y, scaleMatrix[2].z);
 			UpdateModelMatrix();
+
+			std::string auxText = name;
+			auxText += " Scaled (";
+			auxText += std::to_string(scaleVector.x);
+			auxText += ",";
+			auxText += std::to_string(scaleVector.y);
+			auxText += ",";
+			auxText += std::to_string(scaleVector.z);
+			auxText += ").";
+
+			Utils::Debugger::ConsoleMessage(auxText.c_str(), 2, 0, 1, 1);
 		}
 
 		void Entity::SetMaterial(Material* newMaterial)
