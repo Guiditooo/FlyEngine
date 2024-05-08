@@ -47,8 +47,8 @@
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Attribute\VertexAttribute.h" />
     <ClInclude Include="src\BaseGame\BaseGame.h" />
+    <ClInclude Include="src\Buffers\Buffers.h" />
     <ClInclude Include="src\CameraController\CameraController.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Component\Component.h" />
@@ -74,6 +74,7 @@
     <ClInclude Include="src\Texture\Texture.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h" />
     <ClInclude Include="src\Triangle\Triangle.h" />
+    <ClInclude Include="src\VertexAttribute\VertexAttribute.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>

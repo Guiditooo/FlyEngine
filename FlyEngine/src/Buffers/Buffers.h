@@ -7,9 +7,9 @@ namespace FlyEngine
 	{
 		struct Buffer
 		{
-			unsigned int VAO;
-			unsigned int VBO;
-			unsigned int EBO;
+			unsigned int VBO = 0; //Vertex Buffer Object
+			unsigned int VAO = 0; //Vertex Array Object
+			unsigned int EBO = 0; //Elements Buffer Object
 		};
 	}
 }

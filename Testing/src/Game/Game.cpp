@@ -34,19 +34,21 @@ namespace FlyGame
 
 		mainCamera = new Camera(window);
 		input = Utils::Input(window);
-
-		//cube = new FlyEngine::Entities::Rectangle();
+		cameraController = new CameraController(window, 
+			KeyCode::KEY_W, KeyCode::KEY_S, 
+			KeyCode::KEY_SPACE, KeyCode::KEY_LEFT_SHIFT, 
+			KeyCode::KEY_A, KeyCode::KEY_D
+		);
+		
 		cube = new FlyEngine::Entities::Cube();
 		cube->SetColor(FlyEngine::Utils::COLOR::GREEN);
-		//cube->SetRotation(0.5f, 0.5f, 0.5f);
-		aux = 0;
-
-		//ToggleClosingWithEsc();
+		
+		//Rectangle(1,2,3,4);
 	}
 
 	void Game::Update()
 	{
-				
+		cameraController->Update();
 	}
 
 	void Game::Deinit()

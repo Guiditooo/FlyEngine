@@ -1,10 +1,11 @@
-#include "Triangle.h"
-
 #include <iostream>
-#include <Attribute/VertexAttribute.h>
-#include <Renderer/Renderer.h>
 
-const int INDEX_COUNT = 6;
+#include <GLFW/glfw3.h>
+
+#include "Triangle.h"
+#include "VertexAttribute/VertexAttribute.h"
+#include "Renderer/Renderer.h"
+
 
 namespace FlyEngine
 {
@@ -31,21 +32,25 @@ namespace FlyEngine
 				2,0,1,
 			};
 
-			Renderer::CreateBaseBuffers(VAO, VBO, EBO);
-			Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
+			indexCount = 6;
+			vertexCount = 2;
+			vertexSize = 6;
 
-			VertexAttribute vertexAttributes[2];
+			//Renderer::CreateBaseBuffers(VAO, VBO, EBO);
+			//Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
 
-			for (short i = 0; i < 2; i++)
+			for (short i = 0; i < vertexCount; i++)
 			{
-				vertexAttributes[i].elementSize = 3;
-				vertexAttributes[i].variableType = GL_FLOAT;
-				vertexAttributes[i].isNormalized = GL_FALSE;
-				vertexAttributes[i].sizeOfVertex = sizeof(float) * INDEX_COUNT;
-				vertexAttributes[i].offset = i * sizeof(float) * 3;
+				VertexAttribute va;
+				va.elementSize = 3;
+				va.variableType = GL_FLOAT;
+				va.isNormalized = GL_FALSE;
+				va.sizeOfVertex = sizeof(float) * indexCount;
+				va.offset = i * sizeof(float) * 3;
+				vertexAttributes.push_back(va);
 			}
 
-			Renderer::SetVertexAttributes(vertexAttributes, 2);
+			//Renderer::SetVertexAttributes(vertexAttributes, vertexCount);
 		}
 
 		Triangle::~Triangle()
@@ -59,10 +64,13 @@ namespace FlyEngine
 
 		void Triangle::Draw()
 		{
+			//Deprecated
+			/*
 			material->Apply();
 			Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
 			Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-			Renderer::DrawRequest(VAO, INDEX_COUNT);
+			Renderer::DrawRequest(VAO, indexCount);
+			*/
 		}
 
 	}

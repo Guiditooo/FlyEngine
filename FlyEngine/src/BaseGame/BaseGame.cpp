@@ -2,18 +2,19 @@
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
-#include <Window/Window.h>
 
-#include <Renderer/Renderer.h>
+#include "Window/Window.h"
+#include "Renderer/Renderer.h"
 
-#include <FlyFunctions/Debugger/Debugger.h>
-#include <FlyFunctions/Commons/Commons.h>
-#include <FlyFunctions/ColorCode/ColorCode.h>
-#include <Input/Input.h>
-#include <Shader/Shader.h>
+#include "FlyFunctions/Debugger/Debugger.h"
+#include "FlyFunctions/Commons/Commons.h"
+#include "FlyFunctions/ColorCode/ColorCode.h"
+#include "Input/Input.h"
+#include "Shader/Shader.h"
 
-#include <Triangle/Triangle.h>
-#include <Rectangle/Rectangle.h>
+#include "Triangle/Triangle.h"
+#include "Rectangle/Rectangle.h"
+#include "Cube/Cube.h"
 
 namespace FlyEngine
 {
@@ -44,6 +45,25 @@ namespace FlyEngine
 	void ResizeViewport(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
+	}
+
+	void BaseGame::CreateBuffers(Buffer& buffers)
+	{
+		renderer.CreateBaseBuffers(buffers);
+	}
+
+	void BaseGame::DrawObjects()
+	{
+		for (Entities::Entity* entity : entityList)
+		{
+			if (entity->IsActive())
+			{
+				entity->ApplyMaterial();
+				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "modelMatrix", entity->GetModelMatrix());
+				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "colorMultiplier", entity->GetColor().GetColorV3());
+				renderer.DrawRequest(entity->GetBuffers(), entity->GetIndexCount());
+			}
+		}
 	}
 
 	void BaseGame::InternalInit()
@@ -101,9 +121,9 @@ namespace FlyEngine
 
 	void BaseGame::InternalDraw()
 	{
-		Renderer::SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
+		//renderer.SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
 
-		Renderer::DrawRenderizableObjects();
+		DrawObjects();
 
 		SwapBuffers();
 	}

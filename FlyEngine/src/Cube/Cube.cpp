@@ -1,14 +1,11 @@
+#include <iostream>
+
+#include <GLFW/glfw3.h>
+
 #include "Cube.h"
 #include "Rectangle/Rectangle.h"
 #include "Renderer/Renderer.h"
-#include "Attribute/VertexAttribute.h"
-#include "FlyFunctions/Debugger/Debugger.h"
-
-#include <iostream>
-
-const int INDEX_COUNT = 36;
-const int VERTEX_COUNT = 12;
-const int VERTEX_SIZE = 6;
+#include "VertexAttribute/VertexAttribute.h"
 
 namespace FlyEngine
 {
@@ -52,23 +49,28 @@ namespace FlyEngine
 
 			};
 
-			Renderer::CreateBaseBuffers(VAO, VBO, EBO);
-			Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
+			indexCount = 36;
+			vertexCount = 12;
+			vertexSize = 6;
 
-			VertexAttribute vertexAttributes[VERTEX_COUNT];
+			//Renderer::CreateBaseBuffers(VAO, VBO, EBO);
+			//Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
 
-			for (short i = 0; i < VERTEX_COUNT; i++)
+
+			for (short i = 0; i < vertexCount; i++)
 			{
-				vertexAttributes[i].elementSize = 3;
-				vertexAttributes[i].variableType = GL_FLOAT;
-				vertexAttributes[i].isNormalized = GL_TRUE;
-				vertexAttributes[i].sizeOfVertex = sizeof(float) * VERTEX_SIZE;
-				vertexAttributes[i].offset = i * sizeof(float) * 3;
+				VertexAttribute va;
+				va.elementSize = 3;
+				va.variableType = GL_FLOAT;
+				va.isNormalized = GL_FALSE;
+				va.sizeOfVertex = sizeof(float) * indexCount;
+				va.offset = i * sizeof(float) * 3;
+				vertexAttributes.push_back(va);
 			}
 
-			Renderer::SetVertexAttributes(vertexAttributes, VERTEX_COUNT);
+			//Renderer::SetVertexAttributes(vertexAttributes, vertexCount);
 
-			Utils::Debugger::ConsoleMessage("Rectangle Created!", 2, 0, 1, 1);
+			//Utils::Debugger::ConsoleMessage("Rectangle Created!", 2, 0, 1, 1);
 		}
 
 		Cube::~Cube()
@@ -82,11 +84,7 @@ namespace FlyEngine
 
 		void Cube::Draw()
 		{
-			//std::cout << " Estoy dibujando un cubo \n";
-			material->Apply();
-			Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
-			Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-			Renderer::DrawRequest(VAO, INDEX_COUNT);
+			//Deprecated
 		}
 
 	}

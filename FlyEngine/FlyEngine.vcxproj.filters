@@ -93,6 +93,9 @@
     <Filter Include="CameraController">
       <UniqueIdentifier>{c170d493-739a-417e-90d6-1f005b5db66b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Buffers">
+      <UniqueIdentifier>{7c34ff47-a2f0-46d4-b31a-1d7ad91c6206}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -238,9 +241,6 @@
     <ClInclude Include="src\Material\Material.h">
       <Filter>Material</Filter>
     </ClInclude>
-    <ClInclude Include="src\Attribute\VertexAttribute.h">
-      <Filter>VertexAttribute</Filter>
-    </ClInclude>
     <ClInclude Include="src\TextureImporter\TextureImporter.h">
       <Filter>Importers\TextureImporter</Filter>
     </ClInclude>
@@ -252,6 +252,12 @@
     </ClInclude>
     <ClInclude Include="src\CameraController\CameraController.h">
       <Filter>CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Buffers\Buffers.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexAttribute\VertexAttribute.h">
+      <Filter>VertexAttribute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

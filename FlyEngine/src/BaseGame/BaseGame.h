@@ -1,17 +1,22 @@
 #ifndef BASEGAME_H
 #define BASEGAME_H
 
-#include <Exports/Exports.h>
 #include <iostream>
+#include <list>
+
+#include "Exports/Exports.h"
+#include "Renderer/Renderer.h"
 
 namespace FlyEngine
 {
-
 	class Window;
 
 	class FLY_API BaseGame
 	{
 	private:
+		Renderer renderer;
+		std::list<Entities::Entity*> entityList;
+
 		bool isRunning;
 		bool checkEsc;
 
@@ -22,6 +27,11 @@ namespace FlyEngine
 		void InternalDraw();
 		void InternalDeinit();
 
+		void CreateBuffers(Buffer& buffers);
+
+		void AddToObjectList(Entities::Entity* newRenderizableObject);//Cambiar a component
+		void ReOrderRenderizableList();
+		void DrawObjects();
 
 	public:
 		BaseGame();

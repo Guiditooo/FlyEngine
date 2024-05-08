@@ -1,6 +1,7 @@
 #ifndef FLY_ENGINE_H
 #define FLY_ENGINE_H
 
+#include "CameraController/CameraController.h"
 #include "Rectangle/Rectangle.h"
 #include "BaseGame/BaseGame.h"
 #include "Triangle/Triangle.h"

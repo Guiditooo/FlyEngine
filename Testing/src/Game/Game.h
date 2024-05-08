@@ -17,6 +17,8 @@ namespace FlyGame
 		int aux = 0;
 		Utils::Input input;
 
+		CameraController* cameraController = nullptr;
+
 	public:
 		Game(int width, int height, std::string name);
 		Game(int width, int height);

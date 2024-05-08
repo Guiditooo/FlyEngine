@@ -10,43 +10,16 @@
 
 namespace FlyEngine
 {
-
-	std::list<Entities::Entity*> Renderer::renderizableObjectList;
-	Color* Renderer::bgColor;
-
-	void Renderer::DrawRenderizableObjects()
+	Renderer::Renderer()
 	{
-		for (Entities::Entity* renderizableObject : renderizableObjectList)
-		{
-			if (renderizableObject->IsActive())
-			{
-				renderizableObject->Draw();
-			}
-		}
+		bgColor = new Color(COLOR::FLYBLACK);
+		projectionMat = glm::mat4(1);
+		viewMat = glm::mat4(1);
 	}
 
-	glm::mat4 Renderer::viewMat;
-	glm::mat4 Renderer::projectionMat;
-
-#pragma region ORDER RENDERIZABLE OBJECTS
-
-	bool CompareByDrawLayer(Entities::Entity* a, Entities::Entity* b)
+	Renderer::~Renderer()
 	{
-		return a->GetDrawLayer() < b->GetDrawLayer();
 	}
-
-	void Renderer::ReOrderRenderizableList()
-	{
-		renderizableObjectList.sort(CompareByDrawLayer);
-	}
-
-#pragma endregion
-
-	void Renderer::AddToRenderizableList(Entities::Entity* newRenderizableObject)
-	{
-		renderizableObjectList.push_back(newRenderizableObject);
-	}
-
 
 	void Renderer::SetBackgroundColor(Color* newBgColor)
 	{
@@ -61,27 +34,27 @@ namespace FlyEngine
 		return bgColor;
 	}
 
-	void Renderer::CreateBaseBuffers(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO)
+	void Renderer::CreateBaseBuffers(Utils::Buffer& buffers)
 	{
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
+		glGenVertexArrays(1, &buffers.VAO);
+		glGenBuffers(1, &buffers.VBO);
+		glGenBuffers(1, &buffers.EBO);
 	}
 
-	void Renderer::BindBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize)
+	void Renderer::BindBuffers(Utils::Buffer& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize)
 	{
-		glBindVertexArray(VAO);
+		glBindVertexArray(buffers.VAO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertexSize, vertices, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, index, GL_STATIC_DRAW);
 	}
 
-	void Renderer::SetVertexAttributes(VertexAttribute vertexAttributes[], unsigned int vertexAttributesSize)
+	void Renderer::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
 	{
-		for (short i = 0; i < vertexAttributesSize; i++)
+		for (short i = 0; i < vertexAttributes.size(); i++)
 		{
 			unsigned int size = vertexAttributes[i].elementSize;
 			unsigned int type = vertexAttributes[i].variableType;
@@ -104,9 +77,9 @@ namespace FlyEngine
 		projectionMat = projectionM;
 	}
 
-	void Renderer::DrawRequest(unsigned int VAO, unsigned int indexCount)
+	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
 	{
-		glBindVertexArray(VAO);
+		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
 

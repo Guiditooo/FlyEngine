@@ -1,12 +1,17 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <Exports/Exports.h>
-#include <Material/Material.h>
-#include <FlyFunctions/Color/Color.h>
+
+#include "VertexAttribute/VertexAttribute.h"
+#include "Exports/Exports.h"
+#include "Buffers/Buffers.h"
+#include "Material/Material.h"
+#include "FlyFunctions/Color/Color.h"
 
 namespace FlyEngine
 {
@@ -17,24 +22,19 @@ namespace FlyEngine
 		class FLY_API Entity
 		{
 		protected:
+			std::vector<Utils::VertexAttribute> vertexAttributes;
 
-			unsigned int VBO; //Vertex Buffer Object
-			unsigned int VAO; //Vertex Array Object
-			unsigned int EBO; //Elements Buffer Object
-
-			//float vertices[2];
-			int drawLayer;
+			Utils::Buffer buffers;
 			bool active;
 
 			Material* material;
-
-			glm::mat4 model;
 
 			Utils::Color color;
 
 			glm::mat4 translateMatrix;
 			glm::mat4 rotationMatrix;
 			glm::mat4 scaleMatrix;
+			glm::mat4 model;
 
 			glm::vec3 positionVector;
 			glm::vec3 rotationVector;
@@ -49,6 +49,10 @@ namespace FlyEngine
 
 			std::string name;
 
+			int indexCount;
+			int vertexCount;
+			int vertexSize;
+
 		public:
 			Entity();
 			~Entity();
@@ -56,13 +60,11 @@ namespace FlyEngine
 			void SetActive(bool isActive);
 			bool IsActive();
 
-			void SetDrawLayer(int newDrawLayer);
-			int GetDrawLayer();
-
 			void SetColor(Utils::Color newColor);
 			void SetColor(glm::vec3 newColor);
 			void SetColor(float r, float g, float b);
 			void SetColor(Utils::COLOR newColor);
+			Utils::Color GetColor();
 
 			void UpdateModelMatrix();
 			glm::mat4 GetModelMatrix();
@@ -80,7 +82,15 @@ namespace FlyEngine
 			void Scale(float x, float y, float z);
 
 			void SetMaterial(Material* newMaterial);
+			void ApplyMaterial();
 			Material* GetMaterial();
+
+			Utils::Buffer GetBuffers();
+			std::vector<Utils::VertexAttribute> GetVertexAttributes();
+
+			int GetIndexCount();
+			int GetVertexCount();
+			int GetVertexSize();
 
 			virtual void Draw() = 0;
 		};

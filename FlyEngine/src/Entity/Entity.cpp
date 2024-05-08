@@ -8,7 +8,6 @@ namespace FlyEngine
 
 	namespace Entities
 	{
-
 		//www.c-jump.com/bcc/common/Talk3/Math/GLM/GLM.html#W01_0030_matrix_transformation
 		const float deg2rad = (glm::pi<float>() * 2.0f) / 360.0f;
 		const float pi = 3.14159265359f;
@@ -27,17 +26,9 @@ namespace FlyEngine
 			rotationVector = glm::vec3(1.0f);
 			scaleVector = glm::vec3(1.0f);
 
-			VBO = 0;
-			VAO = 0;
-			EBO = 0;
-
 			rotationQuaternion = glm::quat(glm::vec3(0.0f));
 
-			drawLayer = 0;
-
 			active = true;
-
-			Renderer::AddToRenderizableList(this);
 		}
 
 		Entity::~Entity()
@@ -210,15 +201,6 @@ namespace FlyEngine
 			return glm::quat(qx, qy, qz, qw);
 		}
 
-		void Entity::SetDrawLayer(int newDrawLayer)
-		{
-			drawLayer = newDrawLayer;
-		}
-
-		int Entity::GetDrawLayer()
-		{
-			return drawLayer;
-		}
 
 		void Entity::SetColor(FlyEngine::Color newColor)
 		{
@@ -238,6 +220,11 @@ namespace FlyEngine
 		void Entity::SetColor(FlyEngine::COLOR newColor)
 		{
 			color = Color(newColor);
+		}
+
+		Utils::Color Entity::GetColor()
+		{
+			return color;
 		}
 
 		void Entity::UpdateModelMatrix()
@@ -350,14 +337,44 @@ namespace FlyEngine
 			material = newMaterial;
 		}
 
+		void Entity::ApplyMaterial()
+		{
+			if (material != nullptr)
+				material->Apply();
+		}
+
 		Material* Entity::GetMaterial()
 		{
 			return material;
 		}
 
+		FlyEngine::Utils::Buffer Entity::GetBuffers()
+		{
+			return buffers;
+		}
+
+		int Entity::GetIndexCount()
+		{
+			return indexCount;
+		}
+
 		void Entity::Draw()
 		{
+		}
 
+		std::vector<VertexAttribute> Entity::GetVertexAttributes()
+		{
+			return vertexAttributes;
+		}
+
+		int Entity::GetVertexCount()
+		{
+			return vertexCount;
+		}
+
+		int Entity::GetVertexSize()
+		{
+			return vertexSize;
 		}
 
 	}
