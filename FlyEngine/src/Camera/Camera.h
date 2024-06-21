@@ -27,15 +27,13 @@ namespace FlyEngine
 		float nearPlane; //= 0.1f;  // Plano cercano
 		float farPlane; //= 100.0f;  // Plano lejano
 
-		//float sensitivity;// = 0.1f; // Sensibilidad del movimiento del ratón
-
-		//void ProcessMouseMovement(float moveX, float moveY);
-		//void MouseMovementCallback(GLFWwindow* window, double mouseX, double mouseY);
-
+		void SetCamera(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
+		void SetDefaultCamera();
 
 	public:
-		Camera(Window* window, ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
-		Camera(Window* window);
+		Camera();
+		Camera(glm::vec3 pos);
+		Camera(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
 		~Camera();
 
 		void Draw() override;
@@ -46,6 +44,14 @@ namespace FlyEngine
 		void SetAspectRatio(float aspectRatio);
 		void SetPlanes(float nearPlane, float farPlane);
 
+		glm::mat4 GetProjMatrix();
+		glm::mat4 GetViewMatrix();
+
+		void Translate(float x, float y, float z) override;
+		void Rotate(float x, float y, float z) override;
+
+		void SetPosition(float x, float y, float z) override;
+		void SetRotation(float x, float y, float z) override;
 	};
 }
 
