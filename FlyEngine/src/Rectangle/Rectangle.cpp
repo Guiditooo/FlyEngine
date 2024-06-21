@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "Rectangle.h"
@@ -11,14 +12,16 @@ namespace FlyEngine
 	namespace Entities
 	{
 
-		Rectangle::Rectangle()
+		Rectangle::Rectangle() : Shape("Rectangle")
 		{
 
-			name = "Rectangle";
+			indexCount = 6;
+			vertexCount = 2;
+			vertexSize = 6;
 
 			material = new Material();
 
-			float vertex[] =
+			vertex =
 			{
 				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA IZQ
 				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA DER
@@ -26,19 +29,12 @@ namespace FlyEngine
 				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f  //ABAJO DER
 			};
 
-			unsigned int index[] =
+			index =
 			{
 				2,0,1,
 				2,3,1
 			};
-
-			indexCount = 6;
-			vertexCount = 2;
-			vertexSize = 6;
-
-			//Renderer::CreateBaseBuffers(VAO, VBO, EBO);
-			//Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
-
+			
 			for (short i = 0; i < vertexCount; i++)
 			{
 				VertexAttribute va;
@@ -46,15 +42,19 @@ namespace FlyEngine
 				va.variableType = GL_FLOAT;
 				va.isNormalized = GL_FALSE;
 				va.sizeOfVertex = sizeof(float) * indexCount;
-				va.offset = i * sizeof(float) * 3;
+				va.offset = i * sizeof(float) * va.elementSize;
 				vertexAttributes.push_back(va);
 			}
 
+			//Renderer::CreateBaseBuffers(VAO, VBO, EBO);
+			//Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
 			//Renderer::SetVertexAttributes(vertexAttributes, vertexCount);
 
 			//Utils::Debugger::ConsoleMessage("Rectangle Created!", 2, 0, 1, 1);
-		}
 
+			PrintCreationMsg();
+		}
+		 
 		Rectangle::~Rectangle()
 		{
 			if (material != nullptr)
@@ -71,7 +71,7 @@ namespace FlyEngine
 
 		void Rectangle::Draw()
 		{
-			//Deprecated
+			//Deprecated - Lo hago en el BaseGame
 			/*
 			//std::cout << " Estoy dibujando un cuadrao \n";
 			material->Apply();

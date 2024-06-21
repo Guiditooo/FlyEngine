@@ -14,7 +14,7 @@ namespace FlyEngine
 		private:
 
 		public:
-
+			Entity3D(std::string name);
 		};
 
 	}

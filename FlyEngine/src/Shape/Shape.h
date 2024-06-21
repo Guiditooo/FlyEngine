@@ -14,6 +14,7 @@ namespace FlyEngine
 		private:
 
 		public:
+			Shape(std::string name);
 		};
 
 	}

@@ -12,9 +12,8 @@ namespace FlyEngine
 		class Entity2D : public Entity
 		{
 		private:
-
-
 		public:
+			Entity2D(std::string name);
 		};
 
 	}

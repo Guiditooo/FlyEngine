@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "Triangle.h"
@@ -13,21 +14,21 @@ namespace FlyEngine
 	namespace Entities
 	{
 
-		Triangle::Triangle()
+		Triangle::Triangle() : Shape("Triangle")
 		{
 
 			name = "Triangle";
 
 			material = new Material();
 
-			float vertex[] =
+			vertex =
 			{
 				   0.0f,  0.462f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA
 				 0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, //DER
 				-0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, //IZQ
 			};
 
-			unsigned int index[] =
+			index =
 			{
 				2,0,1,
 			};
@@ -51,6 +52,8 @@ namespace FlyEngine
 			}
 
 			//Renderer::SetVertexAttributes(vertexAttributes, vertexCount);
+
+			PrintCreationMsg();
 		}
 
 		Triangle::~Triangle()

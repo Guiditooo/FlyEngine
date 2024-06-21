@@ -13,8 +13,6 @@ namespace FlyEngine
 	Renderer::Renderer()
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
-		projectionMat = glm::mat4(1);
-		viewMat = glm::mat4(1);
 	}
 
 	Renderer::~Renderer()
@@ -24,9 +22,10 @@ namespace FlyEngine
 	void Renderer::SetBackgroundColor(Color* newBgColor)
 	{
 		bgColor = newBgColor;
-		glClearColor(bgColor->GetColorV4().r, bgColor->GetColorV4().g, bgColor->GetColorV4().b, bgColor->GetColorV4().a);
+		glm::vec4 bgVector = bgColor->GetColorV4();
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(bgVector.r, bgVector.g, bgVector.b, bgVector.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	Color* Renderer::GetBackgroundColor()
@@ -52,6 +51,17 @@ namespace FlyEngine
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, index, GL_STATIC_DRAW);
 	}
 
+	void Renderer::BindBuffers(Utils::Buffer& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize)
+	{
+		glBindVertexArray(buffers.VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertexSize * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * index.size(), index.data(), GL_STATIC_DRAW);
+	}
+
 	void Renderer::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
 	{
 		for (short i = 0; i < vertexAttributes.size(); i++)
@@ -67,32 +77,16 @@ namespace FlyEngine
 		}
 	}
 
-	void Renderer::AssignViewMatrix(glm::mat4 viewM)
-	{
-		viewMat = viewM;
-	}
-
-	void Renderer::AssignProjectionMatrix(glm::mat4 projectionM)
-	{
-		projectionMat = projectionM;
-	}
-
 	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
 	{
 		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
 
-	void Renderer::SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix)
+	void Renderer::SetMatrixUniform(unsigned int shaderID, const GLchar* variableName, glm::mat4x4 matrix)
 	{
 		GLint modelUniformLocation = glGetUniformLocation(shaderID, variableName);
 		glUniformMatrix4fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
-
-		GLint viewUniformLocation = glGetUniformLocation(shaderID, "viewMatrix");
-		glUniformMatrix4fv(viewUniformLocation, 1, GL_FALSE, glm::value_ptr(viewMat));
-
-		GLint projectionUniformLocation = glGetUniformLocation(shaderID, "projectionMatrix");
-		glUniformMatrix4fv(projectionUniformLocation, 1, GL_FALSE, glm::value_ptr(projectionMat));
 	}
 
 	void Renderer::SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec)
