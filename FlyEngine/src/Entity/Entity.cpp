@@ -1,49 +1,69 @@
+#include <string>
+#include <glm/gtx/euler_angles.hpp>
+
 #include "Entity.h"
 #include "Renderer/Renderer.h"
 #include "FlyFunctions/Debugger/Debugger.h"
-#include <string>
 
 namespace FlyEngine
 {
-
 	namespace Entities
 	{
 		//www.c-jump.com/bcc/common/Talk3/Math/GLM/GLM.html#W01_0030_matrix_transformation
 		const float deg2rad = (glm::pi<float>() * 2.0f) / 360.0f;
 		const float pi = 3.14159265359f;
 
-		Entity::Entity()
+		Entity::Entity(std::string name)
 		{
-			model = glm::mat4(1.0f);
+			CreateBaseEntity(name);
+		}
+		Entity::Entity(std::string name, glm::vec3 pos)
+		{
+			CreateBaseEntity(name);
+			SetPosition(pos.x, pos.y, pos.z);
+		}
+		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot)
+		{
+			CreateBaseEntity(name);
+			SetPosition(pos.x, pos.y, pos.z);
+			SetRotation(rot);
+		}
+		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale)
+		{
+			CreateBaseEntity(name);
+			SetPosition(pos.x, pos.y, pos.z);
+			SetRotation(rot);
+			SetScale(scale.x, scale.y, scale.z);
+		}
 
+		void Entity::CreateBaseEntity(std::string name)
+		{
+			this->name = name;
+
+			modelMatrix = glm::mat4(1.0f);
 			color = glm::vec3(1.0f);
 
 			translateMatrix = glm::mat4(1.0f);
 			rotationMatrix = glm::mat4(1.0f);
 			scaleMatrix = glm::mat4(1.0f);
 
-			positionVector = glm::vec3(1.0f);
-			rotationVector = glm::vec3(1.0f);
-			scaleVector = glm::vec3(1.0f);
+			positionVector = glm::vec3(0, 0, 0);
+			rotationVector = glm::vec3(0, 0, 0);
+			scaleVector = glm::vec3(1, 1, 1);
 
-			rotationQuaternion = glm::quat(glm::vec3(0.0f));
+			rotationQuaternion = EulerToQuat(rotationVector);
 
+			indexCount = 0;
+			vertexCount = 0;
+			vertexSize = 0;
+
+			material = nullptr;
+			buffers = new Utils::Buffer();
 			active = true;
 		}
 
 		Entity::~Entity()
 		{
-
-		}
-
-		void Entity::SetActive(bool isActive)
-		{
-			active = isActive;
-		}
-
-		bool Entity::IsActive()
-		{
-			return active;
 		}
 
 		glm::quat Entity::EulerToQuat(glm::vec3 euler)
@@ -95,28 +115,55 @@ namespace FlyEngine
 			return R;
 		}
 
+		glm::vec3 Entity::Mat4ToEuler(glm::mat4 matrix)
+		{
+			glm::vec3 euler;
+
+			if (matrix[1][0] < 1.0f)
+			{
+				if (matrix[1][0] > -1.0f)
+				{
+					euler.y = asin(matrix[1][0]);
+					euler.x = atan2(-matrix[1][2], matrix[1][1]);
+					euler.z = atan2(-matrix[2][0], matrix[0][0]);
+				}
+				else
+				{
+					euler.y = -glm::half_pi<float>();
+					euler.x = -atan2(matrix[2][1], matrix[2][2]);
+					euler.z = 0.0f;
+				}
+			}
+			else
+			{
+				euler.y = glm::half_pi<float>();
+				euler.x = atan2(matrix[2][1], matrix[2][2]);
+				euler.z = 0.0f;
+			}
+
+			return euler;
+		}
+
 		glm::vec3 Entity::QuaternionToEuler(glm::quat quat)
 		{
 			glm::vec3 angles;
 
-			float sinr_cosp = 2 * (quat.w * quat.x + quat.y * quat.z);
-			float cosr_cosp = 1 - 2 * (quat.x * quat.x + quat.y * quat.y);
-			angles.x = glm::pow(glm::atan(sinr_cosp, cosr_cosp), 2.0f);
+			// Roll (x-axis rotation)
+			float sinr_cosp = 2 * (quat.x * quat.y + quat.z * quat.w);
+			float cosr_cosp = 1 - 2 * (quat.y * quat.y + quat.z * quat.z);
+			angles.x = glm::atan(sinr_cosp, cosr_cosp);
 
-			float sinp = 2 * (quat.w * quat.y - quat.z * quat.x);
-
+			// Pitch (y-axis rotation)
+			float sinp = 2 * (quat.x * quat.z - quat.w * quat.y);
 			if (glm::abs(sinp) >= 1)
-			{
-				angles.y = (pi / 2) * glm::sign(sinp);
-			}
+				angles.y = glm::pi<float>() / 2 * glm::sign(sinp); // Use 90 degrees if out of range
 			else
-			{
 				angles.y = glm::asin(sinp);
-			}
 
-			float siny_cosp = 2 * (quat.w * quat.z + quat.x * quat.y);
-			float cosy_cosp = 1 - 2 * (quat.y * quat.y + quat.z * quat.z);
-			angles.z = glm::pow(glm::atan(siny_cosp, cosy_cosp), 2.0f);
+			// Yaw (z-axis rotation)
+			float siny_cosp = 2 * (quat.x * quat.w + quat.y * quat.z);
+			float cosy_cosp = 1 - 2 * (quat.z * quat.z + quat.w * quat.w);
+			angles.z = glm::atan(siny_cosp, cosy_cosp);
 
 			return angles;
 		}
@@ -201,6 +248,35 @@ namespace FlyEngine
 			return glm::quat(qx, qy, qz, qw);
 		}
 
+		void Entity::SetActive(bool isActive)
+		{
+			std::string text = name;
+
+			active = isActive;
+
+			text += active ? " is Active!" : " is not Active!";
+
+			Debugger::ConsoleMessage(&text[0]);
+		}
+
+		bool Entity::IsActive()
+		{
+			return active;
+		}
+
+		void Entity::SetName(std::string newName)
+		{
+			name = newName;
+		}
+
+		void Entity::PrintCreationMsg()
+		{
+			std::string text = "Created ";
+			text += name;
+			text += " successfully!";
+
+			Debugger::ConsoleMessageID(&text[0]);
+		}
 
 		void Entity::SetColor(FlyEngine::Color newColor)
 		{
@@ -229,39 +305,81 @@ namespace FlyEngine
 
 		void Entity::UpdateModelMatrix()
 		{
-			model = glm::mat4(1.0f);
-			model *= translateMatrix * rotationMatrix * scaleMatrix;
+			modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
+			shouldUpdateModelMatrix = false;
 		}
 
 		glm::mat4 Entity::GetModelMatrix()
 		{
-			return model;
+			if (shouldUpdateModelMatrix)
+				UpdateModelMatrix();
+			return modelMatrix;
 		}
 
 		void Entity::SetPosition(float x, float y, float z)
 		{
-			positionVector = glm::vec3(x, y, z); //Va a modificar la mat
-			translateMatrix[3].x = x;
-			translateMatrix[3].y = y;
-			translateMatrix[3].z = z;
-			UpdateModelMatrix();
+			positionVector = glm::vec3(x, y, z);
+			translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Position of ";
+				text += name;
+				text += " successfully to ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
+			}
 		}
 
 		void Entity::SetRotation(float x, float y, float z)
 		{
-			rotationVector = glm::vec3(x, y, z); //Va a modificar la mat
-			rotationQuaternion = EulerToQuat(rotationVector);
-			rotationMatrix = EulerToMat4(rotationVector);
-			UpdateModelMatrix();
+			rotationVector = glm::vec3(x, y, z);
+			rotationQuaternion = glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
+			rotationMatrix = glm::mat4_cast(rotationQuaternion);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Rotation of ";
+				text += name;
+				text += " successfully ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
+			}
+		}
+
+		void Entity::SetRotation(glm::quat rot)
+		{
+			rotationQuaternion = rot;
+			rotationVector = glm::eulerAngles(rot);
+			rotationMatrix = glm::mat4_cast(rotationQuaternion);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Rotation of ";
+				text += name;
+				text += " successfully ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(rotationVector.x, rotationVector.y, rotationVector.z));
+			}
 		}
 
 		void Entity::SetScale(float x, float y, float z)
 		{
-			scaleVector = glm::vec3(x, y, z); //Va a modificar la mat
-			scaleMatrix[0].x = x;
-			scaleMatrix[1].y = y;
-			scaleMatrix[2].z = z;
-			UpdateModelMatrix();
+			scaleVector = glm::vec3(x, y, z);
+			scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Scale of ";
+				text += name;
+				text += ". Now its ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
+			}
 		}
 
 		glm::vec3 Entity::GetPosition()
@@ -279,57 +397,45 @@ namespace FlyEngine
 			return scaleVector;
 		}
 
+		glm::vec3 Entity::GetFront()
+		{
+			return -GetModelMatrix()[2];
+		}
+
+		glm::vec3 Entity::GetUp()
+		{
+			return GetModelMatrix()[1];
+		}
+
+		glm::vec3 Entity::GetRight()
+		{
+			return GetModelMatrix()[1];
+		}
+
 		void Entity::Translate(float x, float y, float z)
 		{
-			translateMatrix = glm::translate(translateMatrix, glm::vec3(x, y, z));
-			positionVector = glm::vec3(translateMatrix[3].x, translateMatrix[3].y, translateMatrix[3].z);
-			UpdateModelMatrix();
+			positionVector += glm::vec3(x, y, z);
+			translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
+			shouldUpdateModelMatrix = true;
 		}
 
 		void Entity::Rotate(float x, float y, float z)
 		{
-			rotationMatrix = glm::rotate(rotationMatrix, x, glm::vec3(1, 0, 0));
-			rotationMatrix = glm::rotate(rotationMatrix, y, glm::vec3(0, 1, 0));
-			rotationMatrix = glm::rotate(rotationMatrix, z, glm::vec3(0, 0, 1));
-
-			glm::vec3 col2 = glm::vec3(rotationMatrix[2].x, rotationMatrix[2].y, rotationMatrix[2].z);
-			glm::vec3 col1 = glm::vec3(rotationMatrix[1].x, rotationMatrix[1].y, rotationMatrix[1].z);
-
-			rotationQuaternion = QuaternionLookRotation(col2, col1);
-
-			rotationVector = QuaternionToEuler(rotationQuaternion);
-
-			UpdateModelMatrix();
-
-			std::string auxText = name;
-			auxText += " Rotated (";
-			auxText += std::to_string(rotationVector.x);
-			auxText += ",";
-			auxText += std::to_string(rotationVector.y);
-			auxText += ",";
-			auxText += std::to_string(rotationVector.z);
-			auxText += ").";
-
-			Utils::Debugger::ConsoleMessage(auxText.c_str(),2,0,1,1);
-
+			glm::quat rotX = glm::angleAxis(glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+			glm::quat rotY = glm::angleAxis(glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::quat rotZ = glm::angleAxis(glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+			glm::quat rot = rotZ * rotY * rotX;
+			rotationQuaternion = rot * rotationQuaternion;
+			rotationVector = glm::eulerAngles(rotationQuaternion);
+			rotationMatrix = glm::mat4_cast(rotationQuaternion);
+			shouldUpdateModelMatrix = true;
 		}
 
 		void Entity::Scale(float x, float y, float z)
 		{
-			scaleMatrix = glm::scale(scaleMatrix, glm::vec3(x, y, z));
-			scaleVector = glm::vec3(scaleMatrix[0].x, scaleMatrix[1].y, scaleMatrix[2].z);
-			UpdateModelMatrix();
-
-			std::string auxText = name;
-			auxText += " Scaled (";
-			auxText += std::to_string(scaleVector.x);
-			auxText += ",";
-			auxText += std::to_string(scaleVector.y);
-			auxText += ",";
-			auxText += std::to_string(scaleVector.z);
-			auxText += ").";
-
-			Utils::Debugger::ConsoleMessage(auxText.c_str(), 2, 0, 1, 1);
+			scaleVector *= glm::vec3(x, y, z);
+			scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
+			shouldUpdateModelMatrix = true;
 		}
 
 		void Entity::SetMaterial(Material* newMaterial)
@@ -348,7 +454,7 @@ namespace FlyEngine
 			return material;
 		}
 
-		FlyEngine::Utils::Buffer Entity::GetBuffers()
+		FlyEngine::Utils::Buffer* Entity::GetBuffers()
 		{
 			return buffers;
 		}
@@ -365,6 +471,66 @@ namespace FlyEngine
 		std::vector<VertexAttribute> Entity::GetVertexAttributes()
 		{
 			return vertexAttributes;
+		}
+
+		std::vector<float> Entity::GetVertexList()
+		{
+			return vertex;
+		}
+
+		std::vector<unsigned int> Entity::GetIndexList()
+		{
+			return index;
+		}
+
+		glm::mat4 Entity::RotateInX(float angles)
+		{
+			glm::mat4 mat = glm::mat4(0);
+
+			mat[0][0] = 1;
+			mat[3][3] = 1;
+
+			mat[1][1] = cos(angles);
+			mat[1][2] = -sin(angles);
+			mat[2][1] = sin(angles);
+			mat[2][2] = cos(angles);
+
+			return mat;
+		}
+
+		void Entity::ToggleModificationMessage(bool isActive)
+		{
+			printModificationMessage = isActive;
+		}
+
+		glm::mat4 Entity::RotateInY(float angles)
+		{
+			glm::mat4 mat = glm::mat4(0);
+
+			mat[1][1] = 1;
+			mat[3][3] = 1;
+
+			mat[0][0] = cos(angles);
+			mat[0][2] = sin(angles);
+			mat[2][0] = -sin(angles);
+			mat[2][2] = cos(angles);
+
+			return mat;
+		}
+
+		glm::mat4 Entity::RotateInZ(float angles)
+		{
+			glm::mat4 mat = glm::mat4(0);
+
+			mat[2][2] = 1;
+			mat[3][3] = 1;
+
+			mat[0][0] = cos(angles);
+			mat[0][1] = -sin(angles);
+			mat[1][0] = sin(angles);
+			mat[1][1] = cos(angles);
+
+			return mat;
 		}
 
 		int Entity::GetVertexCount()

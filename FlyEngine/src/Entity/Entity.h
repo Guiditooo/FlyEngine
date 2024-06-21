@@ -24,7 +24,7 @@ namespace FlyEngine
 		protected:
 			std::vector<Utils::VertexAttribute> vertexAttributes;
 
-			Utils::Buffer buffers;
+			Utils::Buffer* buffers;
 			bool active;
 
 			Material* material;
@@ -34,31 +34,48 @@ namespace FlyEngine
 			glm::mat4 translateMatrix;
 			glm::mat4 rotationMatrix;
 			glm::mat4 scaleMatrix;
-			glm::mat4 model;
+			glm::mat4 modelMatrix;
 
 			glm::vec3 positionVector;
 			glm::vec3 rotationVector;
 			glm::quat rotationQuaternion;
 			glm::vec3 scaleVector;
 
+			bool shouldUpdateModelMatrix = false;
+
+			void CreateBaseEntity(std::string name);
+
 			glm::quat EulerToQuat(glm::vec3 euler);
 			glm::mat4 EulerToMat4(glm::vec3 euler);
+			glm::vec3 Mat4ToEuler(glm::mat4 matrix);
 			glm::vec3 QuaternionToEuler(glm::quat quat);
 			glm::vec3 QuatToVec(glm::quat quat, glm::vec3 euler);
 			glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
 
+			void PrintCreationMsg();
+
+			bool printModificationMessage;
+
 			std::string name;
+
+			std::vector<float> vertex;
+			std::vector<unsigned int> index;
 
 			int indexCount;
 			int vertexCount;
 			int vertexSize;
 
 		public:
-			Entity();
+			Entity(std::string name);
+			Entity(std::string name, glm::vec3 pos);
+			Entity(std::string name, glm::vec3 pos, glm::quat rot);
+			Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale);
 			~Entity();
 
 			void SetActive(bool isActive);
 			bool IsActive();
+
+			void SetName(std::string newName);
 
 			void SetColor(Utils::Color newColor);
 			void SetColor(glm::vec3 newColor);
@@ -69,30 +86,45 @@ namespace FlyEngine
 			void UpdateModelMatrix();
 			glm::mat4 GetModelMatrix();
 
-			void SetPosition(float x, float y, float z);
-			void SetRotation(float x, float y, float z);
+			virtual void SetPosition(float x, float y, float z);
+			virtual void SetRotation(float x, float y, float z);
+			virtual void SetRotation(glm::quat rot);
 			void SetScale(float x, float y, float z);
 
 			glm::vec3 GetPosition();
 			glm::vec3 GetRotation();
 			glm::vec3 GetScale();
 
-			void Translate(float x, float y, float z);
-			void Rotate(float x, float y, float z);
+			glm::vec3 GetFront();
+			glm::vec3 GetUp();
+			glm::vec3 GetRight();
+
+			virtual void Translate(float x, float y, float z);
+			virtual void Rotate(float x, float y, float z);
 			void Scale(float x, float y, float z);
 
 			void SetMaterial(Material* newMaterial);
 			void ApplyMaterial();
 			Material* GetMaterial();
 
-			Utils::Buffer GetBuffers();
+			Utils::Buffer* GetBuffers();
 			std::vector<Utils::VertexAttribute> GetVertexAttributes();
+
+			std::vector<float> GetVertexList();
+			std::vector<unsigned int> GetIndexList();
 
 			int GetIndexCount();
 			int GetVertexCount();
 			int GetVertexSize();
 
+			void ToggleModificationMessage(bool isActive);
+
 			virtual void Draw() = 0;
+
+		private: 
+			glm::mat4 RotateInX(float angles);
+			glm::mat4 RotateInY(float angles);
+			glm::mat4 RotateInZ(float angles);
 		};
 
 	}
