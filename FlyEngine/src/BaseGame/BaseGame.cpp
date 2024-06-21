@@ -3,36 +3,37 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Window/Window.h"
 #include "Renderer/Renderer.h"
 
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "FlyFunctions/Commons/Commons.h"
 #include "FlyFunctions/ColorCode/ColorCode.h"
 #include "Input/Input.h"
-#include "Shader/Shader.h"
-
-#include "Triangle/Triangle.h"
-#include "Rectangle/Rectangle.h"
-#include "Cube/Cube.h"
+#include "string"
 
 namespace FlyEngine
 {
+	using namespace Entities;
 	Input innerInputSystem;
 
 	BaseGame::BaseGame()
 	{
-		isRunning = false;
 		window = nullptr;
+		mainCamera = nullptr;
+
 		initialWindowName = "FlyEngine";
 		initialWindowWidth = 0;
 		initialWindowHeight = 0;
 		checkEsc = true;
+
+		isRunning = false;
 	}
 
 	BaseGame::~BaseGame()
 	{
-
+		if (mainCamera != nullptr)
+			delete mainCamera;
+		mainCamera = nullptr;
 	}
 
 	void BaseGame::SetWindowParameters(int width, int height, std::string name)
@@ -42,35 +43,102 @@ namespace FlyEngine
 		initialWindowName = name;
 	}
 
+	glm::vec2 BaseGame::GetWindowSize()
+	{
+		return window->GetWindowSize();
+	}
+
+	Camera* BaseGame::GetMainCamera()
+	{
+		return mainCamera;
+	}
+
 	void ResizeViewport(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
 	}
 
-	void BaseGame::CreateBuffers(Buffer& buffers)
+	void BaseGame::CreateBuffers(Buffer* buffers)
 	{
-		renderer.CreateBaseBuffers(buffers);
+		renderer.CreateBaseBuffers(*buffers);
+	}
+
+	void BaseGame::BindBuffers(Buffer* buffers, std::vector<float> vertex, std::vector<unsigned int> index)
+	{
+		renderer.BindBuffers(*buffers, vertex, vertex.size(), index, index.size());
+	}
+
+	void BaseGame::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
+	{
+		renderer.SetVertexAttributes(vertexAttributes);
 	}
 
 	void BaseGame::DrawObjects()
 	{
+
 		for (Entities::Entity* entity : entityList)
 		{
 			if (entity->IsActive())
 			{
 				entity->ApplyMaterial();
+				
+				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "viewMatrix", mainCamera->GetViewMatrix());
+				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "projectionMatrix", mainCamera->GetProjMatrix());
+
 				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "modelMatrix", entity->GetModelMatrix());
 				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "colorMultiplier", entity->GetColor().GetColorV3());
-				renderer.DrawRequest(entity->GetBuffers(), entity->GetIndexCount());
+				renderer.DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
+	}
+	
+	float BaseGame::PixelsToEngine(int objectWidthInPixels, float windowDimension)
+	{
+		return (objectWidthInPixels * 1.0f) / windowDimension;
+	}
+
+	Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ,float width, float height)
+	{
+		glm::vec2 windowSize = window->GetWindowSize();
+		Rectangle* rec = new Rectangle();
+		rec->SetPosition(posX, posY, posZ);
+		rec->SetScale(PixelsToEngine(width,windowSize.x), PixelsToEngine(height, windowSize.y), 1);
+		CreateBuffers(rec->GetBuffers());
+		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
+		SetVertexAttributes(rec->GetVertexAttributes());
+		entityList.push_back(rec);
+		return rec;
+	}
+
+	Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width)
+	{
+		return CreateRectangle(posX,posY,posZ,width,width);
+	}
+	
+	Triangle* BaseGame::CreateTriangle(float posX, float posY, float posZ, float base, float height)
+	{
+		Triangle* tri = new Triangle();
+		return tri;
+	}
+
+	Cube* BaseGame::CreateCube(float posX, float posY, float posZ, float width)
+	{
+		glm::vec2 windowSize = window->GetWindowSize();
+		Cube* cube = new Cube();
+		cube->SetPosition(posX, posY, posZ);
+		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
+		CreateBuffers(cube->GetBuffers());
+		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
+		SetVertexAttributes(cube->GetVertexAttributes());
+		entityList.push_back(cube);
+		return cube;
 	}
 
 	void BaseGame::InternalInit()
 	{
 		Debugger::ConsoleMessage("Starting Fly Engine.", 2, 0, 1, 0);
-		Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
-		std::cin.get();
+		//Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
+		//std::cin.get();
 
 		if (glfwInit() == GLFW_FALSE)
 		{
@@ -98,7 +166,23 @@ namespace FlyEngine
 		}
 		glfwMakeContextCurrent(window->GetWindow());
 
-		glewInit();
+		//mainCamera = new Camera(FlyEngine::ProjectionType::Perspective, 60.0f, initialWindowWidth / initialWindowHeight, 0.1f, 500.0f);
+		mainCamera = new Camera(glm::vec3(0,0,-5));
+		
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glEnable(GL_SAMPLE_ALPHA_TO_ONE);
+		glFrontFace(GL_CCW);
+		glEnable(GL_BLEND); //Transparency
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.1f);
+
+
+		if (glewInit() != GLEW_OK)
+			Debugger::ConsoleMessage("GLEW FAILED!", 2, 0, 1, 1);
 
 		innerInputSystem = Input(window);
 
@@ -121,7 +205,7 @@ namespace FlyEngine
 
 	void BaseGame::InternalDraw()
 	{
-		//renderer.SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
+		renderer.SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
 
 		DrawObjects();
 
@@ -135,9 +219,9 @@ namespace FlyEngine
 		glfwTerminate();
 
 		FlyEngine::Debugger::ConsoleMessage("Ending Fly Engine.", 2, 0, 1, 0);
-		FlyEngine::Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
-		std::cin.get();
-		system("cls");
+		//FlyEngine::Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
+		//std::cin.get();
+		//system("cls");
 
 		delete window;
 	}

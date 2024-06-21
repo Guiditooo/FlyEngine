@@ -23,9 +23,6 @@ namespace FlyEngine
 	private:
 		Color* bgColor;
 
-		glm::mat4 viewMat;
-		glm::mat4 projectionMat;
-
 		void ReOrderRenderizableList();
 
 	public:
@@ -39,10 +36,8 @@ namespace FlyEngine
 
 		void CreateBaseBuffers(Utils::Buffer& buffers);
 		void BindBuffers(Utils::Buffer& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
+		void BindBuffers(Utils::Buffer& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize);
 		void SetVertexAttributes(std::vector<Utils::VertexAttribute> vertexAttributes);
-
-		void AssignViewMatrix(glm::mat4 viewM);
-		void AssignProjectionMatrix(glm::mat4 projectionM);
 
 		void SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
 		void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);
