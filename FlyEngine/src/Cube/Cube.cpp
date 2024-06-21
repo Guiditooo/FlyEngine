@@ -1,9 +1,9 @@
 #include <iostream>
 
+#include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "Cube.h"
-#include "Rectangle/Rectangle.h"
 #include "Renderer/Renderer.h"
 #include "VertexAttribute/VertexAttribute.h"
 
@@ -12,26 +12,24 @@ namespace FlyEngine
 	namespace Entities
 	{
 
-		Cube::Cube()
+		Cube::Cube() : Entity3D ("Cube")
 		{
-			name = "Cube";
-
 			material = new Material();
 
-			float vertex[] =
+			vertex =
 			{
-				-0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, //0 ARRIBA IZQ FRENTE
-				 0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, //1 ARRIBA DER FRENTE
-				-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, //2 ABAJO  IZQ FRENTE
-				 0.5f, -0.5f,  0.5f, 0.5f, 0.5f, 0.5f  //3 ABAJO  DER FRENTE
+				-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, //0 ARRIBA IZQ FRENTE
+				 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, //1 ARRIBA DER FRENTE
+				-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, //2 ABAJO  IZQ FRENTE
+				 0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, //3 ABAJO  DER FRENTE
 				   
-				-0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f, //4 ARRIBA IZQ DETRAS
-				 0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, //5 ARRIBA DER DETRAS
-				-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, //6 ABAJO  IZQ DETRAS
-				 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f  //7 ABAJO  DER DETRAS
+				-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, //4 ARRIBA IZQ DETRAS
+				 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, //5 ARRIBA DER DETRAS
+				-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, //6 ABAJO  IZQ DETRAS
+				 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  //7 ABAJO  DER DETRAS
 			};
 
-			unsigned int index[] =
+			index =
 			{
 				0, 1, 2, //FRENTE 
 				1, 3, 2, //FRENTE
@@ -71,6 +69,8 @@ namespace FlyEngine
 			//Renderer::SetVertexAttributes(vertexAttributes, vertexCount);
 
 			//Utils::Debugger::ConsoleMessage("Rectangle Created!", 2, 0, 1, 1);
+
+			PrintCreationMsg();
 		}
 
 		Cube::~Cube()

@@ -1,6 +1,7 @@
 #ifndef VERTICES_H
 #define VERTICES_H
 
+#include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
 namespace FlyEngine

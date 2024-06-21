@@ -33,6 +33,7 @@
     <ClCompile Include="src\FlyFunctions\Vertices\Vertex.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input\Input.cpp" />
+    <ClCompile Include="src\Lights\Light.cpp" />
     <ClCompile Include="src\Line\Line.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material\Material.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
     <ClInclude Include="src\FlyFunctions\Vertices\Vertex.h" />
     <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Lights\Light.h" />
     <ClInclude Include="src\Line\Line.h" />
     <ClInclude Include="src\Material\Material.h" />
     <ClInclude Include="src\Rectangle\Rectangle.h" />
@@ -185,8 +187,7 @@ IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" (XCOPY "$(ProjectDir)bin\Debug\F
 
 IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
 
-IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )
-</Command>
+IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -222,7 +223,15 @@ IF NOT EXIST "$(ProjectDir)bin\Debug\assimp-vc142-mtd.dll" (XCOPY "$(ProjectDir)
 IF EXIST "$(ProjectDir)res\shaders" (IF NOT EXIST "$(SolutionDir)Testing\bin\Debug\shaders" (MKDIR "$(SolutionDir)Testing\bin\Debug\shaders") ELSE (ECHO SHADER FOLDER JUST EXISTS IN TESTING) ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 IF EXIST "$(ProjectDir)res\shaders" ( XCOPY "$(ProjectDir)res\shaders" "$(SolutionDir)Testing\bin\Debug\shaders" /e /h /y /s ) ELSE (ECHO DOES NOT EXIST SHADER FOLDER IN FLYENGINE)
 ECHO SHADERS SUCCESSFULLY COPIED TO TESTING 
-</Command>
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
+XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
+IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.dll" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.dll" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO DLL DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)bin\Debug\FlyEngine.lib" (XCOPY "$(ProjectDir)bin\Debug\FlyEngine.lib" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO LIB DOES NOT EXIST )
+
+IF EXIST "$(ProjectDir)src\FlyEngine.h" (XCOPY "$(ProjectDir)src\FlyEngine.h" "$(SolutionDir)Testing\Dependencies\FLY\" /h /y /s) ELSE ( ECHO H DOES NOT EXIST )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

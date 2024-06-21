@@ -23,7 +23,7 @@ namespace FlyEngine
 
 		Input::Input(Window* newWindow)
 		{
-			window = newWindow != nullptr ? newWindow : new Window(1280, 720, "Fly Engine");
+			window = newWindow;
 			moveX = 0;
 			moveY = 0;
 		}
@@ -119,7 +119,7 @@ namespace FlyEngine
 		{
 			if (glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_PRESS)
 			{
-				Debugger::ConsoleMessageID("Tecla Mantenida!", 2, 0, 1);
+				//Debugger::ConsoleMessageID("Tecla Mantenida!", 2, 0, 1);
 				//pressedKeys.insert(key);
 				return true;
 			}
