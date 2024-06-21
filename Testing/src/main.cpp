@@ -9,8 +9,7 @@ void main()
 {
 	srand(time(NULL));
 	
-	//Game* game = new Game(800, 600, "Testing Environment");
-	Game* game = new Game(1280, 720);
+	Game* game = new Game(800, 600, "Testing Environment");
 	game->RunGame();
 	delete game;
 	

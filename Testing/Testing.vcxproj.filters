@@ -19,10 +19,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\Game.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\FLY\FlyEngine.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Game.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

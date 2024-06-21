@@ -10,21 +10,23 @@ namespace FlyGame
 	class Game : public BaseGame
 	{
 	private:
-		Camera* mainCamera;
-
-		//Entities::Rectangle* rec = nullptr;
-		Entities::Cube* cube = nullptr;
-		int aux = 0;
+		CameraController* cameraController;
 		Utils::Input input;
+		
+		Entities::Rectangle* rec;
+		Entities::Rectangle* piso;
+		Entities::Rectangle* player;
 
-		CameraController* cameraController = nullptr;
+		Entities::Cube* cube;
+
+		int aux = 0;
+
+		void MoveObject(FlyEngine::Entities::Entity* entity, Input inputSystem, bool showMovement = true);
 
 	public:
 		Game(int width, int height, std::string name);
 		Game(int width, int height);
 		~Game();
-
-		Camera* GetMainCamera();
 
 		void Init() override;
 		void Update() override;
