@@ -168,9 +168,9 @@ namespace FlyEngine
 				newColor.b = 0.0f;
 				break;
 			case COLOR::GREEN:
-				newColor.r = 1.0f;
+				newColor.r = 0.0f;
 				newColor.g = 1.0f;
-				newColor.b = 1.0f;
+				newColor.b = 0.0f;
 				break;
 			case COLOR::BLUE:
 				newColor.r = 0.0f;
