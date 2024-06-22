@@ -89,8 +89,8 @@ namespace FlyGame
 
 		rec->SetActive(false);
 		piso->SetActive(true);
-		player->SetActive(true);
-		cube->SetActive(false);
+		player->SetActive(false);
+		cube->SetActive(true);
 
 	}
 
@@ -101,14 +101,14 @@ namespace FlyGame
 		{
 			movingPlayer = !movingPlayer;
 			if (movingPlayer)
-				Debugger::ConsoleMessage("Moving Player", 1, 0, 1, 0);
+				Debugger::ConsoleMessage("Moving Player");
 			else
-				Debugger::ConsoleMessage("Moving Camera", 1, 0, 1, 0);
+				Debugger::ConsoleMessage("Moving Camera");
 		}
 		if (movingPlayer)
 		{
-			//MoveObject(cube, inputSystem, true);
-			MoveObject(player, inputSystem, true);
+			MoveObject(cube, inputSystem, true);
+			//MoveObject(player, inputSystem, true);
 		}
 		else
 		{
