@@ -23,6 +23,8 @@ namespace FlyEngine
 	private:
 		Renderer renderer;
 		std::list<Entities::Entity*> entityList;
+		//std::list<Entities::Light*> lightList;
+		Entities::Entity* light;
 
 		bool isRunning;
 		bool checkEsc;
@@ -69,6 +71,8 @@ namespace FlyEngine
 
 		Window* window;
 		Camera* mainCamera;
+
+		void SetLight(Entities::Entity* newLight);
 
 		virtual void Init() = 0;
 		virtual void Update() = 0;

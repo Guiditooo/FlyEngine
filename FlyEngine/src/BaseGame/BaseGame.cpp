@@ -75,6 +75,7 @@ namespace FlyEngine
 
 	void BaseGame::DrawObjects()
 	{
+		//for (Lights::Light* light : lightList)
 
 		for (Entities::Entity* entity : entityList)
 		{
@@ -84,9 +85,19 @@ namespace FlyEngine
 				
 				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "viewMatrix", mainCamera->GetViewMatrix());
 				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "projectionMatrix", mainCamera->GetProjMatrix());
-
 				renderer.SetMatrixUniform(entity->GetMaterial()->GetShaderID(), "modelMatrix", entity->GetModelMatrix());
+
+				//Esta linea es por si se quiere poner un efecto de color general a todo lo renderizado del engine
+				//No es una luz, es un filtro
 				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "colorMultiplier", entity->GetColor().GetColorV3());
+				
+				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "lightColor", glm::vec3(1.0f,1.0f,1.0f));
+				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "lightPos", light->GetPosition());
+				
+				renderer.SetVec3Uniform(entity->GetMaterial()->GetShaderID(), "viewPos", mainCamera->GetPosition());
+				
+
+
 				renderer.DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
@@ -132,6 +143,11 @@ namespace FlyEngine
 		SetVertexAttributes(cube->GetVertexAttributes());
 		entityList.push_back(cube);
 		return cube;
+	}
+
+	void BaseGame::SetLight(Entities::Entity* newLight)
+	{
+		light = newLight;
 	}
 
 	void BaseGame::InternalInit()
