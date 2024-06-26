@@ -3,15 +3,22 @@
 
 #include <Exports/Exports.h>
 
-class FLY_API Light
+namespace FlyEngine
 {
-private:
-	//Shader* shader;
-public:
-	Light();
-	~Light();
-};
 
+	namespace Lights
+	{
 
+		class FLY_API Light
+		{
+		private:
+
+		public:
+			Light();
+			~Light();
+		};
+
+	}
+}
 
 #endif // !MATERIAL_H
