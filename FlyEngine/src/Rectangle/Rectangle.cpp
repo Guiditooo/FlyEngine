@@ -15,6 +15,11 @@ namespace FlyEngine
 		Rectangle::Rectangle() : Shape("Rectangle")
 		{
 
+			const unsigned int floatSize = sizeof(float);
+			const unsigned int vertexStride = (3 + 3 + 2 + 3) * floatSize;
+
+			VertexAttribute va;
+
 			indexCount = 6;
 			vertexCount = 2;
 			vertexSize = 6;
@@ -23,10 +28,11 @@ namespace FlyEngine
 
 			vertex =
 			{
-				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA IZQ
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ARRIBA DER
-				-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ABAJO IZQ
-				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f  //ABAJO DER
+				//¨Position         //Color           //UV		  //Normal
+				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,  //ARRIBA IZQ
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, //ARRIBA DER
+				-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, //ABAJO IZQ
+				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f //ABAJO DER
 			};
 
 			index =
@@ -35,16 +41,37 @@ namespace FlyEngine
 				2,3,1
 			};
 			
-			for (short i = 0; i < vertexCount; i++)
-			{
-				VertexAttribute va;
-				va.elementSize = 3;
-				va.variableType = GL_FLOAT;
-				va.isNormalized = GL_FALSE;
-				va.sizeOfVertex = sizeof(float) * indexCount;
-				va.offset = i * sizeof(float) * va.elementSize;
-				vertexAttributes.push_back(va);
-			}
+			//Posicion
+			va.elementSize = 3;
+			va.variableType = GL_FLOAT;
+			va.isNormalized = GL_FALSE;
+			va.sizeOfVertex = vertexStride;
+			va.offset = 0;
+			vertexAttributes.push_back(va);
+
+			//Color
+			va.elementSize = 3;
+			va.variableType = GL_FLOAT;
+			va.isNormalized = GL_FALSE;
+			va.sizeOfVertex = vertexStride;
+			va.offset = 3 * floatSize; //Después de la posición)
+			vertexAttributes.push_back(va);
+
+			//UV
+			va.elementSize = 2;
+			va.variableType = GL_FLOAT;
+			va.isNormalized = GL_FALSE;
+			va.sizeOfVertex = vertexStride;
+			va.offset = (3 + 3) * floatSize; //Después del color)
+			vertexAttributes.push_back(va);
+
+			//Normal
+			va.elementSize = 3;
+			va.variableType = GL_FLOAT;
+			va.isNormalized = GL_FALSE;
+			va.sizeOfVertex = vertexStride;
+			va.offset = (3 + 3 + 2) * floatSize; //Después del UV)
+			vertexAttributes.push_back(va);
 
 			//Renderer::CreateBaseBuffers(VAO, VBO, EBO);
 			//Renderer::BindBuffers(VAO, VBO, EBO, vertex, sizeof(vertex), index, sizeof(index));
