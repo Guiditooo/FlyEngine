@@ -60,6 +60,8 @@ namespace FlyEngine
 			material = nullptr;
 			buffers = new Utils::Buffer();
 			active = true;
+
+			printModificationMessage = false;
 		}
 
 		Entity::~Entity()
@@ -273,7 +275,7 @@ namespace FlyEngine
 		{
 			std::string text = "Created ";
 			text += name;
-			text += " successfully!";
+			text += " successfully!\n";
 
 			Debugger::ConsoleMessageID(&text[0]);
 		}
@@ -322,6 +324,7 @@ namespace FlyEngine
 			translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
 			shouldUpdateModelMatrix = true;
 
+			
 			if (printModificationMessage)
 			{
 				std::string text = "Setted Position of ";
@@ -330,6 +333,7 @@ namespace FlyEngine
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
+			
 		}
 
 		void Entity::SetRotation(float x, float y, float z)
@@ -399,7 +403,7 @@ namespace FlyEngine
 
 		glm::vec3 Entity::GetFront()
 		{
-			return -GetModelMatrix()[2];
+			return GetModelMatrix()[2];
 		}
 
 		glm::vec3 Entity::GetUp()
@@ -409,7 +413,7 @@ namespace FlyEngine
 
 		glm::vec3 Entity::GetRight()
 		{
-			return GetModelMatrix()[1];
+			return GetModelMatrix()[0];
 		}
 
 		void Entity::Translate(float x, float y, float z)
@@ -481,6 +485,54 @@ namespace FlyEngine
 		std::vector<unsigned int> Entity::GetIndexList()
 		{
 			return index;
+		}
+
+		void Entity::MoveForward(float amount) 
+		{
+			glm::vec3 forward = -GetFront();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += forward * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
+		}
+
+		void Entity::MoveBackward(float amount) 
+		{
+			glm::vec3 backward = GetFront();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += backward * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
+		}
+
+		void Entity::MoveLeft(float amount) 
+		{
+			glm::vec3 left = -GetRight();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += left * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
+		}
+
+		void Entity::MoveRight(float amount) 
+		{
+			glm::vec3 right = GetRight();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += right * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
+		}
+
+		void Entity::MoveUp(float amount) 
+		{
+			glm::vec3 up = GetUp();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += up * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
+		}
+
+		void Entity::MoveDown(float amount) 
+		{
+			glm::vec3 down = -GetUp();
+			glm::vec3 currentPosition = GetPosition();
+			currentPosition += down * amount;
+			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
 		glm::mat4 Entity::RotateInX(float angles)

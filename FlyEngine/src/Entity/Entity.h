@@ -99,6 +99,13 @@ namespace FlyEngine
 			glm::vec3 GetUp();
 			glm::vec3 GetRight();
 
+			void MoveForward(float amount);
+			void MoveBackward(float amount);
+			void MoveLeft(float amount);
+			void MoveRight(float amount);
+			void MoveUp(float amount);
+			void MoveDown(float amount);
+
 			virtual void Translate(float x, float y, float z);
 			virtual void Rotate(float x, float y, float z);
 			void Scale(float x, float y, float z);
