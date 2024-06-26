@@ -8,7 +8,7 @@ FlyEngine::Utils::Input innerSystemInput;
 FlyEngine::CameraController::CameraController(Camera* camera, Window* window, KeyCode forward, KeyCode backward, KeyCode up, KeyCode down, KeyCode left, KeyCode right)
 {
 	this->camera = camera;
-	
+
 	this->forward = forward;
 	this->backward = backward;
 	this->up = up;
@@ -21,6 +21,8 @@ FlyEngine::CameraController::CameraController(Camera* camera, Window* window, Ke
 	innerSystemInput = FlyEngine::Utils::Input(window);
 
 	cameraRotation = CameraRotation();
+
+	isFirst = true;
 }
 
 FlyEngine::CameraController::~CameraController()
@@ -48,42 +50,86 @@ FlyEngine::Camera* FlyEngine::CameraController::GetCamera()
 	return camera;
 }
 
-void FlyEngine::CameraController::Update()
+void FlyEngine::CameraController::Update(bool showMessage)
 {
 	bool cameraMoved = false;
 
-	if (innerSystemInput.GetKeyDown(forward))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_W))
 	{
-		camera->Translate(0.0f, 0.0f, sensibility);
+		camera->MoveForward(sensibility);
 		cameraMoved = true;
 	}
-	if (innerSystemInput.GetKeyDown(backward))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_S))
 	{
-		camera->Translate(0.0f, 0.0f, -sensibility);
+		camera->MoveBackward(sensibility);
 		cameraMoved = true;
 	}
-	if (innerSystemInput.GetKeyDown(up))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_SPACE))
 	{
-		camera->Translate(0.0f, -sensibility, 0.0f);
+		camera->MoveUp(sensibility);
 		cameraMoved = true;
 	}
-	if (innerSystemInput.GetKeyDown(down))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_LEFT_SHIFT))
 	{
-		camera->Translate(0.0f, sensibility, 0.0f);
+		camera->MoveDown(sensibility);
 		cameraMoved = true;
 	}
-	if (innerSystemInput.GetKeyDown(left))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_A))
 	{
-		camera->Translate(-sensibility, 0.0f, 0.0f);
+		camera->MoveLeft(sensibility);
 		cameraMoved = true;
 	}
-	if (innerSystemInput.GetKeyDown(right))
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_D))
 	{
-		camera->Translate(sensibility, 0.0f, 0.0f);
+		camera->MoveRight(sensibility);
 		cameraMoved = true;
 	}
 
-	if (cameraMoved)
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_I))
+	{
+		camera->Rotate(1, 0.0f, 0.0f);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_K))
+	{
+		camera->Rotate(-1, 0.0f, 0.0f);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_J))
+	{
+		camera->Rotate(0.0f, 1, 0.0f);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_L))
+	{
+		camera->Rotate(0.0f, -1, 0.0f);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_U))
+	{
+		camera->Rotate(0.0f, 0.0f, 1);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_O))
+	{
+		camera->Rotate(0.0f, 0.0f, -1);
+		cameraMoved = true;
+	}
+
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_KP_ADD))
+	{
+		float scaleSens = 1.01f;
+		camera->Scale(scaleSens, scaleSens, scaleSens);
+		cameraMoved = true;
+	}
+	if (innerSystemInput.GetKeyDown(Utils::KeyCode::KEY_KP_SUBTRACT))
+	{
+		float scaleSens = 0.99f;
+		camera->Scale(-scaleSens, -scaleSens, -scaleSens);
+		cameraMoved = true;
+	}
+
+	if (showMessage && cameraMoved)
 	{
 		std::string text = "- Camera Updated Position: (";
 		text += std::to_string(camera->GetPosition().x);

@@ -27,6 +27,7 @@ namespace FlyEngine
 		KeyCode right;
 		CameraRotation cameraRotation;
 		float sensibility;
+		bool isFirst;
 	public:
 		CameraController(Camera* camera, Window* window, KeyCode forward, KeyCode backward, KeyCode up, KeyCode down, KeyCode left, KeyCode right);
 		~CameraController();
@@ -36,7 +37,7 @@ namespace FlyEngine
 
 		Camera* GetCamera();
 
-		void Update();
+		void Update(bool showMessage);
 	};
 }
 #endif // 
