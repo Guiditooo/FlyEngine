@@ -7,6 +7,15 @@ using namespace FlyEngine;
 
 namespace FlyGame
 {
+
+	enum class MovingObject
+	{
+		Cube,
+		Camera,
+		Light,
+		Count
+	};
+
 	class Game : public BaseGame
 	{
 	private:
@@ -15,11 +24,14 @@ namespace FlyGame
 		
 		Entities::Rectangle* rec;
 		Entities::Rectangle* piso;
-		Entities::Rectangle* player;
-
+		
+		Entities::Cube* player;
 		Entities::Cube* cube;
+		Entities::Cube* light;
 
 		int aux = 0;
+
+		MovingObject movingObject;
 
 		void MoveObject(FlyEngine::Entities::Entity* entity, Input inputSystem, bool showMovement = true);
 

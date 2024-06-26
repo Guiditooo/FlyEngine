@@ -22,6 +22,9 @@ namespace FlyGame
 		player = nullptr;
 		piso = nullptr;
 		cube = nullptr;
+		light = nullptr;
+
+		movingObject = MovingObject::Cube;
 	}
 
 	Game::Game(int width, int height)
@@ -35,6 +38,9 @@ namespace FlyGame
 		player = nullptr;
 		piso = nullptr;
 		cube = nullptr;
+		light = nullptr;
+
+		movingObject = MovingObject::Cube;
 	}
 
 	Game::~Game()
@@ -64,55 +70,81 @@ namespace FlyGame
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
 
+		mainCamera->SetPosition(-0.13f, 0.36f, -0.82f);
+
 		cameraController = new CameraController(mainCamera, window,
 			KeyCode::KEY_W, KeyCode::KEY_S,
 			KeyCode::KEY_SPACE, KeyCode::KEY_LEFT_SHIFT,
 			KeyCode::KEY_A, KeyCode::KEY_D
 		);
 
-		input = Utils::Input(window);
-		rec = CreateRectangle(0, 0, 1, 1000, 1000);
-		piso = CreateRectangle(0, -1, 0, 1000, 1000);
-		player = CreateRectangle(0, 0, 0, 80, 120);
-		cube = CreateCube(0, 0, 0, 100);
 
-		player->SetName("Player");
+		input = Utils::Input(window);
+		//rec = CreateRectangle(0, 0, 1, 1000, 1000);
+		piso = CreateRectangle(0, -1, 0, 1000, 1000);
+		player = CreateCube(0, 0, 0, 100);
+		cube = CreateCube(1, 0, 0, 100);
+		light = CreateCube(0, 0, 0, 100);
+
 		piso->SetName("Piso");
-		cube->SetName("Cubo");
-		rec->SetName("Rectangulo");
+		player->SetName("Player");
+		cube->SetName("Cubo Uno");
+		light->SetName("Cubo Dos");
 
 		piso->SetRotation(90, 0, 0);
 
 		piso->SetColor(COLOR::BLUE);
+		cube->SetColor(COLOR::CYAN);
+		light->SetColor(COLOR::WHITE);
 		player->SetColor(COLOR::YELLOW);
-		cube->SetColor(COLOR::GREEN);
 
-		rec->SetActive(false);
 		piso->SetActive(true);
-		player->SetActive(false);
+		player->SetActive(true);
 		cube->SetActive(true);
+		light->SetActive(true);
+
+		SetLight(light);
 
 	}
 
 	void Game::Update()
 	{
+		
 		Input inputSystem = Input(window);
+
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_ENTER))
 		{
-			movingPlayer = !movingPlayer;
-			if (movingPlayer)
-				Debugger::ConsoleMessage("Moving Player");
-			else
+			int actualIndex = (int)movingObject;
+			int nextIndex = actualIndex + 1;
+			movingObject = (MovingObject)nextIndex;
+			switch (movingObject)
+			{
+			case FlyGame::MovingObject::Camera:
 				Debugger::ConsoleMessage("Moving Camera");
+				break;
+			case FlyGame::MovingObject::Light:
+				Debugger::ConsoleMessage("Moving Light");
+				break;
+			case FlyGame::MovingObject::Cube:
+			default:
+				movingObject = MovingObject::Cube;
+				Debugger::ConsoleMessage("Moving Player");
+				break;
+			}
 		}
-		if (movingPlayer)
+		switch (movingObject)
 		{
+		case FlyGame::MovingObject::Cube:
 			MoveObject(cube, inputSystem, true);
-			//MoveObject(player, inputSystem, true);
-		}
-		else
-		{
-			cameraController->Update();
+			break;
+		case FlyGame::MovingObject::Camera:
+			cameraController->Update(false);
+			break;
+		case FlyGame::MovingObject::Light:
+			MoveObject(light, inputSystem, false);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -123,86 +155,87 @@ namespace FlyGame
 
 	void Game::MoveObject(FlyEngine::Entities::Entity* entity, Input inputSystem, bool showMovement)
 	{
-		bool cameraMoved = false;
-		float sensibility = 0.01f;
+		bool objectMoved = false;
+		float sensibility = 1;
+		float rotSensibility = 10;
 
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_W))
 		{
-			entity->Translate(0.0f, 0.0f, sensibility);
-			cameraMoved = true;
+			entity->MoveForward(sensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_S))
 		{
-			entity->Translate(0.0f, 0.0f, -sensibility);
-			cameraMoved = true;
+			entity->MoveBackward(sensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_SPACE))
 		{
-			entity->Translate(0.0f, sensibility, 0.0f);
-			cameraMoved = true;
+			entity->MoveUp(sensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_LEFT_SHIFT))
 		{
-			entity->Translate(0.0f, -sensibility, 0.0f);
-			cameraMoved = true;
+			entity->MoveDown(sensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_A))
 		{
-			entity->Translate(sensibility, 0.0f, 0.0f);
-			cameraMoved = true;
+			entity->MoveLeft(sensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_D))
 		{
-			entity->Translate(-sensibility, 0.0f, 0.0f);
-			cameraMoved = true;
+			entity->MoveRight(sensibility);
+			objectMoved = true;
 		}
 
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_I))
 		{
-			entity->Rotate(-1, 0.0f, 0.0f);
-			cameraMoved = true;
+			entity->Rotate(rotSensibility, 0.0f, 0.0f);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_K))
 		{
-			entity->Rotate(1, 0.0f, 0.0f);
-			cameraMoved = true;
+			entity->Rotate(-rotSensibility, 0.0f, 0.0f);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_J))
 		{
-			entity->Rotate(0.0f, -1, 0.0f);
-			cameraMoved = true;
+			entity->Rotate(0.0f, rotSensibility, 0.0f);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_L))
 		{
-			entity->Rotate(0.0f, 1, 0.0f);
-			cameraMoved = true;
+			entity->Rotate(0.0f, -rotSensibility, 0.0f);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_U))
 		{
-			entity->Rotate(0.0f, 0.0f, -1);
-			cameraMoved = true;
+			entity->Rotate(0.0f, 0.0f, -rotSensibility);
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_O))
 		{
-			entity->Rotate(0.0f, 0.0f, 1);
-			cameraMoved = true;
+			entity->Rotate(0.0f, 0.0f, rotSensibility);
+			objectMoved = true;
 		}
 
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_KP_ADD))
 		{
 			float scaleSens = 1.01f;
 			entity->Scale(scaleSens, scaleSens, scaleSens);
-			cameraMoved = true;
+			objectMoved = true;
 		}
 		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_KP_SUBTRACT))
 		{
 			float scaleSens = 0.99f;
 			entity->Scale(-scaleSens, -scaleSens, -scaleSens);
-			cameraMoved = true;
+			objectMoved = true;
 		}
 
 
-		if (cameraMoved && showMovement)
+		if (objectMoved && showMovement)
 		{
 			std::string text = "- Player Updated Position: (";
 			text += std::to_string(entity->GetPosition().x);
