@@ -56,10 +56,10 @@ namespace FlyEngine
 		glBindVertexArray(buffers.VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
-		glBufferData(GL_ARRAY_BUFFER, vertexSize * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexSize * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * index.size(), index.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * sizeof(float), index.data(), GL_STATIC_DRAW);
 	}
 
 	void Renderer::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
