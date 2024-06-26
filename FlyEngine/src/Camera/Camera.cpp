@@ -20,51 +20,6 @@ namespace FlyEngine
 		SetCamera(projType, fov, aspectRatio, nearPlane, farPlane);
 	}
 
-	/*
-	void Camera::ProcessMouseMovement(float moveX, float moveY)
-	{
-		moveX *= sensitivity;
-		moveY *= sensitivity;
-
-		// Actualizar los ángulos de yaw y pitch
-		rotation.yaw += moveX;
-		rotation.pitch += moveY;
-
-		// Limitar el ángulo de pitch para evitar volteos excesivos
-		if (rotation.pitch > 89.0f)
-			rotation.pitch = 89.0f;
-
-		if (rotation.pitch < -89.0f)
-			rotation.pitch = -89.0f;
-
-	}
-	*/
-	/*
-	void MouseMovementCallback(GLFWwindow* window, double mouseX, double mouseY)
-		//Lo saco de la clase para evitar problemas de scopes
-	{
-		static float lastX = 0.0f;
-		static float lastY = 0.0f;
-		static bool firstMove = true;
-
-		if (firstMove)
-		{
-			lastX = mouseX;
-			lastY = mouseY;
-			firstMove = false;
-		}
-
-		float moveX = mouseX - lastX;
-		float moveY = lastY - mouseY; // Invierte el desplazamiento del ratón para que la cámara no se invierta
-		lastX = mouseX;
-		lastY = mouseY;
-
-		moveX *= MOUSE_SENSIBILITY;
-		moveY *= MOUSE_SENSIBILITY;
-
-		ProcessMouseMovement(moveX, moveY);
-	}
-	*/
 	Camera::~Camera()
 	{
 
