@@ -27,7 +27,7 @@ namespace FlyEngine
 			Utils::Buffer* buffers;
 			bool active;
 
-			Material* material;
+			Materials::Material* material;
 
 			Utils::Color color;
 
@@ -110,9 +110,9 @@ namespace FlyEngine
 			virtual void Rotate(float x, float y, float z);
 			void Scale(float x, float y, float z);
 
-			void SetMaterial(Material* newMaterial);
+			void SetMaterial(Materials::Material* newMaterial);
 			void ApplyMaterial();
-			Material* GetMaterial();
+			Materials::Material* GetMaterial();
 
 			Utils::Buffer* GetBuffers();
 			std::vector<Utils::VertexAttribute> GetVertexAttributes();
@@ -123,6 +123,8 @@ namespace FlyEngine
 			int GetIndexCount();
 			int GetVertexCount();
 			int GetVertexSize();
+
+			std::string GetName();
 
 			void ToggleModificationMessage(bool isActive);
 

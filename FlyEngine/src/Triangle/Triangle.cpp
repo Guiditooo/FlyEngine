@@ -24,11 +24,11 @@ namespace FlyEngine
 
 			name = "Triangle";
 
-			material = new Material();
+			material = new Materials::Material();
 
 			vertex = 
 			{
-				// Posición            // Color         // UV              // Normal
+			//  Posición                Color             UV           Normal
 				   0.0f,  0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f,  0.0f, 0.0f, 1.0f, // ARRIBA
 				 0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, // DER
 				-0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f  // IZQ
@@ -38,11 +38,6 @@ namespace FlyEngine
 			{
 				2,0,1,
 			};
-
-			indexCount = 6;
-			vertexCount = 2;
-			vertexSize = 6;
-
 
 			//Posicion
 			va.elementSize = 3;

@@ -20,11 +20,8 @@ namespace FlyEngine
 
 			VertexAttribute va;
 
-			indexCount = 6;
-			vertexCount = 2;
-			vertexSize = 6;
 
-			material = new Material();
+			material = new Materials::Material();
 
 			vertex =
 			{
@@ -40,7 +37,11 @@ namespace FlyEngine
 				2,0,1,
 				2,3,1
 			};
-			
+
+			indexCount = index.size();
+			vertexCount = 4;
+			vertexSize = 6;
+
 			//Posicion
 			va.elementSize = 3;
 			va.variableType = GL_FLOAT;

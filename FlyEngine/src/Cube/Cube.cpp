@@ -20,7 +20,7 @@ namespace FlyEngine
 			
 			VertexAttribute va;
 			
-			material = new Material();
+			material = new Materials::Material();
 
 			vertex = 
 			{
@@ -88,10 +88,6 @@ namespace FlyEngine
 				20, 21, 22,
 				21, 23, 22,
 			};			
-
-			indexCount = index.size();
-			vertexCount = 8;
-			vertexSize = 6;
 
 			//Posicion
 			va.elementSize = 3;

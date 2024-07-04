@@ -442,7 +442,7 @@ namespace FlyEngine
 			shouldUpdateModelMatrix = true;
 		}
 
-		void Entity::SetMaterial(Material* newMaterial)
+		void Entity::SetMaterial(Materials::Material* newMaterial)
 		{
 			material = newMaterial;
 		}
@@ -453,7 +453,7 @@ namespace FlyEngine
 				material->Apply();
 		}
 
-		Material* Entity::GetMaterial()
+		Materials::Material* Entity::GetMaterial()
 		{
 			return material;
 		}
@@ -593,6 +593,11 @@ namespace FlyEngine
 		int Entity::GetVertexSize()
 		{
 			return vertexSize;
+		}
+
+		std::string Entity::GetName()
+		{
+			return name;
 		}
 
 	}
