@@ -1,13 +1,13 @@
 #include "PointLight.h"
 
-FlyEngine::Lights::PointLight::PointLight(float lConstant, float lLinear, float lQuadratic) : Light(glm::vec3(0.0f), glm::vec3(0.0f),glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f))
+FlyEngine::Lights::PointLight::PointLight(float lConstant, float lLinear, float lQuadratic) : Light(glm::vec3(0.0f), glm::vec3(0.0f),glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), LightType::Point)
 {
 	constant = lConstant;
 	linear = lLinear;
 	quadratic = lQuadratic;
 }
 
-FlyEngine::Lights::PointLight::PointLight(float lConstant, float lLinear, float lQuadratic, glm::vec3 lPosition, glm::vec3 lAmbient, glm::vec3 lSpecular, glm::vec3 lDiffuse) : Light(lPosition, glm::vec3(0.0f), lAmbient, lSpecular, lDiffuse)
+FlyEngine::Lights::PointLight::PointLight(float lConstant, float lLinear, float lQuadratic, glm::vec3 lPosition, glm::vec3 lAmbient, glm::vec3 lSpecular, glm::vec3 lDiffuse) : Light(lPosition, glm::vec3(0.0f), lAmbient, lSpecular, lDiffuse, LightType::Point)
 {
 	constant = lConstant;
 	linear = lLinear;
