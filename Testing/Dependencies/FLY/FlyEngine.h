@@ -3,9 +3,11 @@
 
 #include "BaseGame/BaseGame.h"
 
+
 #include "CameraController/CameraController.h"
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
+#include "Material/Material.h"
 #include "Camera/Camera.h"
 #include "Input/Input.h"
 #include "Cube/Cube.h"
