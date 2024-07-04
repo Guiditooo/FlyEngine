@@ -71,6 +71,7 @@
     <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Lights\DirectionalLight\DirectionalLight.h" />
     <ClInclude Include="src\Lights\Light.h" />
+    <ClInclude Include="src\Lights\LightType.h" />
     <ClInclude Include="src\Lights\PointLight\PointLight.h" />
     <ClInclude Include="src\Lights\SpotLight\SpotLight.h" />
     <ClInclude Include="src\Line\Line.h" />

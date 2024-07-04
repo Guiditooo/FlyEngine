@@ -310,6 +310,9 @@
     <ClInclude Include="src\Lights\PointLight\PointLight.h">
       <Filter>Lights\PointLight</Filter>
     </ClInclude>
+    <ClInclude Include="src\Lights\LightType.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\fragment.shader">
