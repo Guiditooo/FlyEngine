@@ -15,6 +15,7 @@ namespace FlyEngine
 			FLYWHITE,
 			RED,
 			GREEN,
+			MOSS_GREEN,
 			BLUE,
 			MAGENTA,
 			YELLOW,

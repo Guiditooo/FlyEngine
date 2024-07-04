@@ -172,6 +172,11 @@ namespace FlyEngine
 				newColor.g = 1.0f;
 				newColor.b = 0.0f;
 				break;
+			case COLOR::MOSS_GREEN:
+				newColor.r = 0.2f;
+				newColor.g = 0.3f;
+				newColor.b = 0.3f;
+				break;
 			case COLOR::BLUE:
 				newColor.r = 0.0f;
 				newColor.g = 0.0f;
