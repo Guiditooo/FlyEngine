@@ -4,6 +4,7 @@
 #include "Game.h"
 
 #include "FlyFunctions/Debugger/Debugger.h"
+#include "MaterialSpecification/MaterialSpecification.h"
 
 namespace FlyGame
 {
@@ -17,7 +18,6 @@ namespace FlyGame
 
 		cameraController = nullptr;
 
-		input = nullptr;
 		rec = nullptr;
 		player = nullptr;
 		piso = nullptr;
@@ -33,12 +33,13 @@ namespace FlyGame
 
 		cameraController = nullptr;
 
-		input = nullptr;
 		rec = nullptr;
 		player = nullptr;
 		piso = nullptr;
 		cube = nullptr;
 		light = nullptr;
+
+		texture = nullptr;
 
 		movingObject = MovingObject::Cube;
 	}
@@ -61,6 +62,10 @@ namespace FlyGame
 			delete cube;
 		cube = nullptr;
 
+		if (light != nullptr)
+			delete light;
+		light = nullptr;
+
 		if (cameraController != nullptr)
 			delete cameraController;
 		cameraController = nullptr;
@@ -70,78 +75,71 @@ namespace FlyGame
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
 
-		mainCamera->SetPosition(-0.13f, 0.36f, -0.82f);
+		mainCamera->SetPosition(0.0f, 1.0f, 25.0f);
+		//mainCamera->SetRotation(-90, 0, 0);
 
-		cameraController = new CameraController(mainCamera, window,
-			KeyCode::KEY_W, KeyCode::KEY_S,
-			KeyCode::KEY_SPACE, KeyCode::KEY_LEFT_SHIFT,
-			KeyCode::KEY_A, KeyCode::KEY_D
-		);
+		cameraController = new CameraController(mainCamera, window);
 
+		piso = CreateRectangle(0, 0, 0, 100000, 100000);
+		player = CreateCube(0, 1, 0, 100);
+		cube = CreateCube(2, 1, 0, 100);
+		light = CreateCube(0, 3, 0, 100);
 
-		input = Utils::Input(window);
-		//rec = CreateRectangle(0, 0, 1, 1000, 1000);
-		piso = CreateRectangle(0, -1, 0, 1000, 1000);
-		player = CreateCube(0, 0, 0, 100);
-		cube = CreateCube(1, 0, 0, 100);
-		light = CreateCube(0, 0, 0, 100);
+		texture = CreateTexture("res\\Textures\\Box.png");
 
 		piso->SetName("Piso");
 		player->SetName("Player");
 		cube->SetName("Cubo Uno");
-		light->SetName("Cubo Dos");
+		light->SetName("Luz");
 
 		piso->SetRotation(90, 0, 0);
 
-		piso->SetColor(COLOR::BLUE);
-		cube->SetColor(COLOR::CYAN);
-		light->SetColor(COLOR::WHITE);
-		player->SetColor(COLOR::YELLOW);
+		cube->GetMaterial()->GetSpecs()->SetSpecs(Materials::MaterialList::Emerald);
+		piso->GetMaterial()->GetSpecs()->SetSpecs(Materials::MaterialList::Gold);
+		light->GetMaterial()->GetSpecs()->SetSpecs(Materials::MaterialList::WhitePlastic);
+
+		piso->SetColor(COLOR::WHITE);
 
 		piso->SetActive(true);
 		player->SetActive(true);
 		cube->SetActive(true);
 		light->SetActive(true);
 
-		SetLight(light);
+		SetLight(light); //Cambiar cuando tenga la clase Light andando
 
 	}
 
 	void Game::Update()
 	{
-		
-		Input inputSystem = Input(window);
 
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_ENTER))
+		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
-			int actualIndex = (int)movingObject;
-			int nextIndex = actualIndex + 1;
-			movingObject = (MovingObject)nextIndex;
-			switch (movingObject)
-			{
-			case FlyGame::MovingObject::Camera:
-				Debugger::ConsoleMessage("Moving Camera");
-				break;
-			case FlyGame::MovingObject::Light:
-				Debugger::ConsoleMessage("Moving Light");
-				break;
-			case FlyGame::MovingObject::Cube:
-			default:
-				movingObject = MovingObject::Cube;
-				Debugger::ConsoleMessage("Moving Player");
-				break;
-			}
+			movingObject = MovingObject::Cube;
+			Debugger::ConsoleMessage("Moving Player");
 		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_KP_2))
+		{
+			movingObject = MovingObject::Camera;
+			Debugger::ConsoleMessage("Moving Camera");
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_KP_3))
+		{
+			movingObject = MovingObject::Light;
+			Debugger::ConsoleMessage("Moving Light");
+		}
+
 		switch (movingObject)
 		{
 		case FlyGame::MovingObject::Cube:
-			MoveObject(cube, inputSystem, true);
+			MoveObject(cube, true);
 			break;
 		case FlyGame::MovingObject::Camera:
-			cameraController->Update(false);
+			cameraController->Update(true);
 			break;
 		case FlyGame::MovingObject::Light:
-			MoveObject(light, inputSystem, false);
+			MoveObject(light, true);
 			break;
 		default:
 			break;
@@ -153,81 +151,81 @@ namespace FlyGame
 
 	}
 
-	void Game::MoveObject(FlyEngine::Entities::Entity* entity, Input inputSystem, bool showMovement)
+	void Game::MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement)
 	{
 		bool objectMoved = false;
 		float sensibility = 1;
 		float rotSensibility = 10;
 
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_W))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_W))
 		{
 			entity->MoveForward(sensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_S))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_S))
 		{
 			entity->MoveBackward(sensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_SPACE))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_SPACE))
 		{
 			entity->MoveUp(sensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_LEFT_SHIFT))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_LEFT_SHIFT))
 		{
 			entity->MoveDown(sensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_A))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_A))
 		{
 			entity->MoveLeft(sensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_D))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_D))
 		{
 			entity->MoveRight(sensibility);
 			objectMoved = true;
 		}
 
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_I))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_I))
 		{
 			entity->Rotate(rotSensibility, 0.0f, 0.0f);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_K))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_K))
 		{
 			entity->Rotate(-rotSensibility, 0.0f, 0.0f);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_J))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_J))
 		{
 			entity->Rotate(0.0f, rotSensibility, 0.0f);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_L))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_L))
 		{
 			entity->Rotate(0.0f, -rotSensibility, 0.0f);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_U))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_U))
 		{
 			entity->Rotate(0.0f, 0.0f, -rotSensibility);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_O))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_O))
 		{
 			entity->Rotate(0.0f, 0.0f, rotSensibility);
 			objectMoved = true;
 		}
 
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_KP_ADD))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_ADD))
 		{
 			float scaleSens = 1.01f;
 			entity->Scale(scaleSens, scaleSens, scaleSens);
 			objectMoved = true;
 		}
-		if (inputSystem.GetKeyDown(Utils::KeyCode::KEY_KP_SUBTRACT))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_SUBTRACT))
 		{
 			float scaleSens = 0.99f;
 			entity->Scale(-scaleSens, -scaleSens, -scaleSens);
@@ -237,14 +235,10 @@ namespace FlyGame
 
 		if (objectMoved && showMovement)
 		{
-			std::string text = "- Player Updated Position: (";
-			text += std::to_string(entity->GetPosition().x);
-			text += ",";
-			text += std::to_string(entity->GetPosition().y);
-			text += ",";
-			text += std::to_string(entity->GetPosition().z);
-			text += ")";
-			Debugger::ConsoleMessage(&text[0], 1, 0, 1, 0);
+			std::string text = "- ";
+			text += entity->GetName();
+			text += " Updated Position : ";
+			Debugger::ConsoleMessage(&text[0], entity->GetPosition());
 		}
 	}
 

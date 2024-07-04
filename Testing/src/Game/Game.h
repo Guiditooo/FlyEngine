@@ -20,7 +20,6 @@ namespace FlyGame
 	{
 	private:
 		CameraController* cameraController;
-		Utils::Input input;
 		
 		Entities::Rectangle* rec;
 		Entities::Rectangle* piso;
@@ -29,11 +28,13 @@ namespace FlyGame
 		Entities::Cube* cube;
 		Entities::Cube* light;
 
+		Texture* texture;
+
 		int aux = 0;
 
 		MovingObject movingObject;
 
-		void MoveObject(FlyEngine::Entities::Entity* entity, Input inputSystem, bool showMovement = true);
+		void MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement = true);
 
 	public:
 		Game(int width, int height, std::string name);
