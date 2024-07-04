@@ -33,7 +33,7 @@ Shader::Shader(const char* fragmentShaderPath, const char* vertexShaderPath)
 
 	const char* vertexText = vertexSource.c_str();
 	const char* fragmentText = fragmentSource.c_str();
-
+	
 	GLuint vertexID;
 	vertexID = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexID, 1, &vertexText, NULL);

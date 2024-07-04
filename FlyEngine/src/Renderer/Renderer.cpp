@@ -1,18 +1,33 @@
 #include "Renderer.h"
-#include <Entity/Entity.h>
+
+#include <vector>
+#include <iostream>
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <vector>
-#include <iostream>
+#include "Entity/Entity.h"
+#include "TextureImporter/TextureImporter.h"
 
 namespace FlyEngine
 {
+	using namespace Importers;
+
+	const char* DEFAULT_VERTEX_PATH = "res/Shaders/vertex.shader";
+	const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/fragment.shader";
+
 	Renderer::Renderer()
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
+		primitiveShader = new Shader(DEFAULT_FRAGMENT_PATH, DEFAULT_VERTEX_PATH);
+
+		diffuseTexture = TextureImporter::LoadTexture("res\\Textures\\Box.png");
+		specularTexture = TextureImporter::LoadTexture("res\\Textures\\Box_S.png");
+
+		primitiveShader->UseShader();
+		SetIntUniform("material.diffuse", diffuseTexture->GetID());
+		SetIntUniform("material.specular", specularTexture->GetID());
 	}
 
 	Renderer::~Renderer()
@@ -62,6 +77,14 @@ namespace FlyEngine
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * sizeof(float), index.data(), GL_STATIC_DRAW);
 	}
 
+
+	void Renderer::SetNewShader(Shader* newShader)
+	{
+		primitiveShader = newShader;
+	}
+
+
+
 	void Renderer::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
 	{
 		for (short i = 0; i < vertexAttributes.size(); i++)
@@ -79,52 +102,124 @@ namespace FlyEngine
 
 	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
 	{
+		UseTextures(GL_TEXTURE0, diffuseTexture->GetID());
+		UseTextures(GL_TEXTURE1, specularTexture->GetID());
 		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
 
-	void Renderer::SetMatrixUniform(unsigned int shaderID, const GLchar* variableName, glm::mat4x4 matrix)
+	void Renderer::UseTextures(GLenum textureType, GLuint textureID)
 	{
-		GLint modelUniformLocation = glGetUniformLocation(shaderID, variableName);
+		glActiveTexture(textureType);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+	}
+
+	void Renderer::SetMatrix4Uniform(const GLchar* variableName, glm::mat4x4 matrix)
+	{
+		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
 		glUniformMatrix4fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
-	void Renderer::SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec)
+	void Renderer::SetMatrix3Uniform(const GLchar* variableName, glm::mat3x3 matrix)
 	{
-		GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
-		//glUniform3fv(uniformLocation, 1, glm::value_ptr(vec));
+		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniformMatrix3fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void Renderer::SetMatrix2Uniform(const GLchar* variableName, glm::mat2x2 matrix)
+	{
+		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniformMatrix2fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void Renderer::SetVec4Uniform(const char* variableName, glm::vec4 vec)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform4f(uniformLocation, vec.x, vec.y, vec.z, vec.w);
+	}
+
+	void Renderer::SetVec4Uniform(const char* variableName, float x, float y, float z, float w)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform4f(uniformLocation, x, y, z, w);
+	}
+
+	void Renderer::SetVec3Uniform(const char* variableName, glm::vec3 vec)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
 		glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
 	}
 
-	void Renderer::SetFloatUniform(unsigned int shaderID, const char* variableName, float value)
+	void Renderer::SetVec3Uniform(const char* variableName, float x, float y, float z)
 	{
-		GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform3f(uniformLocation, x, y, z);
+	}
+
+	void Renderer::SetVec2Uniform(const char* variableName, glm::vec2 vec)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform2f(uniformLocation, vec.x, vec.y);
+	}
+
+	void Renderer::SetVec2Uniform(const char* variableName, float x, float y)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform2f(uniformLocation, x, y);
+	}
+
+	void Renderer::SetFloatUniform(const char* variableName, float value)
+	{
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
 		glUniform1f(uniformLocation, value);
 	}
 
-	void Renderer::SetSpotLight(unsigned int shaderID, Lights::SpotLight* light)
+	void Renderer::SetBoolUniform(const char* variableName, bool value)
 	{
-		SetBaseLightUniforms(shaderID, light);
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform1i(uniformLocation, (int)value);
 	}
 
-	void Renderer::SetPointLight(unsigned int shaderID, Lights::PointLight* light)
+	void Renderer::SetIntUniform(const char* variableName, int value)
 	{
-		SetBaseLightUniforms(shaderID, light);
-		SetFloatUniform(shaderID, "light.constant", light->GetConstant());
-		SetFloatUniform(shaderID, "light.linear", light->GetLinear());
-		SetFloatUniform(shaderID, "light.quadratic", light->GetQuadratic());
+		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		glUniform1i(uniformLocation, (int)value);
 	}
 
-	void Renderer::SetDirectionalLight(unsigned int shaderID, Lights::DirectionalLight* light)
+	void Renderer::SetSpotLight(Lights::SpotLight* light)
 	{
-		SetBaseLightUniforms(shaderID, light);
+		SetVec3Uniform("spotLight.ambient", light->GetAmbient());
+		SetVec3Uniform("spotLight.specular", light->GetSpecular());
+		SetVec3Uniform("spotLight.diffuse", light->GetDiffuse());
+		SetVec3Uniform("spotLight.position", light->GetPosition());
+		SetVec3Uniform("spotLight.direction", light->GetDirection());
+		SetFloatUniform("spotLight.constant", light->GetConstant());
+		SetFloatUniform("spotLight.linear", light->GetLinear());
+		SetFloatUniform("spotLight.quadratic", light->GetQuadratic());
+		SetFloatUniform("spotLight.cutOff", light->GetCutOff());
+		SetFloatUniform("spotLight.outerCutOff", light->GetOuterCutOff());
 	}
 
-	void Renderer::SetBaseLightUniforms(unsigned int shaderID, Lights::Light* light)
+	void Renderer::SetPointLight(Lights::PointLight* light, int index)
 	{
-		SetVec3Uniform(shaderID, "light.ambient", light->GetAmbient());
-		SetVec3Uniform(shaderID, "light.specular", light->GetSpecular());
-		SetVec3Uniform(shaderID, "light.diffuse", light->GetDiffuse());
+		std::string text = "pointLights[";
+		text += index;
+		text += "]";
+		SetVec3Uniform("text.ambient", light->GetAmbient());
+		SetVec3Uniform("text.specular", light->GetSpecular());
+		SetVec3Uniform("text.diffuse", light->GetDiffuse());
+		SetVec3Uniform("text.position", light->GetPosition());
+		SetFloatUniform("text.constant", light->GetConstant());
+		SetFloatUniform("text.linear", light->GetLinear());
+		SetFloatUniform("text.quadratic", light->GetQuadratic());
+	}
+
+	void Renderer::SetDirectionalLight(Lights::DirectionalLight* light)
+	{
+		SetVec3Uniform("dirLight.ambient", light->GetAmbient());
+		SetVec3Uniform("dirLight.specular", light->GetSpecular());
+		SetVec3Uniform("dirLight.diffuse", light->GetDiffuse());
+		SetVec3Uniform("dirLight.direction", light->GetDirection());
 	}
 
 }
