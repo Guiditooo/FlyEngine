@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <iostream>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -10,15 +11,17 @@
 #include "VertexAttribute/VertexAttribute.h"
 #include "Exports/Exports.h"
 #include "Buffers/Buffers.h"
-#include "Material/Material.h"
+//#include "Material/Material.h"
 #include "FlyFunctions/Color/Color.h"
 
 namespace FlyEngine
 {
-
+	namespace Materials
+	{
+		class Material;
+	}
 	namespace Entities
 	{
-
 		class FLY_API Entity
 		{
 		protected:
@@ -111,7 +114,7 @@ namespace FlyEngine
 			void Scale(float x, float y, float z);
 
 			void SetMaterial(Materials::Material* newMaterial);
-			void ApplyMaterial();
+
 			Materials::Material* GetMaterial();
 
 			Utils::Buffer* GetBuffers();

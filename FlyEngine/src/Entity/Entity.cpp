@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Renderer/Renderer.h"
+#include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
 
 namespace FlyEngine
@@ -445,12 +446,6 @@ namespace FlyEngine
 		void Entity::SetMaterial(Materials::Material* newMaterial)
 		{
 			material = newMaterial;
-		}
-
-		void Entity::ApplyMaterial()
-		{
-			if (material != nullptr)
-				material->Apply();
 		}
 
 		Materials::Material* Entity::GetMaterial()
