@@ -24,11 +24,12 @@ namespace FlyEngine
 	class FLY_API BaseGame
 	{
 	private:
-		Renderer renderer;
+		Renderer* renderer;
 		std::list<Entities::Entity*> entityList;
 		std::list<Texture*> textureList;
 		std::list<Lights::Light*> lightList;
-		//Entities::Entity* light;
+
+		Lights::DirectionalLight* directionalLight;
 
 		bool isRunning;
 		bool checkEsc;
@@ -44,9 +45,11 @@ namespace FlyEngine
 		void DrawEntities();
 		void DrawTextures();
 
-		void SetMatrixUniforms(int shader, glm::mat4 entityMatrix);
-		void SetLightUniforms(int shader);
-		void SetMaterialUniforms(int shader, Entities::Entity* entity);
+		void CalculateLights();
+
+		void SetMatrixUniforms(glm::mat4 entityMatrix);
+		void SetLightUniforms(Lights::Light* light, int index);
+		void SetMaterialUniforms(Entities::Entity* entity);
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
 
@@ -62,7 +65,7 @@ namespace FlyEngine
 		void RunGame();
 		bool IsGameRunning();
 		void SetWindowParameters(int width, int height, std::string name = "FlyEngine");
-		
+
 		glm::vec2 GetWindowSize();
 
 		Camera* GetMainCamera();
@@ -74,7 +77,7 @@ namespace FlyEngine
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width, float height);
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width);
 		Entities::Triangle* CreateTriangle(float posX, float posY, float posZ, float base, float height);
-		Entities::Cube* CreateCube(float posX, float posY, float posZ,float width);
+		Entities::Cube* CreateCube(float posX, float posY, float posZ, float width);
 
 	protected:
 		std::string initialWindowName;

@@ -8,17 +8,20 @@
 
 #include "TextureImporter/TextureImporter.h"
 
+#include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "FlyFunctions/Commons/Commons.h"
 #include "FlyFunctions/ColorCode/ColorCode.h"
 #include "MaterialSpecification/MaterialSpecification.h"
 #include "Input/Input.h"
+#include "Lights/LightType.h"
 
 namespace FlyEngine
 {
-	using namespace Entities;
+	//using namespace Entities;
 
-	void frameBufferResizeCallback(GLFWwindow* window, int width, int height) 
+
+	void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
 	}
@@ -28,7 +31,7 @@ namespace FlyEngine
 		window = nullptr;
 		mainCamera = nullptr;
 
-		//light = nullptr;
+		renderer = nullptr;
 
 		initialWindowName = "FlyEngine";
 		initialWindowWidth = 0;
@@ -36,6 +39,14 @@ namespace FlyEngine
 		checkEsc = true;
 
 		isRunning = false;
+		directionalLight = new Lights::DirectionalLight
+		(
+			glm::vec3(0, -1, 0),
+			glm::vec3(1.00f, 1.00f, 1.0f),
+			glm::vec3(0.5f, 0.5f, 0.5f),
+			glm::vec3(0.4f, 0.4f, 0.4f)
+		);
+		lightList.push_back(directionalLight);
 	}
 
 	BaseGame::~BaseGame()
@@ -47,6 +58,10 @@ namespace FlyEngine
 		if (window != nullptr)
 			delete window;
 		window = nullptr;
+
+		if (renderer != nullptr)
+			delete renderer;
+		renderer = nullptr;
 	}
 
 	void BaseGame::SetWindowParameters(int width, int height, std::string name)
@@ -73,17 +88,17 @@ namespace FlyEngine
 
 	void BaseGame::CreateBuffers(Buffer* buffers)
 	{
-		renderer.CreateBaseBuffers(*buffers);
+		renderer->CreateBaseBuffers(*buffers);
 	}
 
 	void BaseGame::BindBuffers(Buffer* buffers, std::vector<float> vertex, std::vector<unsigned int> index)
 	{
-		renderer.BindBuffers(*buffers, vertex, vertex.size(), index, index.size());
+		renderer->BindBuffers(*buffers, vertex, vertex.size(), index, index.size());
 	}
 
 	void BaseGame::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
 	{
-		renderer.SetVertexAttributes(vertexAttributes);
+		renderer->SetVertexAttributes(vertexAttributes);
 	}
 
 	void BaseGame::DrawObjects()
@@ -96,30 +111,28 @@ namespace FlyEngine
 	void BaseGame::DrawEntities()
 	{
 
+		CalculateLights();
 
 		for (Entities::Entity* entity : entityList)
 		{
 			if (entity->IsActive())
 			{
-				int shader = entity->GetMaterial()->GetShaderID();
 
-				entity->ApplyMaterial();
-
-				SetMatrixUniforms(shader, entity->GetModelMatrix());
-				//SetLightUniforms(shader);
-				SetMaterialUniforms(shader, entity);
-
+				SetMatrixUniforms(entity->GetModelMatrix());
+				//SetLightUniforms();
+				SetMaterialUniforms(entity);
 				//Esta linea es por si se quiere poner un efecto de color general a todo lo renderizado del engine
 				//No es una luz, es un filtro
-				renderer.SetVec3Uniform(shader, "colorMultiplier", entity->GetColor().GetColorV3());
+				renderer->SetVec3Uniform("colorMultiplier", entity->GetColor().GetColorV3());
 
-				renderer.DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
-				
+				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+
 			}
-			int a;
 		}
+		//renderer->SetNewShader();
+		//renderer->DrawObject();
 	}
-	
+
 	/*
 	void BaseGame::DrawTextures()
 	{
@@ -137,37 +150,59 @@ namespace FlyEngine
 
 				//Esta linea es por si se quiere poner un efecto de color general a todo lo renderizado del engine
 				//No es una luz, es un filtro
-				renderer.SetVec3Uniform(shader, "colorMultiplier", entity->GetColor().GetColorV3());
+				renderer->SetVec3Uniform(shader, "colorMultiplier", entity->GetColor().GetColorV3());
 
-				renderer.DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 				int a;
 			}
 		}
 	}*/
 
-	void BaseGame::SetMatrixUniforms(int shader, glm::mat4 entityMatrix)
+	void BaseGame::CalculateLights()
 	{
-		renderer.SetMatrixUniform(shader, "viewMatrix", mainCamera->GetViewMatrix());
-		renderer.SetMatrixUniform(shader, "projectionMatrix", mainCamera->GetProjMatrix());
-		renderer.SetMatrixUniform(shader, "modelMatrix", entityMatrix);
-		renderer.SetVec3Uniform(shader, "viewPos", mainCamera->GetPosition());
+		int pointLightIndex = 0;
+		for (Lights::Light* light : lightList)
+		{
+			SetLightUniforms(light, pointLightIndex);
+			if (light->GetLightType() == Lights::LightType::Point)
+				pointLightIndex++;
+		}
 	}
 
-	void BaseGame::SetLightUniforms(int shader)
+	void BaseGame::SetMatrixUniforms(glm::mat4 entityMatrix)
 	{
-		renderer.SetVec3Uniform(shader, "light.position", glm::vec3(0,0,0));
-		renderer.SetVec3Uniform(shader, "light.ambient", glm::vec3( 0.2f, 0.2f, 0.2f));
-		renderer.SetVec3Uniform(shader, "light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-		renderer.SetVec3Uniform(shader, "light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		renderer->SetMatrix4Uniform("view", mainCamera->GetViewMatrix());
+		renderer->SetMatrix4Uniform("projection", mainCamera->GetProjMatrix());
+		renderer->SetMatrix4Uniform("model", entityMatrix);
+		renderer->SetVec3Uniform("viewPos", mainCamera->GetPosition());
 	}
 
-	void BaseGame::SetMaterialUniforms(int shader, Entities::Entity* entity)
+	void BaseGame::SetLightUniforms(Lights::Light* light, int index)
+	{
+		switch (light->GetLightType())
+		{
+		case Lights::LightType::Directional:
+			renderer->SetDirectionalLight((Lights::DirectionalLight*)light);
+			break;
+		case Lights::LightType::Point:
+			renderer->SetPointLight((Lights::PointLight*)light, index);
+			break;
+		case Lights::LightType::Spot:
+			renderer->SetSpotLight((Lights::SpotLight*)light);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void BaseGame::SetMaterialUniforms(Entities::Entity* entity)
 	{
 		Materials::MaterialSpecification* mat = entity->GetMaterial()->GetSpecs();
-		renderer.SetVec3Uniform(shader, "material.ambient", mat->GetAmbient());
-		renderer.SetVec3Uniform(shader, "material.diffuse", mat->GetDiffuse());
-		renderer.SetVec3Uniform(shader, "material.specular", mat->GetSpecular());
-		renderer.SetFloatUniform(shader, "material.shininess", mat->GetShininess());
+
+		//renderer->SetVec3Uniform("material.ambient", mat->GetAmbient());
+		//renderer->SetVec3Uniform("material.diffuse", mat->GetDiffuse());
+		//renderer->SetVec3Uniform("material.specular", mat->GetSpecular());
+		renderer->SetFloatUniform("material.shininess", mat->GetShininess());
 	}
 
 	float BaseGame::PixelsToEngine(int objectWidthInPixels, float windowDimension)
@@ -175,10 +210,10 @@ namespace FlyEngine
 		return (objectWidthInPixels * 1.0f) / windowDimension;
 	}
 
-	Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
+	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
 	{
 		glm::vec2 windowSize = window->GetWindowSize();
-		Rectangle* rec = new Rectangle();
+		Entities::Rectangle* rec = new Entities::Rectangle();
 		rec->SetPosition(posX, posY, posZ);
 		//rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.y), 1);
 		CreateBuffers(rec->GetBuffers());
@@ -188,23 +223,23 @@ namespace FlyEngine
 		return rec;
 	}
 
-	Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width)
+	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width)
 	{
 		return CreateRectangle(posX, posY, posZ, width, width);
 	}
 
-	Triangle* BaseGame::CreateTriangle(float posX, float posY, float posZ, float base, float height)
+	Entities::Triangle* BaseGame::CreateTriangle(float posX, float posY, float posZ, float base, float height)
 	{
-		Triangle* tri = new Triangle();
+		Entities::Triangle* tri = new Entities::Triangle();
 		return tri;
 	}
 
-	Cube* BaseGame::CreateCube(float posX, float posY, float posZ, float width)
+	Entities::Cube* BaseGame::CreateCube(float posX, float posY, float posZ, float width)
 	{
 		glm::vec2 windowSize = window->GetWindowSize();
-		Cube* cube = new Cube();
+		Entities::Cube* cube = new Entities::Cube();
 		cube->SetPosition(posX, posY, posZ);
-		//cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
+		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
 		SetVertexAttributes(cube->GetVertexAttributes());
@@ -247,11 +282,11 @@ namespace FlyEngine
 			Debugger::ConsoleMessage("Error: Window Not Found", 2, 0, 1, 0);
 			return;
 		}
-		glfwMakeContextCurrent(window->GetWindow()); 
+		glfwMakeContextCurrent(window->GetWindow());
 		glfwSetFramebufferSizeCallback(window->GetWindow(), frameBufferResizeCallback);
 
 		//mainCamera = new Camera(FlyEngine::ProjectionType::Perspective, 60.0f, initialWindowWidth / initialWindowHeight, 0.1f, 500.0f);
-		mainCamera = new Camera(glm::vec3(0, 0, -5));
+		mainCamera = new Camera();
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -271,11 +306,15 @@ namespace FlyEngine
 
 		glfwSetFramebufferSizeCallback(window->GetWindow(), ResizeViewport);
 
+		renderer = new Renderer();
+
+
 		Init();
 	}
 
 	void BaseGame::InternalUpdate()
 	{
+		renderer->SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::MOSS_GREEN));
 		if (checkEsc)
 		{
 			if (Input::GetKeyDown(KeyCode::KEY_ESCAPE))
@@ -288,10 +327,7 @@ namespace FlyEngine
 
 	void BaseGame::InternalDraw()
 	{
-		renderer.SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::FLYBLACK));
-
 		DrawObjects();
-
 		SwapBuffers();
 	}
 
@@ -338,8 +374,7 @@ namespace FlyEngine
 
 	Texture* BaseGame::CreateTexture(const char* path)
 	{
-		Texture texture = Importers::TextureImporter::LoadTexture(path);
-		return &texture;
+		return Importers::TextureImporter::LoadTexture(path);
 	}
 
 }
