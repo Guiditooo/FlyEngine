@@ -33,9 +33,13 @@
     <ClCompile Include="src\FlyFunctions\Vertices\Vertex.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input\Input.cpp" />
+    <ClCompile Include="src\Lights\DirectionalLight\DirectionalLight.cpp" />
     <ClCompile Include="src\Lights\Light.cpp" />
+    <ClCompile Include="src\Lights\PointLight\PointLight.cpp" />
+    <ClCompile Include="src\Lights\SpotLight\SpotLight.cpp" />
     <ClCompile Include="src\Line\Line.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MaterialSpecification\MaterialSpecification.cpp" />
     <ClCompile Include="src\Material\Material.cpp" />
     <ClCompile Include="src\Rectangle\Rectangle.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
@@ -65,9 +69,14 @@
     <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
     <ClInclude Include="src\FlyFunctions\Vertices\Vertex.h" />
     <ClInclude Include="src\Input\Input.h" />
+    <ClInclude Include="src\Lights\DirectionalLight\DirectionalLight.h" />
     <ClInclude Include="src\Lights\Light.h" />
+    <ClInclude Include="src\Lights\PointLight\PointLight.h" />
+    <ClInclude Include="src\Lights\SpotLight\SpotLight.h" />
     <ClInclude Include="src\Line\Line.h" />
+    <ClInclude Include="src\MaterialSpecification\MaterialSpecification.h" />
     <ClInclude Include="src\Material\Material.h" />
+    <ClInclude Include="src\Material\MaterialList.h" />
     <ClInclude Include="src\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\Shader.h" />
@@ -187,6 +196,16 @@ IF EXIST "$(SolutionDir)Testing\res\Shaders" (
 XCOPY "$(SolutionDir)FlyEngine\res\Shaders" "$(SolutionDir)Testing\res\Shaders" /e /h /y /s
 ) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
 
+IF EXIST "$(SolutionDir)Testing\res\Textures" (RMDIR /S /Q "$(SolutionDir)Testing\res\Textures"
+ ECHO Carpeta shaders eliminada en Testing.
+)
+
+IF NOT EXIST "$(SolutionDir)Testing\res\Textures" (MKDIR "$(SolutionDir)Testing\res\Textures")
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (
+XCOPY "$(SolutionDir)FlyEngine\res\Textures" "$(SolutionDir)Testing\res\Textures" /e /h /y /s
+) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
+
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
 XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
@@ -239,6 +258,16 @@ IF EXIST "$(SolutionDir)Testing\res\Shaders" (
 XCOPY "$(SolutionDir)FlyEngine\res\Shaders" "$(SolutionDir)Testing\res\Shaders" /e /h /y /s
 ) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
 
+IF EXIST "$(SolutionDir)Testing\res\Textures" (RMDIR /S /Q "$(SolutionDir)Testing\res\Textures"
+ ECHO Carpeta shaders eliminada en Testing.
+)
+
+IF NOT EXIST "$(SolutionDir)Testing\res\Textures" (MKDIR "$(SolutionDir)Testing\res\Textures")
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (
+XCOPY "$(SolutionDir)FlyEngine\res\Textures" "$(SolutionDir)Testing\res\Textures" /e /h /y /s
+) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
+
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
 XCOPY "$(ProjectDir)Dependencies" "$(SolutionDir)Testing\Dependencies" /e /h /y /s
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies\FLY" (MKDIR "$(SolutionDir)Testing\Dependencies\FLY")
@@ -276,6 +305,16 @@ IF NOT EXIST "$(SolutionDir)Testing\res\Shaders" (MKDIR "$(SolutionDir)Testing\r
 
 IF EXIST "$(SolutionDir)Testing\res\Shaders" (
 XCOPY "$(SolutionDir)FlyEngine\res\Shaders" "$(SolutionDir)Testing\res\Shaders" /e /h /y /s
+) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (RMDIR /S /Q "$(SolutionDir)Testing\res\Textures"
+ ECHO Carpeta shaders eliminada en Testing.
+)
+
+IF NOT EXIST "$(SolutionDir)Testing\res\Textures" (MKDIR "$(SolutionDir)Testing\res\Textures")
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (
+XCOPY "$(SolutionDir)FlyEngine\res\Textures" "$(SolutionDir)Testing\res\Textures" /e /h /y /s
 ) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
 
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
@@ -319,6 +358,16 @@ IF NOT EXIST "$(SolutionDir)Testing\res\Shaders" (MKDIR "$(SolutionDir)Testing\r
 
 IF EXIST "$(SolutionDir)Testing\res\Shaders" (
 XCOPY "$(SolutionDir)FlyEngine\res\Shaders" "$(SolutionDir)Testing\res\Shaders" /e /h /y /s
+) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (RMDIR /S /Q "$(SolutionDir)Testing\res\Textures"
+ ECHO Carpeta shaders eliminada en Testing.
+)
+
+IF NOT EXIST "$(SolutionDir)Testing\res\Textures" (MKDIR "$(SolutionDir)Testing\res\Textures")
+
+IF EXIST "$(SolutionDir)Testing\res\Textures" (
+XCOPY "$(SolutionDir)FlyEngine\res\Textures" "$(SolutionDir)Testing\res\Textures" /e /h /y /s
 ) ELSE ( ECHO SHADERS FOLDER-TESTING DOES NOT EXIST )
 
 IF NOT EXIST "$(SolutionDir)Testing\Dependencies" (MKDIR "$(SolutionDir)Testing\Dependencies")
