@@ -7,24 +7,27 @@
 namespace FlyEngine
 {
 
-	class Texture
+	class FLY_API Texture
 	{
 	private:
-		unsigned int rendererID;
+		unsigned int id;
 		std::string path;
-		unsigned char* buffer;
 		int width;
 		int height;
-		int bpp;
+
+		bool isActive;
 	public:
-		Texture(const std::string& texturePath);
+		Texture(unsigned int id, int textureWidth, int textureHeight, const std::string& texturePath);
 		~Texture();
 
 		void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
 
+		unsigned int GetID() const;
+		const std::string& GetPath();
 		int GetWidth();
 		int GetHeight();
+		bool IsActive();
 	};
 
 }
