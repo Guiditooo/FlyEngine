@@ -1,153 +1,100 @@
 #include "Input.h"
-#include "FlyFunctions/Debugger/Debugger.h"
-#include "Window/Window.h"
 
 #include <string>
-#include <functional>
+
+#include "FlyFunctions/Debugger/Debugger.h"
 
 namespace FlyEngine
 {
 	namespace Utils
 	{
 
-		const float MOUSE_SENSIBILITY = 0.1f;
+		bool Input::currentKeys[GLFW_KEY_LAST + 1] = { false };
+		bool Input::previousKeys[GLFW_KEY_LAST + 1] = { false };
+		bool Input::activeMessages = true;
 
-		//std::unordered_set<KeyCode> Input::pressedKeys;
+		FlyEngine::Window* Input::window = nullptr;
 
-		Input::Input()
+
+		void Input::SetContextWindow(Window* win)
 		{
-			window = nullptr;
-			moveX = 0;
-			moveY = 0;
+			window = win;
+			glfwSetKeyCallback(window->GetWindow(), KeyCallback);
 		}
 
-		Input::Input(Window* newWindow)
+		void Input::Update()
 		{
-			window = newWindow;
-			moveX = 0;
-			moveY = 0;
-		}
-
-		void Input::SetContextWindow(Window* newWindow)
-		{
-			window = newWindow;
-		}
-		
-		//void Input::SetUp(Window* newWindow)
-		//{
-		//	SetContextWindow(newWindow);
-		//	/*
-		//	glfwSetCursorPosCallback(newWindow->GetWindow(), [](GLFWwindow* window, double mouseX, double mouseY)
-		//		{
-		//			static float lastX = 0.0f;
-		//			static float lastY = 0.0f;
-		//			static bool firstMove = true;
-
-		//			if (firstMove)
-		//			{
-		//				lastX = mouseX;
-		//				lastY = mouseY;
-		//				firstMove = false;
-		//			}
-
-		//			moveX = mouseX - lastX;
-		//			moveY = lastY - mouseY; // Invierte el desplazamiento del ratón para que la cámara no se invierta
-		//			lastX = mouseX;
-		//			lastY = mouseY;
-
-		//			moveX *= MOUSE_SENSIBILITY;
-		//			moveY *= MOUSE_SENSIBILITY;
-
-		//		}
-		//	);
-		//	*/
-		//}
-	
-
-#pragma region CHECK LATER
-
-		/*
-		bool Input::GetKeyUp(KeyCode key)
-		{
-			if (pressedKeys.empty() || pressedKeys.count(key) != 1) return false;
-
-			if (glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_RELEASE)
+			for (int i = 0; i <= GLFW_KEY_LAST; ++i)
 			{
-				Debugger::ConsoleMessageID("Tecla soltada!", 2, 0, 1);
-				pressedKeys.erase(key);
-				return true;
-			}
-			return false;
-		}
-		bool Input::GetKeyPressed(KeyCode key)
-		{
-			if (glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_REPEAT)
-			{
-				Debugger::ConsoleMessageID("Tecla Presionada!", 2, 0, 1);
-				pressedKeys.insert(key);
-				return true;
-			}
-			return false;
-		}
-		*/
-
-
-		/*
-		void Input::GlfwTester(KeyCode key)
-		{
-			switch (glfwGetKey(window->GetWindow(), static_cast<int>(key)))
-			{
-			case GLFW_PRESS:
-				Debugger::ConsoleMessage("PRESS!", 2, 0, 1);
-				break;
-			case GLFW_REPEAT:
-				Debugger::ConsoleMessage("REPEAT!", 2, 0, 1);
-				break;
-			case GLFW_RELEASE:
-				Debugger::ConsoleMessage("RELEASE!", 2, 0, 1);
-				break;
-			default:
-				Debugger::ConsoleMessage("UNKNOWN!", 2, 0, 1);
-				break;
+				previousKeys[i] = currentKeys[i];
 			}
 		}
-		*/
-
-#pragma endregion
 
 		bool Input::GetKeyDown(KeyCode key)
 		{
-			if (glfwGetKey(window->GetWindow(), static_cast<int>(key)) == GLFW_PRESS)
+			return currentKeys[static_cast<int>(key)] && !previousKeys[static_cast<int>(key)];
+		}
+
+		bool Input::GetKeyPressed(KeyCode key)
+		{
+			return currentKeys[static_cast<int>(key)];
+		}
+
+		bool Input::GetKeyUp(KeyCode key)
+		{
+			return !currentKeys[static_cast<int>(key)] && previousKeys[static_cast<int>(key)];
+		}
+
+		INPUT_STATE Input::GetKeyState(KeyCode key)
+		{
+			INPUT_STATE state = INPUT_STATE::NONE;
+			/*
+			if (currentKeys[static_cast<int>(key)] && !previousKeys[static_cast<int>(key)])
 			{
-				//Debugger::ConsoleMessageID("Tecla Mantenida!", 2, 0, 1);
-				//pressedKeys.insert(key);
-				return true;
+				state = INPUT_STATE::DOWN;
+				if (activeMessages)
+					Debugger::ConsoleMessage("Key Down!", 1, 0, 1, 1);
 			}
-			return false;
+			else if (currentKeys[static_cast<int>(key)] && previousKeys[static_cast<int>(key)])
+			{
+				state = INPUT_STATE::PRESSED;
+				if (activeMessages)
+					Debugger::ConsoleMessage("Key Pressed!");
+			}
+			else if (!currentKeys[static_cast<int>(key)] && previousKeys[static_cast<int>(key)])
+			{
+				state = INPUT_STATE::RELEASED;
+				if (activeMessages)
+					Debugger::ConsoleMessage("Key Released!", 1, 0, 1, 1);
+			}
+			else
+			{
+				state = INPUT_STATE::NONE;
+				if (activeMessages)
+					Debugger::ConsoleMessage("No pressing Key!");
+			}
+			*/
+			return state;
 		}
 
-		glm::vec2 Input::GetMousePosition()
+		void Input::ToggleMessages()
 		{
-			glm::vec2 mousePosition;
-			double xpos, ypos;
-
-			glfwGetCursorPos(window->GetWindow(), &xpos, &ypos);
-
-			mousePosition.x = xpos;
-			mousePosition.y = ypos;
-
-			return mousePosition;
+			activeMessages = !activeMessages;
 		}
 
-		/*
-		void Input::OnMouseMovementCallback(std::function<void(float, float)> callback, float& xMovement, float& yMovement)
+		void FlyEngine::Utils::Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
-			xMovement = moveX;
-			yMovement = moveY;
+			if (key < 0 || key > GLFW_KEY_LAST) return;
 
-			callback(xMovement, yMovement);
+			if (action == GLFW_PRESS)
+			{
+				currentKeys[key] = true;
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				currentKeys[key] = false;
+			}
 		}
-		*/
 
 	}
 

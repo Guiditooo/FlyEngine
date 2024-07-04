@@ -3,39 +3,46 @@
 
 #include <FlyFunctions/KeyCode/KeyCode.h>
 #include <glm/glm.hpp>
-//#include <functional>
-//#include <unordered_set>
+#include <unordered_set>
+
+#include "Window/Window.h"
 
 namespace FlyEngine
 {
-	class Window;
 
 	namespace Utils
 	{
 
+		enum class FLY_API INPUT_STATE
+		{
+			DOWN,
+			PRESSED,
+			RELEASED,
+			NONE
+		};
+
 		class FLY_API Input
 		{
 		private:
-			Window* window;
-			float moveX;
-			float moveY;
-			//static std::unordered_set<KeyCode> pressedKeys;
+			static Window* window; 
+			static bool currentKeys[GLFW_KEY_LAST + 1];
+			static bool previousKeys[GLFW_KEY_LAST + 1];
+
+			static bool activeMessages;
 
 		public:
-			Input();
-			Input(Window* newWindow);
-			//void SetUp(Window* newWindow);
-			void SetContextWindow(Window* newWindow);
-			//static void GlfwTester(KeyCode key);
+			static void SetContextWindow(Window* newWindow);
 
-			//static bool GetKeyUp(KeyCode key);
-			//static bool GetKeyPressed(KeyCode key);
-			bool GetKeyDown(KeyCode key);
+			static bool GetKeyUp(KeyCode key);
+			static bool GetKeyPressed(KeyCode key);
+			static bool GetKeyDown(KeyCode key);
+			static INPUT_STATE GetKeyState(KeyCode key);
 
-			glm::vec2 GetMousePosition();
+			static void Update();
 
-			//static void OnMouseMovementCallback(std::function<void(float, float)> callback, float& xMovement, float& yMovement);
+			static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+			static void ToggleMessages();
 		};
 
 	}
