@@ -11,7 +11,8 @@ void main()
 	
 	Game* game = new Game(800, 600, "Testing Environment");
 	game->RunGame();
-	delete game;
 	
+	if (game != nullptr)
+		delete game;
+	game = nullptr;
 }
-
