@@ -10,21 +10,25 @@
 #include "Window/Window.h"
 #include "Camera/Camera.h"
 
+#include "Lights/Light.h"
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
 #include "Cube/Cube.h"
+#include "Texture/Texture.h"
 
 namespace FlyEngine
 {
 	class Window;
+	class MaterialSpecification;
 
 	class FLY_API BaseGame
 	{
 	private:
 		Renderer renderer;
 		std::list<Entities::Entity*> entityList;
-		//std::list<Entities::Light*> lightList;
-		Entities::Entity* light;
+		std::list<Texture*> textureList;
+		std::list<Lights::Light*> lightList;
+		//Entities::Entity* light;
 
 		bool isRunning;
 		bool checkEsc;
@@ -37,6 +41,12 @@ namespace FlyEngine
 
 		void AddToObjectList(Entities::Entity* newRenderizableObject);//Cambiar a component
 		void DrawObjects();
+		void DrawEntities();
+		void DrawTextures();
+
+		void SetMatrixUniforms(int shader, glm::mat4 entityMatrix);
+		void SetLightUniforms(int shader);
+		void SetMaterialUniforms(int shader, Entities::Entity* entity);
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
 
@@ -58,6 +68,8 @@ namespace FlyEngine
 		Camera* GetMainCamera();
 
 		void ToggleClosingWithEsc();
+
+		Texture* CreateTexture(const char* path);
 
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width, float height);
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width);
