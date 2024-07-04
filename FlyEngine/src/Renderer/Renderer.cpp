@@ -102,8 +102,9 @@ namespace FlyEngine
 
 	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
 	{
-		UseTextures(GL_TEXTURE0, diffuseTexture->GetID());
-		UseTextures(GL_TEXTURE1, specularTexture->GetID());
+		specularTexture->Bind(0);
+		diffuseTexture->Bind(1);
+		
 		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
