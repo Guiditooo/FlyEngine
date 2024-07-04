@@ -15,25 +15,35 @@ namespace FlyEngine
 		float pitch;// = 0.0f; // Pitch inicial rot x
 	};
 
+	struct FLY_API ObjetiveParams
+	{
+		Entities::Entity* objetive;
+		float distanceFromObjetive;
+		
+		ObjetiveParams(Entities::Entity* newObjetive, float distance)
+		{
+			objetive = newObjetive;
+			distanceFromObjetive = distance;
+		}
+	};
+
 	class FLY_API CameraController
 	{
 	private:
 		Camera* camera;
-		KeyCode forward;
-		KeyCode backward;
-		KeyCode up;
-		KeyCode down;
-		KeyCode left;
-		KeyCode right;
 		CameraRotation cameraRotation;
 		float sensibility;
+
 		bool isFirst;
+
+		ObjetiveParams* objetiveParams;
 	public:
-		CameraController(Camera* camera, Window* window, KeyCode forward, KeyCode backward, KeyCode up, KeyCode down, KeyCode left, KeyCode right);
+		CameraController(Camera* camera, Window* window);
 		~CameraController();
 		
 		void SetCameraSpecs(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
 		void SetCamera(Camera* newCamera);
+		void SetObjetiveParameters(ObjetiveParams* newObjParams);
 
 		Camera* GetCamera();
 
