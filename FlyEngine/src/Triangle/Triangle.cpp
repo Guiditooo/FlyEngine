@@ -1,10 +1,12 @@
+#include "Triangle.h"
+
 #include <iostream>
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Triangle.h"
 #include "VertexAttribute/VertexAttribute.h"
+#include "Material/Material.h"
 #include "Renderer/Renderer.h"
 
 
@@ -29,15 +31,19 @@ namespace FlyEngine
 			vertex = 
 			{
 			//  Posición                Color             UV           Normal
-				   0.0f,  0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f,  0.0f, 0.0f, 1.0f, // ARRIBA
-				 0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, // DER
-				-0.462f, -0.462f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f  // IZQ
+				 0.0f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f,  0.0f, 0.0f, 1.0f, // ARRIBA
+				 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, // DER
+				-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f  // IZQ
 			};
 
 			index =
 			{
-				2,0,1,
+				2,0,1
 			};
+
+			indexCount = 6;
+			vertexCount = 2;
+			vertexSize = 6;
 
 			//Posicion
 			va.elementSize = 3;

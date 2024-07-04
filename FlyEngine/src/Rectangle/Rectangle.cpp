@@ -5,6 +5,7 @@
 
 #include "Rectangle.h"
 #include "Renderer/Renderer.h"
+#include "Material/Material.h"
 #include "VertexAttribute/VertexAttribute.h"
 
 namespace FlyEngine
