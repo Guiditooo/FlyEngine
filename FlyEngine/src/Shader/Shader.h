@@ -14,6 +14,7 @@ public:
 	~Shader();
 
 	int GetShaderID();
+
 	void UseShader();
 };
 
