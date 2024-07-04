@@ -96,4 +96,35 @@ namespace FlyEngine
 		glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
 	}
 
+	void Renderer::SetFloatUniform(unsigned int shaderID, const char* variableName, float value)
+	{
+		GLint uniformLocation = glGetUniformLocation(shaderID, variableName);
+		glUniform1f(uniformLocation, value);
+	}
+
+	void Renderer::SetSpotLight(unsigned int shaderID, Lights::SpotLight* light)
+	{
+		SetBaseLightUniforms(shaderID, light);
+	}
+
+	void Renderer::SetPointLight(unsigned int shaderID, Lights::PointLight* light)
+	{
+		SetBaseLightUniforms(shaderID, light);
+		SetFloatUniform(shaderID, "light.constant", light->GetConstant());
+		SetFloatUniform(shaderID, "light.linear", light->GetLinear());
+		SetFloatUniform(shaderID, "light.quadratic", light->GetQuadratic());
+	}
+
+	void Renderer::SetDirectionalLight(unsigned int shaderID, Lights::DirectionalLight* light)
+	{
+		SetBaseLightUniforms(shaderID, light);
+	}
+
+	void Renderer::SetBaseLightUniforms(unsigned int shaderID, Lights::Light* light)
+	{
+		SetVec3Uniform(shaderID, "light.ambient", light->GetAmbient());
+		SetVec3Uniform(shaderID, "light.specular", light->GetSpecular());
+		SetVec3Uniform(shaderID, "light.diffuse", light->GetDiffuse());
+	}
+
 }

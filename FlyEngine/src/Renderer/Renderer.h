@@ -9,6 +9,10 @@
 #include "FlyFunctions/Color/Color.h"
 #include "Buffers/Buffers.h"
 
+#include "Lights/PointLight/PointLight.h"
+#include "Lights/SpotLight/SpotLight.h"
+#include "Lights/DirectionalLight/DirectionalLight.h"
+
 namespace FlyEngine
 {
 	using namespace Utils;
@@ -25,10 +29,12 @@ namespace FlyEngine
 
 		void ReOrderRenderizableList();
 
+		void SetBaseLightUniforms(unsigned int shaderID, Lights::Light* light);
+
 	public:
 		Renderer();
 		~Renderer();
-		
+
 		void DrawObject(Entities::Entity* toDraw);//Pasar a component, porque quizas quiero UI
 
 		void SetBackgroundColor(Color* newBgColor);
@@ -41,10 +47,15 @@ namespace FlyEngine
 
 		void SetMatrixUniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
 		void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);
+		void SetFloatUniform(unsigned int shaderID, const char* variableName, float value);
 
 		void DrawRequest(Utils::Buffer buffers, unsigned int indexCount);
+
+		void SetSpotLight(unsigned int shaderID, Lights::SpotLight* light);
+		void SetPointLight(unsigned int shaderID, Lights::PointLight* light);
+		void SetDirectionalLight(unsigned int shaderID, Lights::DirectionalLight* light);
 
 	};
 }
 
-#endif // !
+#endif // !RENDERER_H
