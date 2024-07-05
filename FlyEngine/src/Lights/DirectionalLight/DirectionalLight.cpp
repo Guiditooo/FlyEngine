@@ -1,11 +1,21 @@
 #include "DirectionalLight.h"
 
-FlyEngine::Lights::DirectionalLight::DirectionalLight() : Light(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), LightType::Directional) 
+FlyEngine::Lights::DirectionalLight::DirectionalLight() : Light
+	(
+		glm::vec3(0.0f),			 //position
+		glm::vec3(0, -1, 0),		 //direction
+		glm::vec3(0.05f, 0.05f, 0.05f), //ambient
+		glm::vec3(0.4f, 0.4f, 0.4f), //diffuse
+		glm::vec3(0.5f, 0.5f, 0.5f), //specular
+		LightType::Directional		 //type
+	)
 {
+	name = "Directional Light";
 }
 
 FlyEngine::Lights::DirectionalLight::DirectionalLight(glm::vec3 lDirection,  glm::vec3 lAmbient, glm::vec3 lSpecular, glm::vec3 lDiffuse) : Light(glm::vec3(0.0f), lDirection, lAmbient, lSpecular, lDiffuse, LightType::Directional)
 {
+	name = "Directional Light";
 }
 
 FlyEngine::Lights::DirectionalLight::~DirectionalLight()
