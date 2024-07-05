@@ -18,6 +18,7 @@ namespace FlyEngine
 			float linear;
 			float quadratic;
 		public:
+			PointLight();
 			PointLight(float lConstant, float lLinear, float lQuadratic);
 			PointLight(float lConstant, float lLinear, float lQuadratic, glm::vec3 lPosition, glm::vec3 lAmbient, glm::vec3 lSpecular, glm::vec3 lDiffuse);
 			~PointLight();
