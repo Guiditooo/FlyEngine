@@ -13,7 +13,7 @@ namespace FlyEngine
 	{
 
 
-		Texture* TextureImporter::LoadTexture(const char* path)
+		Texture* TextureImporter::LoadTexture(const char* path, bool sendMessage)
 		{
             unsigned int textureID;
             glGenTextures(1, &textureID);
@@ -22,7 +22,8 @@ namespace FlyEngine
             int width, height, bpp;
             unsigned char* localBuffer = stbi_load(path, &width, &height, &bpp, 0);
 
-            if (!localBuffer) {
+            if (!localBuffer) 
+            {
                 std::cerr << "Error loading texture: " << path << std::endl;
                 stbi_image_free(localBuffer);
                 return new Texture(0, 0, 0, "");
@@ -47,7 +48,8 @@ namespace FlyEngine
 
             stbi_image_free(localBuffer);
 
-            std::cout << "\nTexture ID=" << textureID << " Successfully Loaded!\n";
+            if(sendMessage)
+                std::cout << " Texture ID=" << textureID << " Successfully Loaded!\n";
 
             return new Texture(textureID, width, height, path);
 		}

@@ -14,7 +14,7 @@ namespace FlyEngine
 		{
 		private:
 		public:
-			static Texture* LoadTexture(const char* path);
+			static Texture* LoadTexture(const char* path, bool sendMessage);
 		};
 
 	}
