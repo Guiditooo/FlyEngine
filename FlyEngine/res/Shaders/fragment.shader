@@ -82,7 +82,7 @@ void main()
 
     //Directional
     if (dirLight.isActive)
-        vec3 result = CalcDirLight(dirLight, norm, viewDir);
+        result = CalcDirLight(dirLight, norm, viewDir);
     //Point
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
     {
