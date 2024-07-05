@@ -80,6 +80,8 @@ namespace FlyEngine
 
 			void SetName(std::string newName);
 
+			void SetMaterial(Materials::Material* newMaterial);
+
 			void SetColor(Utils::Color newColor);
 			void SetColor(glm::vec3 newColor);
 			void SetColor(float r, float g, float b);
@@ -112,8 +114,6 @@ namespace FlyEngine
 			virtual void Translate(float x, float y, float z);
 			virtual void Rotate(float x, float y, float z);
 			void Scale(float x, float y, float z);
-
-			void SetMaterial(Materials::Material* newMaterial);
 
 			Materials::Material* GetMaterial();
 

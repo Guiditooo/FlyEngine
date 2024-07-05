@@ -276,7 +276,7 @@ namespace FlyEngine
 		{
 			std::string text = "Created ";
 			text += name;
-			text += " successfully!\n";
+			text += " successfully!";
 
 			Debugger::ConsoleMessageID(&text[0]);
 		}
@@ -446,6 +446,8 @@ namespace FlyEngine
 		void Entity::SetMaterial(Materials::Material* newMaterial)
 		{
 			material = newMaterial;
+			std::string text = "Material ["+ newMaterial->GetName() + "] added to " + name + "!";
+			Debugger::ConsoleMessage(&text[0],1,0,0,1);
 		}
 
 		Materials::Material* Entity::GetMaterial()
