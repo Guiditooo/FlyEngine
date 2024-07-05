@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
@@ -21,13 +22,7 @@ namespace FlyEngine
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
 		primitiveShader = new Shader(DEFAULT_FRAGMENT_PATH, DEFAULT_VERTEX_PATH);
-
-		diffuseTexture = TextureImporter::LoadTexture("res\\Textures\\Box.png");
-		specularTexture = TextureImporter::LoadTexture("res\\Textures\\Box_S.png");
-
 		primitiveShader->UseShader();
-		SetIntUniform("material.diffuse", diffuseTexture->GetID());
-		SetIntUniform("material.specular", specularTexture->GetID());
 	}
 
 	Renderer::~Renderer()
@@ -101,10 +96,7 @@ namespace FlyEngine
 	}
 
 	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
-	{
-		specularTexture->Bind(0);
-		diffuseTexture->Bind(1);
-		
+	{		
 		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
@@ -189,6 +181,7 @@ namespace FlyEngine
 
 	void Renderer::SetSpotLight(Lights::SpotLight* light)
 	{
+		SetBoolUniform("spotLight.isActive", light->IsActive());
 		SetVec3Uniform("spotLight.ambient", light->GetAmbient());
 		SetVec3Uniform("spotLight.specular", light->GetSpecular());
 		SetVec3Uniform("spotLight.diffuse", light->GetDiffuse());
@@ -203,20 +196,47 @@ namespace FlyEngine
 
 	void Renderer::SetPointLight(Lights::PointLight* light, int index)
 	{
-		std::string text = "pointLights[";
-		text += index;
-		text += "]";
-		SetVec3Uniform("text.ambient", light->GetAmbient());
-		SetVec3Uniform("text.specular", light->GetSpecular());
-		SetVec3Uniform("text.diffuse", light->GetDiffuse());
-		SetVec3Uniform("text.position", light->GetPosition());
-		SetFloatUniform("text.constant", light->GetConstant());
-		SetFloatUniform("text.linear", light->GetLinear());
-		SetFloatUniform("text.quadratic", light->GetQuadratic());
+		std::string text;
+		std::string base = "pointLights[";
+		base += std::to_string(index);
+		base += "].";
+
+		text = base;
+		text += "ambient";
+		SetVec3Uniform(&text[0], light->GetAmbient());
+
+		text = base;
+		text += "specular";
+		SetVec3Uniform(&text[0], light->GetSpecular());
+
+		text = base;
+		text += "diffuse";
+		SetVec3Uniform(&text[0], light->GetDiffuse());
+
+		text = base;
+		text += "position";
+		SetVec3Uniform(&text[0], light->GetPosition());
+
+		text = base;
+		text += "constant";
+		SetFloatUniform(&text[0], light->GetConstant());
+
+		text = base;
+		text += "linear";
+		SetFloatUniform(&text[0], light->GetLinear());
+
+		text = base;
+		text += "quadratic";
+		SetFloatUniform(&text[0], light->GetQuadratic());
+
+		text = base;
+		text += "isActive";
+		SetBoolUniform(&text[0], light->IsActive());
 	}
 
 	void Renderer::SetDirectionalLight(Lights::DirectionalLight* light)
 	{
+		SetBoolUniform("dirLight.isActive", light->IsActive());
 		SetVec3Uniform("dirLight.ambient", light->GetAmbient());
 		SetVec3Uniform("dirLight.specular", light->GetSpecular());
 		SetVec3Uniform("dirLight.diffuse", light->GetDiffuse());

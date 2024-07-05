@@ -31,9 +31,6 @@ namespace FlyEngine
 	private:
 		Shader* primitiveShader;
 
-		Texture* specularTexture;
-		Texture* diffuseTexture;
-
 		Color* bgColor;
 
 	public:
