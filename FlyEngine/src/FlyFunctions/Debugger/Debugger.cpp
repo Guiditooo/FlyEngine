@@ -26,6 +26,11 @@ namespace FlyEngine
 		{
 			ConsoleMessage(text, 1, 0, 1, 0);
 		}
+		void Debugger::ConsoleMessage(std::string name, bool isActive)
+		{
+			name += isActive ? " is On!" : " is Off!";
+			ConsoleMessage(&name[0], 1, 0, 1, 0);
+		}
 
 		void Debugger::ConsoleMessage(const char* text, short beforeSpacesCount, short afterSpacesCount, short beforeEndlCount, short afterEndlCount)
 		{
