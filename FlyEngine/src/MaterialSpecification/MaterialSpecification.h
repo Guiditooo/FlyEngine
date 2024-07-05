@@ -18,8 +18,7 @@ namespace FlyEngine
             glm::vec3 specular;
             float shininess;
         public:
-            MaterialSpecification(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shin)
-                : ambient(amb), diffuse(diff), specular(spec), shininess(shin) {}
+            MaterialSpecification(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shin);
             MaterialSpecification();
             ~MaterialSpecification();
             void SetSpecs(MaterialList material);
@@ -28,9 +27,7 @@ namespace FlyEngine
             glm::vec3 GetDiffuse();
             glm::vec3 GetSpecular();
             float GetShininess();
-        };
-
-        
+        }; 
     }
 }
 

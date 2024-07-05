@@ -26,7 +26,7 @@ namespace FlyEngine
 
 			name = "Triangle";
 
-			material = new Materials::Material();
+			material = nullptr;
 
 			vertex = 
 			{

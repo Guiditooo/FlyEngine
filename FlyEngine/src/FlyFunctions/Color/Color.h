@@ -6,9 +6,6 @@
 
 namespace FlyEngine
 {
-
-	const int MAX_COLOR_SCALER = 256;
-
 	namespace Utils
 	{
 

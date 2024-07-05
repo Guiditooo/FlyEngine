@@ -22,7 +22,7 @@ namespace FlyEngine
 			VertexAttribute va;
 
 
-			material = new Materials::Material();
+			material = nullptr;
 
 			vertex =
 			{

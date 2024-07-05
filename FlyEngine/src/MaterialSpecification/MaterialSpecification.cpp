@@ -4,7 +4,12 @@ namespace FlyEngine
 {
     namespace Materials
     {
-        MaterialSpecification::MaterialSpecification() 
+        MaterialSpecification::MaterialSpecification(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shin) : 
+            ambient(amb), diffuse(diff), specular(spec), shininess(shin) 
+        {
+            
+        }
+        MaterialSpecification::MaterialSpecification()
         {
             ambient = glm::vec3(0, 0, 0);
             diffuse = glm::vec3(0, 0, 0);

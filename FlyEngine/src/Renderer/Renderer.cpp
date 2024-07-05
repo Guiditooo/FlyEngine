@@ -237,10 +237,10 @@ namespace FlyEngine
 	void Renderer::SetDirectionalLight(Lights::DirectionalLight* light)
 	{
 		SetBoolUniform("dirLight.isActive", light->IsActive());
+		SetVec3Uniform("dirLight.direction", light->GetDirection());
 		SetVec3Uniform("dirLight.ambient", light->GetAmbient());
 		SetVec3Uniform("dirLight.specular", light->GetSpecular());
 		SetVec3Uniform("dirLight.diffuse", light->GetDiffuse());
-		SetVec3Uniform("dirLight.direction", light->GetDirection());
 	}
 
 }
