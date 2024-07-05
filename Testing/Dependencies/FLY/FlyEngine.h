@@ -3,6 +3,9 @@
 
 #include "BaseGame/BaseGame.h"
 
+#include "Lights/DirectionalLight/DirectionalLight.h"
+#include "Lights/PointLight/PointLight.h"
+#include "Lights/SpotLight/SpotLight.h"
 
 #include "CameraController/CameraController.h"
 #include "Rectangle/Rectangle.h"
