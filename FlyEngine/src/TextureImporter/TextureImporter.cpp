@@ -18,7 +18,7 @@ namespace FlyEngine
             unsigned int textureID;
             glGenTextures(1, &textureID);
 
-            //stbi_set_flip_vertically_on_load(1); Fiajte si es necesario
+            stbi_set_flip_vertically_on_load(1);
             int width, height, bpp;
             unsigned char* localBuffer = stbi_load(path, &width, &height, &bpp, 0);
 
