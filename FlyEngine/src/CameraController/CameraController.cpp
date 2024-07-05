@@ -9,7 +9,8 @@ FlyEngine::CameraController::CameraController(Camera* camera, Window* window)
 {
 	this->camera = camera;
 
-	sensibility = 0.15f;
+	rotationSensibility = 0.3f;
+	translateSensibility = 0.05f;
 
 	cameraRotation = CameraRotation();
 
@@ -57,63 +58,63 @@ void FlyEngine::CameraController::Update(bool showMessage)
 		
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_W))
 		{
-			camera->MoveForward(sensibility);
+			camera->MoveForward(translateSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_S))
 		{
-			camera->MoveBackward(sensibility);
+			camera->MoveBackward(translateSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_SPACE))
 		{
-			camera->MoveUp(sensibility);
+			camera->MoveUp(translateSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_LEFT_SHIFT))
 		{
-			camera->MoveDown(sensibility);
+			camera->MoveDown(translateSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_A))
 		{
-			camera->MoveLeft(sensibility);
+			camera->MoveLeft(translateSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_D))
 		{
-			camera->MoveRight(sensibility);
+			camera->MoveRight(translateSensibility);
 			cameraMoved = true;
 		}
 
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_I))
 		{
-			camera->Rotate(1, 0.0f, 0.0f);
+			camera->Rotate(rotationSensibility, 0.0f, 0.0f);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_K))
 		{
-			camera->Rotate(-1, 0.0f, 0.0f);
+			camera->Rotate(-rotationSensibility, 0.0f, 0.0f);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_J))
 		{
-			camera->Rotate(0.0f, 1, 0.0f);
+			camera->Rotate(0.0f, rotationSensibility, 0.0f);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_L))
 		{
-			camera->Rotate(0.0f, -1, 0.0f);
+			camera->Rotate(0.0f, -rotationSensibility, 0.0f);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_U))
 		{
-			camera->Rotate(0.0f, 0.0f, 1);
+			camera->Rotate(0.0f, 0.0f, rotationSensibility);
 			cameraMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_O))
 		{
-			camera->Rotate(0.0f, 0.0f, -1);
+			camera->Rotate(0.0f, 0.0f, -rotationSensibility);
 			cameraMoved = true;
 		}
 	}

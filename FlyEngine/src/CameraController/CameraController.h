@@ -32,7 +32,8 @@ namespace FlyEngine
 	private:
 		Camera* camera;
 		CameraRotation cameraRotation;
-		float sensibility;
+		float rotationSensibility;
+		float translateSensibility;
 
 		bool isFirst;
 
