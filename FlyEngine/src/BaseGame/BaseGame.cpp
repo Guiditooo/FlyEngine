@@ -309,7 +309,7 @@ namespace FlyEngine
 		renderer->SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::MOSS_GREEN));
 		if (checkEsc)
 		{
-			if (Input::GetKeyDown(KeyCode::KEY_ESCAPE))
+			if (Input::GetKeyPressed(KeyCode::KEY_ESCAPE))
 			{
 				glfwSetWindowShouldClose((window->GetWindow()), true);
 			}
