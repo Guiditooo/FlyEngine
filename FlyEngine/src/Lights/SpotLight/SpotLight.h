@@ -21,6 +21,7 @@ namespace FlyEngine
 			float linear;
 			float quadratic;
 		public:
+			SpotLight();
 			SpotLight(float lConstant, float lLinear, float lQuadratic, float lCutOff, float lOuterCutOff);
 			SpotLight(float lConstant, float lLinear, float lQuadratic, float lCutOff, float lOuterCutOff, glm::vec3 lDirection, glm::vec3 lPosition, glm::vec3 lAmbient, glm::vec3 lSpecular, glm::vec3 lDiffuse);
 			~SpotLight();
@@ -30,6 +31,9 @@ namespace FlyEngine
 			float GetQuadratic();
 			float GetCutOff();
 			float GetOuterCutOff();
+
+			void SetCutOff(float newCutOff);
+			void SetOuterCutOff(float newOuterCutOff);
 		};
 
 	}
