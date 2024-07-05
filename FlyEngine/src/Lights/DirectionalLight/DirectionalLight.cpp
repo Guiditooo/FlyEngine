@@ -5,8 +5,8 @@ FlyEngine::Lights::DirectionalLight::DirectionalLight() : Light
 		glm::vec3(0.0f),			 //position
 		glm::vec3(0, -1, 0),		 //direction
 		glm::vec3(0.05f, 0.05f, 0.05f), //ambient
-		glm::vec3(0.4f, 0.4f, 0.4f), //diffuse
-		glm::vec3(0.5f, 0.5f, 0.5f), //specular
+		glm::vec3(0.6f, 0.6f, 0.6f), //specular
+		glm::vec3(0.2f, 0.2f, 0.2f), //diffuse
 		LightType::Directional		 //type
 	)
 {
