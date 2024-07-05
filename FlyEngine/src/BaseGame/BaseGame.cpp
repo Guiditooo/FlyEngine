@@ -16,6 +16,8 @@
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
+const std::string DEFAULT_MAT_NAME = "default";
+
 namespace FlyEngine
 {
 	//using namespace Entities;
@@ -39,14 +41,7 @@ namespace FlyEngine
 		checkEsc = true;
 
 		isRunning = false;
-		directionalLight = new Lights::DirectionalLight
-		(
-			glm::vec3(0, -1, 0),
-			glm::vec3(1.00f, 1.00f, 1.0f),
-			glm::vec3(0.5f, 0.5f, 0.5f),
-			glm::vec3(0.4f, 0.4f, 0.4f)
-		);
-		lightList.push_back(directionalLight);
+		directionalLight = CreateDirectionalLight();
 	}
 
 	BaseGame::~BaseGame()
@@ -81,11 +76,6 @@ namespace FlyEngine
 		return mainCamera;
 	}
 
-	void ResizeViewport(GLFWwindow* window, int width, int height)
-	{
-		glViewport(0, 0, width, height);
-	}
-
 	void BaseGame::CreateBuffers(Buffer* buffers)
 	{
 		renderer->CreateBaseBuffers(*buffers);
@@ -117,55 +107,28 @@ namespace FlyEngine
 		{
 			if (entity->IsActive())
 			{
-
 				SetMatrixUniforms(entity->GetModelMatrix());
-				//SetLightUniforms();
+				
 				SetMaterialUniforms(entity);
-				//Esta linea es por si se quiere poner un efecto de color general a todo lo renderizado del engine
-				//No es una luz, es un filtro
-				renderer->SetVec3Uniform("colorMultiplier", entity->GetColor().GetColorV3());
-
+				renderer->SetVec3Uniform("baseColor", entity->GetColor().GetColorV3());
+				
 				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
-
 			}
 		}
-		//renderer->SetNewShader();
-		//renderer->DrawObject();
 	}
 
-	/*
-	void BaseGame::DrawTextures()
-	{
-		for (Texture* texture : textureList)
-		{
-			if (texture->IsActive())
-			{
-				int shader = entity->GetMaterial()->GetShaderID();
-
-				entity->ApplyMaterial();
-
-				SetMatrixUniforms(shader, entity->GetModelMatrix());
-				SetLightUniforms(shader);
-				SetMaterialUniforms(shader, entity);
-
-				//Esta linea es por si se quiere poner un efecto de color general a todo lo renderizado del engine
-				//No es una luz, es un filtro
-				renderer->SetVec3Uniform(shader, "colorMultiplier", entity->GetColor().GetColorV3());
-
-				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
-				int a;
-			}
-		}
-	}*/
 
 	void BaseGame::CalculateLights()
 	{
 		int pointLightIndex = 0;
 		for (Lights::Light* light : lightList)
 		{
-			SetLightUniforms(light, pointLightIndex);
-			if (light->GetLightType() == Lights::LightType::Point)
-				pointLightIndex++;
+			if (pointLightIndex < 4)//Cambiar por una constante
+			{
+				SetLightUniforms(light, pointLightIndex);
+				if (light->GetLightType() == Lights::LightType::Point)
+					pointLightIndex++;
+			}
 		}
 	}
 
@@ -193,16 +156,17 @@ namespace FlyEngine
 		default:
 			break;
 		}
+		renderer->SetVec3Uniform("lightColor", light->GetColor().GetColorV3()); 
 	}
 
 	void BaseGame::SetMaterialUniforms(Entities::Entity* entity)
 	{
-		Materials::MaterialSpecification* mat = entity->GetMaterial()->GetSpecs();
+		Materials::Material* mat = entity->GetMaterial();
 
-		//renderer->SetVec3Uniform("material.ambient", mat->GetAmbient());
-		//renderer->SetVec3Uniform("material.diffuse", mat->GetDiffuse());
-		//renderer->SetVec3Uniform("material.specular", mat->GetSpecular());
-		renderer->SetFloatUniform("material.shininess", mat->GetShininess());
+		mat->ApplyTextures();
+		renderer->SetIntUniform("material.diffuse", 0);
+		renderer->SetIntUniform("material.specular", 1);
+		renderer->SetFloatUniform("material.shininess", 64);
 	}
 
 	float BaseGame::PixelsToEngine(int objectWidthInPixels, float windowDimension)
@@ -210,12 +174,25 @@ namespace FlyEngine
 		return (objectWidthInPixels * 1.0f) / windowDimension;
 	}
 
+	void BaseGame::CreateDefaultMaterial()
+	{
+		Materials::Material* commonMat = CreateMaterial(DEFAULT_MAT_NAME);
+		commonMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
+		commonMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
+
+		std::vector<std::string> textureOrder = { "diffuse", "specular" };
+		commonMat->SetTextureOrder(textureOrder);
+	}
+
 	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
 	{
 		glm::vec2 windowSize = window->GetWindowSize();
 		Entities::Rectangle* rec = new Entities::Rectangle();
-		rec->SetPosition(posX, posY, posZ);
-		//rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.y), 1);
+		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
+		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
+
+		rec->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+
 		CreateBuffers(rec->GetBuffers());
 		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
 		SetVertexAttributes(rec->GetVertexAttributes());
@@ -231,6 +208,9 @@ namespace FlyEngine
 	Entities::Triangle* BaseGame::CreateTriangle(float posX, float posY, float posZ, float base, float height)
 	{
 		Entities::Triangle* tri = new Entities::Triangle();
+
+		tri->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+
 		return tri;
 	}
 
@@ -240,6 +220,9 @@ namespace FlyEngine
 		Entities::Cube* cube = new Entities::Cube();
 		cube->SetPosition(posX, posY, posZ);
 		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
+
+		cube->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
 		SetVertexAttributes(cube->GetVertexAttributes());
@@ -247,9 +230,34 @@ namespace FlyEngine
 		return cube;
 	}
 
-	void BaseGame::SetLight(Entities::Entity* newLight)
+	Lights::DirectionalLight* BaseGame::CreateDirectionalLight(glm::vec3 direction)
 	{
-		//light = newLight;
+		Lights::DirectionalLight* light = new Lights::DirectionalLight();
+		light->SetColor(FlyEngine::Utils::COLOR::WHITE);
+		light->SetDirection(direction);
+		lightList.push_back(light);
+		return light;
+	}
+
+	Lights::PointLight* BaseGame::CreatePointLight(glm::vec3 position)
+	{
+		Lights::PointLight* light = new Lights::PointLight();
+		light->SetColor(FlyEngine::Utils::COLOR::WHITE);
+		light->SetPosition(position);
+		lightList.push_back(light);
+		return light;
+	}
+
+	Lights::SpotLight* BaseGame::CreateSpotLight(glm::vec3 position, glm::vec3 direction, float cutOff, float outerCutOff)
+	{
+		Lights::SpotLight* light = new Lights::SpotLight();
+		light->SetColor(FlyEngine::Utils::COLOR::WHITE);
+		light->SetPosition(position);
+		light->SetDirection(direction);
+		light->SetCutOff(cutOff);
+		light->SetOuterCutOff(outerCutOff);
+		lightList.push_back(light);
+		return light;
 	}
 
 	void BaseGame::InternalInit()
@@ -266,7 +274,7 @@ namespace FlyEngine
 		}
 		else
 		{
-			Debugger::ConsoleMessage("GLFW Loaded Successfully", 2, 0, 1, 1);
+			Debugger::ConsoleMessage("GLFW Loaded Successfully", 2, 0, 1, 2);
 		}
 
 		if (initialWindowHeight < 0 || initialWindowWidth < 0)
@@ -282,32 +290,16 @@ namespace FlyEngine
 			Debugger::ConsoleMessage("Error: Window Not Found", 2, 0, 1, 0);
 			return;
 		}
-		glfwMakeContextCurrent(window->GetWindow());
-		glfwSetFramebufferSizeCallback(window->GetWindow(), frameBufferResizeCallback);
 
-		//mainCamera = new Camera(FlyEngine::ProjectionType::Perspective, 60.0f, initialWindowWidth / initialWindowHeight, 0.1f, 500.0f);
 		mainCamera = new Camera();
 
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glEnable(GL_SAMPLE_ALPHA_TO_ONE);
-		glFrontFace(GL_CCW);
-		glEnable(GL_BLEND); //Transparency
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.1f);
-
-		if (glewInit() != GLEW_OK)
-			Debugger::ConsoleMessage("GLEW FAILED!", 2, 0, 1, 1);
+		SetUpOpenGlFunctions();
 
 		Input::SetContextWindow(window);
 
-		glfwSetFramebufferSizeCallback(window->GetWindow(), ResizeViewport);
-
 		renderer = new Renderer();
-
+		
+		CreateDefaultMaterial();
 
 		Init();
 	}
@@ -345,6 +337,26 @@ namespace FlyEngine
 		glfwSwapBuffers(window->GetWindow());
 	}
 
+	void BaseGame::SetUpOpenGlFunctions()
+	{
+		glfwMakeContextCurrent(window->GetWindow());
+		glfwSetFramebufferSizeCallback(window->GetWindow(), frameBufferResizeCallback);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glEnable(GL_SAMPLE_ALPHA_TO_ONE);
+		glFrontFace(GL_CCW);
+		glEnable(GL_BLEND); //Transparency
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.1f);
+
+		if (glewInit() != GLEW_OK)
+			Debugger::ConsoleMessage("GLEW FAILED!", 2, 0, 1, 1);
+	}
+
 	void BaseGame::RunGame()
 	{
 		isRunning = true;
@@ -374,7 +386,18 @@ namespace FlyEngine
 
 	Texture* BaseGame::CreateTexture(const char* path)
 	{
-		return Importers::TextureImporter::LoadTexture(path);
+		return Importers::TextureImporter::LoadTexture(path, true);
+	}
+
+	Materials::Material* BaseGame::CreateMaterial(std::string name)
+	{
+		Materials::Material* mat = new Materials::Material(name);
+		materialsMap[name] = mat;
+		std::string text = "Material Created: [";
+		text += name;
+		text += "]!";
+		Utils::Debugger::ConsoleMessage(&text[0],1,0,1,1);
+		return mat;
 	}
 
 }
