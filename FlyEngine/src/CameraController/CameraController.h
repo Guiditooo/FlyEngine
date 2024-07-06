@@ -9,6 +9,13 @@ namespace FlyEngine
 {
 	using namespace Utils;
 
+	enum class FLY_API CameraMode
+	{
+		FirstPerson,
+		ThirdPerson,
+		Free
+	};
+
 	struct FLY_API CameraRotation
 	{
 		float yaw;// = -90.0f; // Yaw inicial rot y
@@ -17,12 +24,12 @@ namespace FlyEngine
 
 	struct FLY_API ObjetiveParams
 	{
-		Entities::Entity* objetive;
+		Entities::Entity* target;
 		float distanceFromObjetive;
 		
 		ObjetiveParams(Entities::Entity* newObjetive, float distance)
 		{
-			objetive = newObjetive;
+			target = newObjetive;
 			distanceFromObjetive = distance;
 		}
 	};
@@ -35,9 +42,17 @@ namespace FlyEngine
 		float rotationSensibility;
 		float translateSensibility;
 
-		bool isFirst;
+		CameraMode cameraMode;
+
+		float lastX;
+		float lastY;
 
 		ObjetiveParams* objetiveParams;
+
+		void FreeMovement(bool &cameraMoved);
+		void FirstPersonMovement(bool &cameraMoved);
+		void ThirdPersonMovement(bool &cameraMoved);
+
 	public:
 		CameraController(Camera* camera, Window* window);
 		~CameraController();
@@ -45,10 +60,14 @@ namespace FlyEngine
 		void SetCameraSpecs(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
 		void SetCamera(Camera* newCamera);
 		void SetObjetiveParameters(ObjetiveParams* newObjParams);
+		void SetMode(CameraMode mode);
+		void SetTarget(Entities::Entity* target);
+		void SetDistanceToTarget(float distanceToTarget);
 
 		Camera* GetCamera();
 
-		void Update(bool showMessage);
+		void Update(bool showMessage);   
+		void ProcessMouseMovement(float xpos, float ypos);
 	};
 }
 #endif // 
