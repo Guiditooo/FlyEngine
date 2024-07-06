@@ -30,6 +30,10 @@ namespace FlyGame
 		pointLight = nullptr;
 		spotLight = nullptr;
 
+		texture = nullptr;
+
+		cameraController = nullptr;
+
 		movingObject = MovingObject::Cube;
 	}
 
@@ -52,10 +56,12 @@ namespace FlyGame
 
 		texture = nullptr;
 
+		cameraController = nullptr;
+
 		movingObject = MovingObject::Cube;
 	}
 
-	Game::~Game()
+	Game::~Game() 
 	{
 		if (rec != nullptr)
 			delete rec;
@@ -81,7 +87,7 @@ namespace FlyGame
 			delete cameraController;
 		cameraController = nullptr;
 	}
-
+	
 	void Game::Init()
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
@@ -89,8 +95,8 @@ namespace FlyGame
 		mainCamera->SetPosition(0.0f, 1.0f, 5.0f);
 		//mainCamera->SetRotation(-90, 0, 0);
 
-		cameraController = new CameraController(mainCamera, window);
-		int a;
+		cameraController = CreateCameraController(mainCamera,0.05f, 0.2f, CameraMode::Free);
+
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 		pared1 = CreateRectangle(0, 1000, -1000, 1000, 1000);
 		pared2 = CreateRectangle(1000, 1000, 0, 1000, 1000);
@@ -115,8 +121,8 @@ namespace FlyGame
 		spotLight = CreateSpotLight();
 
 		Materials::Material* boxMat = CreateMaterial("Box");
-		boxMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res\\Textures\\Box.png", true));
-		boxMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res\\Textures\\Box_S.png",true));
+		boxMat->AddTexture("diffuse", CreateTexture("res\\Textures\\Box.png"));
+		boxMat->AddTexture("specular", CreateTexture("res\\Textures\\Box_S.png"));
 		boxMat->SetTextureOrder({ "diffuse", "specular" });
 
 		player->SetMaterial(boxMat);
