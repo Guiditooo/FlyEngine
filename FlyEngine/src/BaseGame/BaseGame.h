@@ -11,6 +11,7 @@
 #include "Window/Window.h"
 #include "Camera/Camera.h"
 
+#include "CameraController/CameraController.h"
 #include "Lights/Light.h"
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
@@ -61,6 +62,8 @@ namespace FlyEngine
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
 
+		void MouseCallback(double xpos, double ypos);
+
 		void InternalInit();
 		void InternalUpdate();
 		void InternalDraw();
@@ -81,6 +84,8 @@ namespace FlyEngine
 		void ToggleClosingWithEsc();
 
 		Texture* CreateTexture(const char* path);
+
+		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);
 
 		Materials::Material* CreateMaterial(std::string name);
 
@@ -115,4 +120,4 @@ namespace FlyEngine
 
 }
 
-#endif // !
+#endif // !BASE_GAME

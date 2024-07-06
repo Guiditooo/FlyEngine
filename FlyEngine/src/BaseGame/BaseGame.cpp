@@ -20,10 +20,8 @@ const std::string DEFAULT_MAT_NAME = "default";
 
 namespace FlyEngine
 {
-	//using namespace Entities;
 
-
-	void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
+	void FrameBufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
 	}
@@ -340,7 +338,7 @@ namespace FlyEngine
 	void BaseGame::SetUpOpenGlFunctions()
 	{
 		glfwMakeContextCurrent(window->GetWindow());
-		glfwSetFramebufferSizeCallback(window->GetWindow(), frameBufferResizeCallback);
+		glfwSetFramebufferSizeCallback(window->GetWindow(), FrameBufferResizeCallback);
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -389,13 +387,23 @@ namespace FlyEngine
 		return Importers::TextureImporter::LoadTexture(path, true);
 	}
 
+	CameraController* BaseGame::CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target, float followDistance)
+	{
+		CameraController* cc = new CameraController(controllingCamera, window);
+		cc->SetMode(cameraMode);
+		cc->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
+
+		std::string text = "CameraController Created!";
+		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+
+		return cc;
+	}
+
 	Materials::Material* BaseGame::CreateMaterial(std::string name)
 	{
 		Materials::Material* mat = new Materials::Material(name);
 		materialsMap[name] = mat;
-		std::string text = "Material Created: [";
-		text += name;
-		text += "]!";
+		std::string text = "Material Created: [" + name + "]!";
 		Utils::Debugger::ConsoleMessage(&text[0],1,0,1,1);
 		return mat;
 	}
