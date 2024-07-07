@@ -7,6 +7,7 @@
 #include "Renderer/Renderer.h"
 
 #include "TextureImporter/TextureImporter.h"
+#include "ModelImporter/ModelImporter.h"
 
 #include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
@@ -91,16 +92,27 @@ namespace FlyEngine
 
 	void BaseGame::DrawObjects()
 	{
-		//for (Lights::Light* light : lightList)
-
+		renderer->UseDefaultShader();
+		CalculateLights();
 		DrawEntities();
+		renderer->UseModelShader();
+		DrawModels();
+	}
+
+	void BaseGame::DrawModels()
+	{
+		for (Entities::Model* model : modelList)
+		{
+			if (model->IsActive())
+			{
+				SetMatrixUniforms(model->GetModelMatrix());
+				renderer->DrawModel(model);
+			}
+		}
 	}
 
 	void BaseGame::DrawEntities()
 	{
-
-		CalculateLights();
-
 		for (Entities::Entity* entity : entityList)
 		{
 			if (entity->IsActive())
@@ -406,6 +418,16 @@ namespace FlyEngine
 		std::string text = "Material Created: [" + name + "]!";
 		Utils::Debugger::ConsoleMessage(&text[0],1,0,1,1);
 		return mat;
+	}
+
+	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
+	{
+		Entities::Model* model = Importers::ModelImporter::LoadModel(path);
+		model->SetName(name);
+		std::string text = "Model Loaded: (" + model->GetName() + ")!";
+		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+		modelList.push_back(model);
+		return model;
 	}
 
 }

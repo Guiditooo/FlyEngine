@@ -27,6 +27,7 @@ namespace FlyEngine
 	{
 	private:
 		Renderer* renderer;
+		std::list<Entities::Model*> modelList;
 		std::list<Entities::Entity*> entityList;
 		std::list<Texture*> textureList;
 		std::list<Lights::Light*> lightList;
@@ -51,6 +52,7 @@ namespace FlyEngine
 		void CreateDefaultMaterial();
 
 		void DrawObjects();
+		void DrawModels();
 		void DrawEntities();
 		void DrawTextures();
 
@@ -88,6 +90,8 @@ namespace FlyEngine
 		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);
 
 		Materials::Material* CreateMaterial(std::string name);
+
+		Entities::Model* CreateModel(std::string const& path, std::string name = "Model");
 
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width, float height);
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width);
