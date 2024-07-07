@@ -114,6 +114,15 @@
     <Filter Include="Lights\PointLight">
       <UniqueIdentifier>{9b0905e9-8480-4545-bfaa-1d2dfd383ac9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Importers\ModelImporter">
+      <UniqueIdentifier>{161a05b4-d956-4651-8b6a-64b9144fbfce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{c719d87c-cdb9-4c59-b5b8-ef65ad47775f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{11a5146b-e138-452c-8c08-392c6ddc7818}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -169,9 +178,6 @@
     <ClCompile Include="src\Line\Line.cpp">
       <Filter>Line</Filter>
     </ClCompile>
-    <ClCompile Include="src\FlyFunctions\Vertices\Vertex.cpp">
-      <Filter>Fly Functions\Vertex</Filter>
-    </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -204,6 +210,18 @@
     </ClCompile>
     <ClCompile Include="src\Lights\PointLight\PointLight.cpp">
       <Filter>Lights\PointLight</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelImporter\ModelImporter.cpp">
+      <Filter>Importers\ModelImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model\Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh\Mesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vertex\Vertex.cpp">
+      <Filter>Fly Functions\Vertex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,9 +283,6 @@
     <ClInclude Include="src\Line\Line.h">
       <Filter>Line</Filter>
     </ClInclude>
-    <ClInclude Include="src\FlyFunctions\Vertices\Vertex.h">
-      <Filter>Fly Functions\Vertex</Filter>
-    </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -313,12 +328,30 @@
     <ClInclude Include="src\Lights\LightType.h">
       <Filter>Lights</Filter>
     </ClInclude>
+    <ClInclude Include="src\ModelImporter\ModelImporter.h">
+      <Filter>Importers\ModelImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model\Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Mesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vertex\Vertex.h">
+      <Filter>Fly Functions\Vertex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Shaders\fragment.shader">
+    <None Include="res\Shaders\defaultFragment.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
-    <None Include="res\Shaders\vertex.shader">
+    <None Include="res\Shaders\defaultVertex.shader">
+      <Filter>Shader\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\modelFragment.shader">
+      <Filter>Shader\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\modelVertex.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
   </ItemGroup>
