@@ -9,6 +9,8 @@ FlyEngine::Lights::Light::Light(glm::vec3 lPosition, glm::vec3 lDirection, glm::
     diffuse = lDiffuse;
     lightType = type;
 
+    color.SetColor(Utils::COLOR::WHITE);
+
     isActive = true;
 }
 
