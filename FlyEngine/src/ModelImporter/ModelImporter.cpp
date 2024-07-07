@@ -9,6 +9,7 @@
 #include "TextureImporter/TextureImporter.h"
 #include "Mesh/Mesh.h"
 #include "Model/Model.h"
+#include "Vertex/Vertex.h"
 
 namespace FlyEngine
 {
