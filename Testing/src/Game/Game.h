@@ -33,14 +33,22 @@ namespace FlyGame
 		Texture* texture;
 
 		Lights::PointLight* pointLight;
+		Lights::PointLight* pointLightStatic;
 		Lights::SpotLight* spotLight;
+
+		Entities::Model* model;
+		//Entities::Model* model2;
 
 		int aux = 0;
 
 		MovingObject movingObject;
 
+		Materials::Material* boxMat;
+
 		void MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement = true);
 		void MoveObject(FlyEngine::Lights::Light* light, bool showMovement = true);
+
+		void CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Entities::Entity* thing);
 
 	public:
 		Game(int width, int height, std::string name);

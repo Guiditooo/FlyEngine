@@ -12,6 +12,7 @@
 #include "Triangle/Triangle.h"
 #include "Material/Material.h"
 #include "Camera/Camera.h"
+#include "Model/Model.h"
 #include "Input/Input.h"
 #include "Cube/Cube.h"
 

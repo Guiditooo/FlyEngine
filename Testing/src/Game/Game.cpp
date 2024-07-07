@@ -28,6 +28,7 @@ namespace FlyGame
 		light = nullptr;
 
 		pointLight = nullptr;
+		pointLightStatic = nullptr;
 		spotLight = nullptr;
 
 		texture = nullptr;
@@ -52,6 +53,7 @@ namespace FlyGame
 		light = nullptr;
 
 		pointLight = nullptr;
+		pointLightStatic = nullptr;
 		spotLight = nullptr;
 
 		texture = nullptr;
@@ -86,6 +88,14 @@ namespace FlyGame
 		if (cameraController != nullptr)
 			delete cameraController;
 		cameraController = nullptr;
+
+		if (boxMat != nullptr)
+			delete boxMat;
+		boxMat = nullptr;
+
+		if (model != nullptr)
+			delete model;
+		model = nullptr;
 	}
 	
 	void Game::Init()
@@ -104,9 +114,6 @@ namespace FlyGame
 		player = CreateCube(0, 1, 0, 100);
 		cube = CreateCube(2, 1, 0, 100);
 		light = CreateCube(0, 3, 0, 100);
-		
-		piso->SetRotation(-90, 0, 0);
-		pared2->SetRotation(0, -90, 0);
 
 		piso->SetName("Piso");
 		pared1->SetName("Pared1");
@@ -115,18 +122,30 @@ namespace FlyGame
 		cube->SetName("Cubo Uno");
 		light->SetName("Luz");
 
-		piso->SetColor(COLOR::MAGENTA);
+		model = CreateModel("res/Models/Backpack/backpack.obj", "Modelo 1");
 
-		pointLight = CreatePointLight();
-		spotLight = CreateSpotLight();
+		//piso->SetColor(COLOR::MAGENTA);
 
-		Materials::Material* boxMat = CreateMaterial("Box");
+		pointLight = CreatePointLight(mainCamera->GetPosition());
+		pointLightStatic = CreatePointLight();
+		spotLight = CreateSpotLight(mainCamera->GetPosition(),-mainCamera->GetFront());
+
+		pointLightStatic->SetName("Static Light");
+
+		boxMat = CreateMaterial("Box");
 		boxMat->AddTexture("diffuse", CreateTexture("res\\Textures\\Box.png"));
 		boxMat->AddTexture("specular", CreateTexture("res\\Textures\\Box_S.png"));
 		boxMat->SetTextureOrder({ "diffuse", "specular" });
 
+
 		player->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
+
+		piso->SetRotation(-90, 0, 0);
+		pared2->SetRotation(0, -90, 0);
+
+		pointLightStatic->SetPosition(glm::vec3( 1, 5, 0));
+		pointLightStatic->SetColor(COLOR::CYAN);
 
 		piso->SetActive(true);
 		pared1->SetActive(false);
@@ -134,7 +153,7 @@ namespace FlyGame
 		player->SetActive(true);
 		cube->SetActive(true);
 		light->SetActive(false);
-
+		model->SetActive(true);
 	}
 
 	void Game::Update()
@@ -157,46 +176,25 @@ namespace FlyGame
 			movingObject = MovingObject::Light;
 			Debugger::ConsoleMessage("Moving Player");
 		}
-		
-		if (Input::GetKeyPressed(KeyCode::KEY_KP_9))
-		{
-			spotLight->SetActive(true);
-			Debugger::ConsoleMessage(spotLight->GetName(), true);
-		}
 
-		if (Input::GetKeyPressed(KeyCode::KEY_KP_6))
-		{
-			spotLight->SetActive(false);
-			Debugger::ConsoleMessage(spotLight->GetName(),false);
-		}
-
-		if (Input::GetKeyPressed(KeyCode::KEY_KP_8))
-		{
-			pointLight->SetActive(true);
-			Debugger::ConsoleMessage(pointLight->GetName(), true);
-		}
-
-		if (Input::GetKeyPressed(KeyCode::KEY_KP_5))
-		{
-			pointLight->SetActive(false);
-			Debugger::ConsoleMessage(pointLight->GetName(), false);
-		}
-
+		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, player);
+		//CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
+		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, model);
 
 		switch (movingObject)
 		{
 		case FlyGame::MovingObject::Cube:
-			MoveObject(cube, true);
+			//MoveObject(model2, false);
 			break;
 		case FlyGame::MovingObject::Camera:
-			cameraController->Update(true);
+			cameraController->Update(false);
 			spotLight->SetPosition(cameraController->GetCamera()->GetPosition());
 			pointLight->SetPosition(cameraController->GetCamera()->GetPosition());
 			spotLight->SetDirection(-cameraController->GetCamera()->GetFront());
 			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());
 			break;
 		case FlyGame::MovingObject::Light:
-			MoveObject(player, true);
+			MoveObject(model, false);
 			break;
 		default:
 			break;
@@ -278,7 +276,7 @@ namespace FlyGame
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_SUBTRACT))
 		{
 			float scaleSens = 0.99f;
-			entity->Scale(-scaleSens, -scaleSens, -scaleSens);
+			entity->Scale(scaleSens, scaleSens, scaleSens);
 		}
 
 
@@ -333,6 +331,21 @@ namespace FlyGame
 			text += light->GetName();
 			text += " Updated Position : ";
 			Debugger::ConsoleMessage(&text[0], light->GetPosition());
+		}
+	}
+
+	void Game::CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Entities::Entity* thing)
+	{
+		if (Input::GetKeyPressed(enableKey))
+		{
+			thing->SetActive(true);
+			Debugger::ConsoleMessage(thing->GetName(), true);
+		}
+
+		if (Input::GetKeyPressed(disableKey))
+		{
+			thing->SetActive(false);
+			Debugger::ConsoleMessage(thing->GetName(), false);
 		}
 	}
 
