@@ -17,27 +17,32 @@
 #include "Lights/SpotLight/SpotLight.h"
 #include "Lights/DirectionalLight/DirectionalLight.h"
 
+
 namespace FlyEngine
-{
+{	
 	using namespace Utils;
 
 	namespace Entities
 	{
 		class Entity;
+		class Model;
 	}
 
 	class Renderer
 	{
 	private:
 		Shader* primitiveShader;
-
+		Shader* modelShader;
 		Color* bgColor;
+
+		Shader* actualShader;
 
 	public:
 		Renderer();
 		~Renderer();
 
 		void DrawObject(Entities::Entity* toDraw);//Pasar a component, porque quizas quiero UI
+		void DrawModel(Entities::Model* toDraw);
 		void UseTextures(GLenum textureType, GLuint textureID);
 
 		void SetBackgroundColor(Color* newBgColor);
@@ -72,6 +77,9 @@ namespace FlyEngine
 		void SetDirectionalLight(Lights::DirectionalLight* light);
 
 		void SetNewShader(Shader* newShader);
+
+		void UseModelShader();
+		void UseDefaultShader();
 	};
 }
 

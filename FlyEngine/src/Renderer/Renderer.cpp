@@ -9,24 +9,49 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Entity/Entity.h"
-#include "TextureImporter/TextureImporter.h"
+
+#include "Model/Model.h"
 
 namespace FlyEngine
 {
-	using namespace Importers;
+	const char* DEFAULT_VERTEX_PATH =   "res/Shaders/defaultVertex.shader";
+	const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/defaultFragment.shader";
 
-	const char* DEFAULT_VERTEX_PATH = "res/Shaders/vertex.shader";
-	const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/fragment.shader";
+	const char* MODEL_VERTEX_PATH =   "res/Shaders/modelVertex.shader";
+	const char* MODEL_FRAGMENT_PATH = "res/Shaders/modelFragment.shader";
 
 	Renderer::Renderer()
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
 		primitiveShader = new Shader(DEFAULT_FRAGMENT_PATH, DEFAULT_VERTEX_PATH);
-		primitiveShader->UseShader();
+		modelShader = new Shader(MODEL_FRAGMENT_PATH, MODEL_VERTEX_PATH);
+		
+		UseDefaultShader();
 	}
 
 	Renderer::~Renderer()
 	{
+
+	}
+	void Renderer::UseDefaultShader()
+	{
+		primitiveShader->UseShader();
+		actualShader = primitiveShader;
+	}
+	void Renderer::UseModelShader()
+	{
+		//modelShader->UseShader();
+		//actualShader = modelShader;
+	}
+
+	void Renderer::DrawObject(Entities::Entity* toDraw)
+	{
+
+	}
+
+	void Renderer::DrawModel(Entities::Model* toDraw)
+	{
+		toDraw->Draw(modelShader->GetShaderID());
 	}
 
 	void Renderer::SetBackgroundColor(Color* newBgColor)
@@ -72,13 +97,10 @@ namespace FlyEngine
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * sizeof(float), index.data(), GL_STATIC_DRAW);
 	}
 
-
 	void Renderer::SetNewShader(Shader* newShader)
 	{
 		primitiveShader = newShader;
 	}
-
-
 
 	void Renderer::SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes)
 	{
@@ -109,73 +131,74 @@ namespace FlyEngine
 
 	void Renderer::SetMatrix4Uniform(const GLchar* variableName, glm::mat4x4 matrix)
 	{
-		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint modelUniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniformMatrix4fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void Renderer::SetMatrix3Uniform(const GLchar* variableName, glm::mat3x3 matrix)
 	{
-		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint modelUniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniformMatrix3fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void Renderer::SetMatrix2Uniform(const GLchar* variableName, glm::mat2x2 matrix)
 	{
-		GLint modelUniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint modelUniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniformMatrix2fv(modelUniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void Renderer::SetVec4Uniform(const char* variableName, glm::vec4 vec)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform4f(uniformLocation, vec.x, vec.y, vec.z, vec.w);
 	}
 
 	void Renderer::SetVec4Uniform(const char* variableName, float x, float y, float z, float w)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform4f(uniformLocation, x, y, z, w);
 	}
 
 	void Renderer::SetVec3Uniform(const char* variableName, glm::vec3 vec)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform3f(uniformLocation, vec.x, vec.y, vec.z);
 	}
 
 	void Renderer::SetVec3Uniform(const char* variableName, float x, float y, float z)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform3f(uniformLocation, x, y, z);
 	}
 
 	void Renderer::SetVec2Uniform(const char* variableName, glm::vec2 vec)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform2f(uniformLocation, vec.x, vec.y);
 	}
 
 	void Renderer::SetVec2Uniform(const char* variableName, float x, float y)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform2f(uniformLocation, x, y);
 	}
 
 	void Renderer::SetFloatUniform(const char* variableName, float value)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform1f(uniformLocation, value);
 	}
 
+
 	void Renderer::SetBoolUniform(const char* variableName, bool value)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform1i(uniformLocation, (int)value);
 	}
 
 	void Renderer::SetIntUniform(const char* variableName, int value)
 	{
-		GLint uniformLocation = glGetUniformLocation(primitiveShader->GetShaderID(), variableName);
+		GLint uniformLocation = glGetUniformLocation(actualShader->GetShaderID(), variableName);
 		glUniform1i(uniformLocation, (int)value);
 	}
 
