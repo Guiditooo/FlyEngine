@@ -4,18 +4,22 @@
 #include <Exports/Exports.h>
 #include <iostream>
 
-class Shader
+namespace FlyEngine
 {
-private:
-	int id;
-	void CheckCompileErrors(unsigned int shader, std::string type);
-public:
-	Shader(const char* fragmentShaderPath, const char* vertexShaderPath);
-	~Shader();
 
-	int GetShaderID();
+	class FLY_API Shader
+	{
+	private:
+		unsigned int id;
+		void CheckCompileErrors(unsigned int shader, std::string type);
+	public:
+		Shader(const char* fragmentShaderPath, const char* vertexShaderPath, const char* geometryPath = nullptr);
+		~Shader();
 
-	void UseShader();
-};
+		unsigned int GetShaderID();
 
+		void UseShader();
+	};
+
+}
 #endif // !SHADER_H
