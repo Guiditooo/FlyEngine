@@ -6,6 +6,10 @@
 
 namespace FlyEngine
 {
+	namespace Entities
+	{
+		struct Texture;
+	}
 
 	namespace Importers
 	{
@@ -15,9 +19,10 @@ namespace FlyEngine
 		private:
 		public:
 			static Texture* LoadTexture(const char* path, bool sendMessage);
+			static unsigned int TextureFromFile(const char* path, std::string& directory, bool gamma = false);
 		};
 
 	}
 
 }
-#endif // !
+#endif // !TEXTURE_IMPORTER_H
