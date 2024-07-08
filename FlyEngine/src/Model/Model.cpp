@@ -28,4 +28,23 @@ namespace FlyEngine
         Renderer::DrawRequest(VAO, indexCount);
         */
     }
+    glm::vec3 Entities::Model::GetDimesions()
+    {
+        glm::vec3 min(std::numeric_limits<float>::max());
+        glm::vec3 max(std::numeric_limits<float>::lowest());
+
+        for (const auto& mesh : meshes) {
+            for (const auto& vertex : mesh.vertices) {
+                min.x = std::min(min.x, vertex.Position.x);
+                min.y = std::min(min.y, vertex.Position.y);
+                min.z = std::min(min.z, vertex.Position.z);
+
+                max.x = std::max(max.x, vertex.Position.x);
+                max.y = std::max(max.y, vertex.Position.y);
+                max.z = std::max(max.z, vertex.Position.z);
+            }
+        }
+
+        return max - min;
+    }
 }

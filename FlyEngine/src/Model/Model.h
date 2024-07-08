@@ -25,6 +25,7 @@ namespace FlyEngine
 
             void Draw(unsigned int shaderID);
             void Draw() override;
+            glm::vec3 GetDimesions();
         private:
         };
     }
