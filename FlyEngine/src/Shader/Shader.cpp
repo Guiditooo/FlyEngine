@@ -28,7 +28,7 @@ namespace FlyEngine
 		return fileContent;
 	}
 
-	Shader::Shader(const char* fragmentShaderPath, const char* vertexShaderPath, const char* geometryShaderPath)
+	Shader::Shader(const char* fragmentShaderPath, const char* vertexShaderPath, std::string shaderName, const char* geometryShaderPath)
 	{
 		std::string vertexSource = GetFileText(vertexShaderPath);
 		std::string fragmentSource = GetFileText(fragmentShaderPath);
@@ -42,13 +42,13 @@ namespace FlyEngine
 		vertexID = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexID, 1, &vertexText, NULL);
 		glCompileShader(vertexID);
-		CheckCompileErrors(vertexID, "VERTEX");
+		CheckCompileErrors(vertexID, "VERTEX", shaderName);
 
 		unsigned int fragmentID;
 		fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentID, 1, &fragmentText, NULL);
 		glCompileShader(fragmentID);
-		CheckCompileErrors(fragmentID, "FRAGMENT");
+		CheckCompileErrors(fragmentID, "FRAGMENT", shaderName);
 
 		unsigned int geometryID;
 		if (geometryShaderPath != nullptr)
@@ -58,7 +58,7 @@ namespace FlyEngine
 			geometryID = glCreateShader(GL_GEOMETRY_SHADER);
 			glShaderSource(geometryID, 1, &geometryText, NULL);
 			glCompileShader(geometryID);
-			CheckCompileErrors(geometryID, "GEOMETRY");
+			CheckCompileErrors(geometryID, "GEOMETRY", shaderName);
 		}
 
 		id = glCreateProgram();
@@ -68,7 +68,7 @@ namespace FlyEngine
 			glAttachShader(id, geometryID);
 
 		glLinkProgram(id);
-		CheckCompileErrors(id, "PROGRAM");
+		CheckCompileErrors(id, "PROGRAM", shaderName);
 
 		glDeleteShader(vertexID);
 		glDeleteShader(fragmentID);
@@ -90,26 +90,37 @@ namespace FlyEngine
 		glUseProgram(id);
 	}
 
-	void Shader::CheckCompileErrors(unsigned int shader, std::string type)
+	void Shader::CheckCompileErrors(unsigned int shader, std::string type, std::string shaderName)
 	{
 		int success;
 		char infoLog[1024];
 		if (type != "PROGRAM")
 		{
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-			if (!success)
+			if (success)
+			{
+				std::cout << "SUCCESS on loading " << type << " of " << shaderName << "\n" << "---------------------------------------------------- - -- " << std::endl;
+			}
+			else
 			{
 				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << " of " << shaderName << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 		else
 		{
 			glGetProgramiv(shader, GL_LINK_STATUS, &success);
-			if (!success)
+			if (success)
+			{
+				if (success)
+				{
+					std::cout << "SUCCESS CREATING PROGRAM of " << shaderName <<"\n" << "---------------------------------------------------- - -- " << std::endl;
+				}
+			}
+			else
 			{
 				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << " of " << shaderName << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 	}

@@ -11,9 +11,9 @@ namespace FlyEngine
 	{
 	private:
 		unsigned int id;
-		void CheckCompileErrors(unsigned int shader, std::string type);
+		void CheckCompileErrors(unsigned int shader, std::string type, std::string shaderName);
 	public:
-		Shader(const char* fragmentShaderPath, const char* vertexShaderPath, const char* geometryPath = nullptr);
+		Shader(const char* fragmentShaderPath, const char* vertexShaderPath, std::string shaderName, const char* geometryPath = nullptr/* = "SomeShader"*/);
 		~Shader();
 
 		unsigned int GetShaderID();
