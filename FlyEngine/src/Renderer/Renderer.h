@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <vector>
+#include <unordered_map>
 
 #include <glm/glm.hpp>
 
@@ -19,7 +20,7 @@
 
 
 namespace FlyEngine
-{	
+{
 	using namespace Utils;
 
 	namespace Entities
@@ -28,15 +29,15 @@ namespace FlyEngine
 		class Model;
 	}
 
+	const std::string DEFAULT_SHADER_NAME = "DefaultShader";
+
 	class Renderer
 	{
 	private:
-		Shader* primitiveShader;
-		Shader* modelShader;
 		Color* bgColor;
 
+		std::unordered_map<std::string, Shader*> shaderMap;
 		Shader* actualShader;
-
 	public:
 		Renderer();
 		~Renderer();
@@ -53,22 +54,22 @@ namespace FlyEngine
 		void BindBuffers(Utils::Buffer& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize);
 		void SetVertexAttributes(std::vector<Utils::VertexAttribute> vertexAttributes);
 
-		void SetMatrix4Uniform(const char* variableName, glm::mat4x4 matrix);
-		void SetMatrix3Uniform(const char* variableName, glm::mat3x3 matrix);
-		void SetMatrix2Uniform(const char* variableName, glm::mat2x2 matrix);
+		void SetMatrix4Uniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
+		void SetMatrix3Uniform(unsigned int shaderID, const char* variableName, glm::mat3x3 matrix);
+		void SetMatrix2Uniform(unsigned int shaderID, const char* variableName, glm::mat2x2 matrix);
 
-		void SetVec4Uniform(const char* variableName, glm::vec4 vec);
-		void SetVec4Uniform(const char* variableName, float x, float y, float z, float w);
+		void SetVec4Uniform(unsigned int shaderID, const char* variableName, glm::vec4 vec);
+		void SetVec4Uniform(unsigned int shaderID, const char* variableName, float x, float y, float z, float w);
 
-		void SetVec3Uniform(const char* variableName, glm::vec3 vec);
-		void SetVec3Uniform(const char* variableName, float x, float y, float z);
+		void SetVec3Uniform(unsigned int shaderID, const char* variableName, glm::vec3 vec);
+		void SetVec3Uniform(unsigned int shaderID, const char* variableName, float x, float y, float z);
 
-		void SetVec2Uniform(const char* variableName, glm::vec2 vec);
-		void SetVec2Uniform(const char* variableName, float x, float y);
+		void SetVec2Uniform(unsigned int shaderID, const char* variableName, glm::vec2 vec);
+		void SetVec2Uniform(unsigned int shaderID, const char* variableName, float x, float y);
 
-		void SetFloatUniform(const char* variableName, float value);
-		void SetBoolUniform(const char* variableName, bool value);
-		void SetIntUniform(const char* variableName, int value);
+		void SetFloatUniform(unsigned int shaderID, const char* variableName, float value);
+		void SetBoolUniform(unsigned int shaderID, const char* variableName, bool value);
+		void SetIntUniform(unsigned int shaderID, const char* variableName, int value);
 
 		void DrawRequest(Utils::Buffer buffers, unsigned int indexCount);
 
@@ -76,10 +77,10 @@ namespace FlyEngine
 		void SetPointLight(Lights::PointLight* light, int index);
 		void SetDirectionalLight(Lights::DirectionalLight* light);
 
-		void SetNewShader(Shader* newShader);
+		void CreateShader(std::string name, const char* fPath, const char* vPath, const char* gPath = nullptr);
+		Shader* GetShader(std::string shaderName);
 
-		void UseModelShader();
-		void UseDefaultShader();
+		void SetActualShader(std::string shaderName);
 	};
 }
 
