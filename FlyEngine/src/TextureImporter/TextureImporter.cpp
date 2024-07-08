@@ -12,13 +12,11 @@ namespace FlyEngine
 	namespace Importers
 	{
 
-
 		Texture* TextureImporter::LoadTexture(const char* path, bool sendMessage)
 		{
             unsigned int textureID;
             glGenTextures(1, &textureID);
 
-            stbi_set_flip_vertically_on_load(1);
             int width, height, bpp;
             unsigned char* localBuffer = stbi_load(path, &width, &height, &bpp, 0);
 
@@ -92,6 +90,11 @@ namespace FlyEngine
             }
 
             return textureID;
+        }
+
+        void TextureImporter::Init(bool flip)
+        {
+            stbi_set_flip_vertically_on_load(flip);
         }
 
         

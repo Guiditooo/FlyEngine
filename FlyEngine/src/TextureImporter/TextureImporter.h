@@ -20,6 +20,7 @@ namespace FlyEngine
 		public:
 			static Texture* LoadTexture(const char* path, bool sendMessage);
 			static unsigned int TextureFromFile(const char* path, std::string& directory, bool gamma = false);
+			static void Init(bool flip);
 		};
 
 	}

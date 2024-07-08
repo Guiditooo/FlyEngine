@@ -11,6 +11,8 @@ struct Material
 
 struct DirLight 
 {
+    vec3 lightColor;
+
     vec3 direction;
   
     vec3 ambient;
@@ -22,6 +24,8 @@ struct DirLight
 
 struct PointLight 
 {    
+    vec3 lightColor;
+
     vec3 position;
     
     float constant;
@@ -37,6 +41,8 @@ struct PointLight
 
 struct SpotLight 
 {
+    vec3 lightColor;
+
     vec3 position;
     vec3 direction;
     float cutOff;
@@ -48,7 +54,7 @@ struct SpotLight
   
     vec3 ambient;
     vec3 diffuse;
-    vec3 specular;   
+    vec3 specular;
     
     bool isActive;
 }; 
@@ -57,7 +63,6 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform DirLight dirLight;
 uniform vec3 baseColor;
-uniform vec3 lightColor;
 uniform vec3 viewPos;
 uniform Material material;
 
@@ -94,7 +99,7 @@ void main()
      if (spotLight.isActive)
         result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
     
-    result *= lightColor * baseColor;
+    result *= baseColor;
     
     //Result
     FragColor = vec4(result, 1.0);
@@ -118,7 +123,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-    return max((ambient + diffuse + specular),0.0);
+    return (max((ambient + diffuse + specular) ,0.0) * light.lightColor);
 }
 
 
@@ -145,7 +150,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     //ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return max((ambient + diffuse + specular),0.0);
+    return (max((ambient + diffuse + specular),0.0) * light.lightColor);
 }
 
 
@@ -176,5 +181,5 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
-    return max((ambient + diffuse + specular),0.0);
+    return (max((ambient + diffuse + specular),0.0) * light.lightColor);
 }
