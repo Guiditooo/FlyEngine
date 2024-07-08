@@ -13,11 +13,9 @@
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "FlyFunctions/Commons/Commons.h"
 #include "FlyFunctions/ColorCode/ColorCode.h"
-#include "MaterialSpecification/MaterialSpecification.h"
+//#include "MaterialSpecification/MaterialSpecification.h"
 #include "Input/Input.h"
 #include "Lights/LightType.h"
-
-const std::string DEFAULT_MAT_NAME = "default";
 
 namespace FlyEngine
 {
@@ -41,6 +39,7 @@ namespace FlyEngine
 
 		isRunning = false;
 		directionalLight = CreateDirectionalLight();
+		Importers::TextureImporter::Init(true);
 	}
 
 	BaseGame::~BaseGame()
@@ -92,10 +91,8 @@ namespace FlyEngine
 
 	void BaseGame::DrawObjects()
 	{
-		renderer->UseDefaultShader();
 		CalculateLights();
 		DrawEntities();
-		renderer->UseModelShader();
 		DrawModels();
 	}
 
@@ -105,7 +102,7 @@ namespace FlyEngine
 		{
 			if (model->IsActive())
 			{
-				SetMatrixUniforms(model->GetModelMatrix());
+				SetMatrixUniforms(model);
 				renderer->DrawModel(model);
 			}
 		}
@@ -117,11 +114,11 @@ namespace FlyEngine
 		{
 			if (entity->IsActive())
 			{
-				SetMatrixUniforms(entity->GetModelMatrix());
-				
+				SetMatrixUniforms(entity);
+
 				SetMaterialUniforms(entity);
-				renderer->SetVec3Uniform("baseColor", entity->GetColor().GetColorV3());
-				
+				renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetColor().GetColorV3());
+
 				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
@@ -142,12 +139,13 @@ namespace FlyEngine
 		}
 	}
 
-	void BaseGame::SetMatrixUniforms(glm::mat4 entityMatrix)
+	void BaseGame::SetMatrixUniforms(Entities::Entity* entity)
 	{
-		renderer->SetMatrix4Uniform("view", mainCamera->GetViewMatrix());
-		renderer->SetMatrix4Uniform("projection", mainCamera->GetProjMatrix());
-		renderer->SetMatrix4Uniform("model", entityMatrix);
-		renderer->SetVec3Uniform("viewPos", mainCamera->GetPosition());
+		unsigned int id = entity->GetShaderID();
+		renderer->SetMatrix4Uniform(id, "view", mainCamera->GetViewMatrix());
+		renderer->SetMatrix4Uniform(id, "projection", mainCamera->GetProjMatrix());
+		renderer->SetMatrix4Uniform(id, "model", entity->GetModelMatrix());
+		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetPosition());
 	}
 
 	void BaseGame::SetLightUniforms(Lights::Light* light, int index)
@@ -166,17 +164,17 @@ namespace FlyEngine
 		default:
 			break;
 		}
-		renderer->SetVec3Uniform("lightColor", light->GetColor().GetColorV3()); 
 	}
 
 	void BaseGame::SetMaterialUniforms(Entities::Entity* entity)
 	{
+		unsigned int id = entity->GetShaderID(), tShaderID();
 		Materials::Material* mat = entity->GetMaterial();
 
 		mat->ApplyTextures();
-		renderer->SetIntUniform("material.diffuse", 0);
-		renderer->SetIntUniform("material.specular", 1);
-		renderer->SetFloatUniform("material.shininess", 64);
+		renderer->SetIntUniform(id, "material.diffuse", 0);
+		renderer->SetIntUniform(id, "material.specular", 1);
+		renderer->SetFloatUniform(id, "material.shininess", 64);
 	}
 
 	float BaseGame::PixelsToEngine(int objectWidthInPixels, float windowDimension)
@@ -186,12 +184,14 @@ namespace FlyEngine
 
 	void BaseGame::CreateDefaultMaterial()
 	{
-		Materials::Material* commonMat = CreateMaterial(DEFAULT_MAT_NAME);
-		commonMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
-		commonMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
+		CreateMaterial(DEFAULT_MAT_NAME, DEFAULT_SHADER_NAME);
+		Materials::Material* defMat = GetMaterial(DEFAULT_MAT_NAME);
+		defMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
+		defMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
 
 		std::vector<std::string> textureOrder = { "diffuse", "specular" };
-		commonMat->SetTextureOrder(textureOrder);
+		defMat->SetTextureOrder(textureOrder);
+		SetMaterial(DEFAULT_MAT_NAME, defMat);
 	}
 
 	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
@@ -308,7 +308,7 @@ namespace FlyEngine
 		Input::SetContextWindow(window);
 
 		renderer = new Renderer();
-		
+
 		CreateDefaultMaterial();
 
 		Init();
@@ -411,23 +411,69 @@ namespace FlyEngine
 		return cc;
 	}
 
-	Materials::Material* BaseGame::CreateMaterial(std::string name)
+	void BaseGame::CreateMaterial(std::string materialName, std::string shaderName)
 	{
-		Materials::Material* mat = new Materials::Material(name);
-		materialsMap[name] = mat;
-		std::string text = "Material Created: [" + name + "]!";
-		Utils::Debugger::ConsoleMessage(&text[0],1,0,1,1);
-		return mat;
+		materialsMap[materialName] = new Materials::Material(materialName, renderer->GetShader(shaderName));
+		std::string text = "Material Created: [" + materialName + "]!";
+		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+	}
+
+	Materials::Material* BaseGame::GetMaterial(std::string name)
+	{
+		auto it = materialsMap.find(name);
+		if (it != materialsMap.end())
+		{
+			return it->second;
+		}
+		return nullptr;
+	}
+
+	void BaseGame::SetMaterial(std::string matName, Materials::Material* mat)
+	{
+		materialsMap[matName] = mat;
+
+		std::string text = "Edited Created: [" + matName + "]!";
+		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+	}
+
+	Materials::Material* BaseGame::GetDefaultMaterial()
+	{
+		return GetMaterial(DEFAULT_MAT_NAME);
 	}
 
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
 		Entities::Model* model = Importers::ModelImporter::LoadModel(path);
 		model->SetName(name);
+
+		//glm::vec3 dims = model->GetDimesions();
+		//float middleNumber = FindMiddleNumber(dims.x, dims.y, dims.z);
+		//float windowSize = window->GetWindowSize().x;
+		//float newScale = PixelsToEngine(middleNumber, windowSize);
+
+		//model->SetScale(newScale, newScale, newScale);
+
 		std::string text = "Model Loaded: (" + model->GetName() + ")!";
 		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
 		modelList.push_back(model);
 		return model;
+	}
+
+	float BaseGame::FindMiddleNumber(float a, float b, float c)
+	{
+		float maxVal = std::max({ a, b, c });
+		float minVal = std::min({ a, b, c });
+
+		// La mediana es el valor que no es ni el máximo ni el mínimo
+		if ((a != maxVal) && (a != minVal))
+		{
+			return a;
+		}
+		if ((b != maxVal) && (b != minVal))
+		{
+			return b;
+		}
+		return c;
 	}
 
 }

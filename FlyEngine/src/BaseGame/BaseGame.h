@@ -11,17 +11,18 @@
 #include "Window/Window.h"
 #include "Camera/Camera.h"
 
+#include "Material/Material.h"
 #include "CameraController/CameraController.h"
 #include "Lights/Light.h"
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
 #include "Cube/Cube.h"
-#include "Material/Material.h"
 
 namespace FlyEngine
 {
 	class Window;
-	class MaterialSpecification;
+
+	const std::string DEFAULT_MAT_NAME = "Default_Material";
 
 	class FLY_API BaseGame
 	{
@@ -58,7 +59,7 @@ namespace FlyEngine
 
 		void CalculateLights();
 
-		void SetMatrixUniforms(glm::mat4 entityMatrix);
+		void SetMatrixUniforms(Entities::Entity* entity);
 		void SetLightUniforms(Lights::Light* light, int index);
 		void SetMaterialUniforms(Entities::Entity* entity);
 
@@ -70,6 +71,8 @@ namespace FlyEngine
 		void InternalUpdate();
 		void InternalDraw();
 		void InternalDeinit();
+
+		float FindMiddleNumber(float a, float b, float c);
 
 	public:
 		BaseGame();
@@ -89,7 +92,10 @@ namespace FlyEngine
 
 		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);
 
-		Materials::Material* CreateMaterial(std::string name);
+		void CreateMaterial(std::string materialName, std::string shaderName);
+		Materials::Material* GetMaterial(std::string name);
+		void SetMaterial(std::string matName, Materials::Material* mat);
+		Materials::Material* GetDefaultMaterial();
 
 		Entities::Model* CreateModel(std::string const& path, std::string name = "Model");
 
