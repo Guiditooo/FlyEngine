@@ -20,6 +20,9 @@ namespace FlyEngine
 	{
 		class Material;
 	}
+
+	class Shader;
+
 	namespace Entities
 	{
 		class FLY_API Entity
@@ -95,6 +98,7 @@ namespace FlyEngine
 			virtual void SetRotation(float x, float y, float z);
 			virtual void SetRotation(glm::quat rot);
 			void SetScale(float x, float y, float z);
+			void SetScale(float scale);
 
 			glm::vec3 GetPosition();
 			glm::vec3 GetRotation();
@@ -116,6 +120,8 @@ namespace FlyEngine
 			void Scale(float x, float y, float z);
 
 			Materials::Material* GetMaterial();
+			Shader* GetShader();
+			int GetShaderID();
 
 			Utils::Buffer* GetBuffers();
 			std::vector<Utils::VertexAttribute> GetVertexAttributes();

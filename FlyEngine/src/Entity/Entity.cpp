@@ -387,6 +387,11 @@ namespace FlyEngine
 			}
 		}
 
+		void Entity::SetScale(float scale)
+		{
+			SetScale(scale, scale, scale);
+		}
+
 		glm::vec3 Entity::GetPosition()
 		{
 			return positionVector;
@@ -453,6 +458,16 @@ namespace FlyEngine
 		Materials::Material* Entity::GetMaterial()
 		{
 			return material;
+		}
+
+		Shader* Entity::GetShader()
+		{
+			return material->GetShader();
+		}
+
+		int Entity::GetShaderID()
+		{
+			return material->GetShader()->GetShaderID();
 		}
 
 		FlyEngine::Utils::Buffer* Entity::GetBuffers()
