@@ -21,7 +21,17 @@ namespace FlyEngine
             // read file via ASSIMP
 			Assimp::Importer importer;
             
-			const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+			//const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+            
+            const aiScene* scene = importer.ReadFile(path,
+                aiProcess_Triangulate |
+                aiProcess_JoinIdenticalVertices |
+                aiProcess_SortByPType |
+                aiProcess_FlipUVs |
+                aiProcess_CalcTangentSpace |
+                aiProcess_GenSmoothNormals |
+                aiProcess_LimitBoneWeights);
+
 			// check for errors
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 			{
@@ -85,15 +95,21 @@ namespace FlyEngine
                     vec.y = mesh->mTextureCoords[0][i].y;
                     vertex.TexCoords = vec;
                     // tangent
-                    vector.x = mesh->mTangents[i].x;
-                    vector.y = mesh->mTangents[i].y;
-                    vector.z = mesh->mTangents[i].z;
-                    vertex.Tangent = vector;
+                    if (mesh->mTangents != nullptr)
+                    {
+                        vector.x = mesh->mTangents[i].x;
+                        vector.y = mesh->mTangents[i].y;
+                        vector.z = mesh->mTangents[i].z;
+                        vertex.Tangent = vector;
+                    }
                     // bitangent
-                    vector.x = mesh->mBitangents[i].x;
-                    vector.y = mesh->mBitangents[i].y;
-                    vector.z = mesh->mBitangents[i].z;
-                    vertex.Bitangent = vector;
+                    if (mesh->mBitangents != nullptr)
+                    {
+                        vector.x = mesh->mBitangents[i].x;
+                        vector.y = mesh->mBitangents[i].y;
+                        vector.z = mesh->mBitangents[i].z;
+                        vertex.Bitangent = vector;
+                    }
                 }
                 else
                     vertex.TexCoords = glm::vec2(0.0f, 0.0f);
