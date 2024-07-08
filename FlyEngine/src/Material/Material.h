@@ -8,8 +8,12 @@
 #include "Texture/Texture.h"
 #include "MaterialSpecification/MaterialSpecification.h"
 
+
+
 namespace FlyEngine
 {
+	class Shader;
+
 	namespace Materials
 	{
 		class FLY_API Material
@@ -19,8 +23,9 @@ namespace FlyEngine
 			MaterialSpecification* specs;
 			std::unordered_map<std::string, Texture*> textureMap;
 			std::vector<std::string> textureOrder;
+			Shader* shader;
 		public:
-			Material(std::string name);
+			Material(std::string name, Shader* shader);
 			~Material();
 
 			void ApplyTextures();
@@ -33,6 +38,8 @@ namespace FlyEngine
 			Texture* GetTexture(const std::string& name) const;
 			MaterialSpecification* GetSpecs();
 			std::string GetName();
+
+			Shader* GetShader();
 		};
 	}
 }

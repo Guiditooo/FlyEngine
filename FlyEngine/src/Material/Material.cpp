@@ -1,15 +1,18 @@
 #include "Material.h"
 
+#include "Shader/Shader.h"
+
 namespace FlyEngine
 {
 	namespace Materials
 	{
 
-		Material::Material(std::string name)
+		Material::Material(std::string name, Shader* shader)
 		{
 			specs = new MaterialSpecification();
 			specs->SetSpecs(MaterialList::WhitePlastic);
 			this->name = name;
+			this->shader = shader;
 		}
 
 		Material::~Material()
@@ -83,6 +86,10 @@ namespace FlyEngine
 		std::string Material::GetName()
 		{
 			return name;
+		}
+		Shader* Material::GetShader()
+		{
+			return shader;
 		}
 	}
 
