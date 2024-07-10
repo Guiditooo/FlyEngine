@@ -27,31 +27,30 @@ namespace FlyEngine
 	{
 		class Entity;
 		class Model;
+		class Mesh;
 	}
-
-	const std::string DEFAULT_SHADER_NAME = "DefaultShader";
 
 	class Renderer
 	{
 	private:
 		Color* bgColor;
 
-		std::unordered_map<std::string, Shader*> shaderMap;
-		Shader* actualShader;
+		void DrawMesh(Entities::Mesh* mesh, std::string modelName);
+
 	public:
 		Renderer();
 		~Renderer();
 
 		void DrawObject(Entities::Entity* toDraw);//Pasar a component, porque quizas quiero UI
-		void DrawModel(Entities::Model* toDraw);
+		void DrawModel(Entities::Model* toDraw, glm::mat4x4 viewMat, glm::mat4x4 projMat, glm::vec3 camPos);
 		void UseTextures(GLenum textureType, GLuint textureID);
 
 		void SetBackgroundColor(Color* newBgColor);
 		Color* GetBackgroundColor();
 
-		void CreateBaseBuffers(Utils::Buffer& buffers);
-		void BindBuffers(Utils::Buffer& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
-		void BindBuffers(Utils::Buffer& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize);
+		void CreateBaseBuffers(Utils::Buffers& buffers);
+		void BindBuffers(Utils::Buffers& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize);
+		void BindBuffers(Utils::Buffers& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize);
 		void SetVertexAttributes(std::vector<Utils::VertexAttribute> vertexAttributes);
 
 		void SetMatrix4Uniform(unsigned int shaderID, const char* variableName, glm::mat4x4 matrix);
@@ -71,16 +70,12 @@ namespace FlyEngine
 		void SetBoolUniform(unsigned int shaderID, const char* variableName, bool value);
 		void SetIntUniform(unsigned int shaderID, const char* variableName, int value);
 
-		void DrawRequest(Utils::Buffer buffers, unsigned int indexCount);
+		void DrawRequest(Utils::Buffers buffers, unsigned int indexCount);
 
-		void SetSpotLight(Lights::SpotLight* light);
-		void SetPointLight(Lights::PointLight* light, int index);
-		void SetDirectionalLight(Lights::DirectionalLight* light);
+		void SetSpotLight(Lights::SpotLight* light, unsigned int shaderID);
+		void SetPointLight(Lights::PointLight* light, int index, unsigned int shaderID);
+		void SetDirectionalLight(Lights::DirectionalLight* light, unsigned int shaderID);
 
-		void CreateShader(std::string name, const char* fPath, const char* vPath, const char* gPath = nullptr);
-		Shader* GetShader(std::string shaderName);
-
-		void SetActualShader(std::string shaderName);
 	};
 }
 
