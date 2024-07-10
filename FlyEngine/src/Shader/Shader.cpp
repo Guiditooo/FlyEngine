@@ -28,8 +28,10 @@ namespace FlyEngine
 		return fileContent;
 	}
 
-	Shader::Shader(const char* fragmentShaderPath, const char* vertexShaderPath, std::string shaderName, const char* geometryShaderPath)
+	Shader::Shader(std::string shaderName, const char* fragmentShaderPath, const char* vertexShaderPath, const char* geometryShaderPath)
 	{
+		name = shaderName;
+
 		std::string vertexSource = GetFileText(vertexShaderPath);
 		std::string fragmentSource = GetFileText(fragmentShaderPath);
 		std::string geometrySource;
@@ -83,6 +85,11 @@ namespace FlyEngine
 	unsigned int Shader::GetShaderID()
 	{
 		return id;
+	}
+
+	std::string Shader::GetShaderName()
+	{
+		return name;
 	}
 
 	void Shader::UseShader()
