@@ -330,7 +330,7 @@ namespace FlyEngine
 			{
 				std::string text = "Setted Position of ";
 				text += name;
-				text += " successfully to ";
+				text += " successfully to: ";
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
@@ -358,7 +358,7 @@ namespace FlyEngine
 			{
 				std::string text = "Setted Rotation of ";
 				text += name;
-				text += " successfully ";
+				text += " successfully to: ";
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
@@ -380,7 +380,7 @@ namespace FlyEngine
 			{
 				std::string text = "Setted Rotation of ";
 				text += name;
-				text += " successfully ";
+				text += " successfully to: ";
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(rotationVector.x, rotationVector.y, rotationVector.z));
 			}
@@ -464,6 +464,15 @@ namespace FlyEngine
 			rotationVector = glm::eulerAngles(rotationQuaternion);
 			rotationMatrix = glm::mat4_cast(rotationQuaternion);
 			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Rotation of ";
+				text += name;
+				text += " successfully to: ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(rotationVector.x, rotationVector.y, rotationVector.z));
+			}
 		}
 
 		void Entity::Rotate(glm::vec3 rot)
@@ -476,6 +485,14 @@ namespace FlyEngine
 			scaleVector *= glm::vec3(x, y, z);
 			scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
 			shouldUpdateModelMatrix = true;
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Scale of ";
+				text += name;
+				text += " successfully to: ";
+
+				Debugger::ConsoleMessageID(&text[0], scaleVector);
+			}
 		}
 
 		void Entity::Scale(glm::vec3 scale)

@@ -85,10 +85,10 @@ namespace FlyEngine
 
 			void SetMaterial(Materials::Material* newMaterial);
 
-			void SetColor(Utils::Color newColor);
-			void SetColor(glm::vec3 newColor);
-			void SetColor(float r, float g, float b);
-			void SetColor(Utils::COLOR newColor);
+			virtual void SetColor(Utils::Color newColor);
+			virtual void SetColor(glm::vec3 newColor);
+			virtual void SetColor(float r, float g, float b);
+			virtual void SetColor(Utils::COLOR newColor);
 			Utils::Color GetColor();
 
 			void UpdateModelMatrix();

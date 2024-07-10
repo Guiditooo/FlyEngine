@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 #include "ModelImporter/ModelImporter.h"
 #include "Mesh/Mesh.h"
@@ -14,6 +15,7 @@ namespace FlyEngine
         Model::Model(std::string modelName, bool gamma) : Entity3D(modelName)
         {
             gammaCorrection = gamma;
+            useBaseMaterial = false;
         }
 
         void Model::Draw(unsigned int shaderID)
@@ -51,6 +53,10 @@ namespace FlyEngine
             mesh->SetPosition(positionVector);
             mesh->SetRotation(rotationVector);
             mesh->SetScale(scaleVector);
+            mesh->SetColor(color);
+            std::string meshName = "Mesh";
+            meshName += std::to_string(meshes.size());
+            mesh->SetName(meshName);
             meshes.push_back(mesh);
         }
 
@@ -162,6 +168,46 @@ namespace FlyEngine
         {
             Entity::Scale(scale);
             UpdateMeshesTransform();
+        }
+        void Model::SetColor(Utils::Color newColor)
+        {
+            Entity::SetColor(newColor);
+            for (Mesh* mesh : meshes)
+            {
+                mesh->SetColor(color);
+            }
+        }
+        void Model::SetColor(glm::vec3 newColor)
+        {
+            Entity::SetColor(newColor);
+            for (Mesh* mesh : meshes)
+            {
+                mesh->SetColor(color);
+            }
+        }
+        void Model::SetColor(float r, float g, float b)
+        {
+            Entity::SetColor(r,g,b);
+            for (Mesh* mesh : meshes)
+            {
+                mesh->SetColor(color);
+            }
+        }
+        void Model::SetColor(Utils::COLOR newColor)
+        {
+            Entity::SetColor(newColor);
+            for (Mesh* mesh : meshes)
+            {
+                mesh->SetColor(color);
+            }
+        }
+        void Model::UseBaseMaterial(bool useBaseMat)
+        {
+            useBaseMaterial = useBaseMat;
+        }
+        bool Model::ShouldUseBaseMaterial()
+        {
+            return useBaseMaterial;
         }
     }
 }

@@ -174,6 +174,21 @@ namespace FlyEngine
 				newColor.g = 1.0f;
 				newColor.b = 0.0f;
 				break;
+			case COLOR::GREY:
+				newColor.r = 0.5f;
+				newColor.g = 0.5f;
+				newColor.b = 0.5f;
+				break;
+			case COLOR::DARK_GREY:
+				newColor.r = 0.2f;
+				newColor.g = 0.2f;
+				newColor.b = 0.2f;
+				break;
+			case COLOR::LIGHT_GREY:
+				newColor.r = 0.8f;
+				newColor.g = 0.8f;
+				newColor.b = 0.8f;
+				break;
 			case COLOR::MOSS_GREEN:
 				newColor.r = 0.2f;
 				newColor.g = 0.3f;
