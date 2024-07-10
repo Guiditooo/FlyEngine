@@ -8,14 +8,19 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Entity/Entity.h"
+#include "ShaderManager/ShaderManager.h"
+#include "MaterialManager/MaterialManager.h"
 
+#include "Entity/Entity.h"
 #include "Model/Model.h"
+#include "Mesh/Mesh.h"
+#include "Material/Material.h"
+#include "MaterialSpecification/MaterialSpecification.h"
 
 namespace FlyEngine
 {
-	const char* DEFAULT_VERTEX_PATH = "res/Shaders/defaultVertex.shader";
-	const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/defaultFragment.shader";
+
+	using namespace Managers;
 
 	const char* MODEL_VERTEX_PATH = "res/Shaders/modelVertex.shader";
 	const char* MODEL_FRAGMENT_PATH = "res/Shaders/modelFragment.shader";
@@ -24,31 +29,36 @@ namespace FlyEngine
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
 
-		CreateShader(DEFAULT_SHADER_NAME, DEFAULT_FRAGMENT_PATH, DEFAULT_VERTEX_PATH);
-		CreateShader("ModelShader", MODEL_FRAGMENT_PATH, MODEL_VERTEX_PATH);
+		ShaderManager::InitializeManager();
+		MaterialManager::InitializeManager();
 
-		actualShader = GetShader(DEFAULT_SHADER_NAME);
+		ShaderManager::CreateShader(ShaderManager::MODEL_SHADER_NAME, MODEL_FRAGMENT_PATH, MODEL_VERTEX_PATH);
+
 	}
 
 	Renderer::~Renderer()
 	{
-		for (auto element : shaderMap)
-		{
-			if (element.second != nullptr)
-			{
-				delete element.second;
-				element.second = nullptr;
-			}
-		}
+		
 	}
 	void Renderer::DrawObject(Entities::Entity* toDraw)
 	{
 
 	}
 
-	void Renderer::DrawModel(Entities::Model* toDraw)
+	void Renderer::DrawModel(Entities::Model* toDraw, glm::mat4x4 viewMat, glm::mat4x4 projMat, glm::vec3 camPos)
 	{
-		toDraw->Draw(toDraw->GetShaderID());
+		std::vector<Entities::Mesh*> meshes = toDraw->GetMeshes();
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			unsigned int id = meshes[i]->GetShaderID();
+
+			SetMatrix4Uniform(id, "view", viewMat);
+			SetMatrix4Uniform(id, "projection", projMat);
+			SetMatrix4Uniform(id, "model", meshes[i]->GetModelMatrix());
+			SetVec3Uniform(id, "viewPos", camPos);
+
+			DrawMesh(meshes[i], toDraw->GetName());
+		}
 	}
 
 	void Renderer::SetBackgroundColor(Color* newBgColor)
@@ -65,14 +75,14 @@ namespace FlyEngine
 		return bgColor;
 	}
 
-	void Renderer::CreateBaseBuffers(Utils::Buffer& buffers)
+	void Renderer::CreateBaseBuffers(Utils::Buffers& buffers)
 	{
 		glGenVertexArrays(1, &buffers.VAO);
 		glGenBuffers(1, &buffers.VBO);
 		glGenBuffers(1, &buffers.EBO);
 	}
 
-	void Renderer::BindBuffers(Utils::Buffer& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize)
+	void Renderer::BindBuffers(Utils::Buffers& buffers, float* vertices, unsigned int vertexSize, unsigned int* index, unsigned int indexSize)
 	{
 		glBindVertexArray(buffers.VAO);
 
@@ -83,7 +93,7 @@ namespace FlyEngine
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, index, GL_STATIC_DRAW);
 	}
 
-	void Renderer::BindBuffers(Utils::Buffer& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize)
+	void Renderer::BindBuffers(Utils::Buffers& buffers, const std::vector<float>& vertices, unsigned int vertexSize, const std::vector<unsigned int>& index, unsigned int indexSize)
 	{
 		glBindVertexArray(buffers.VAO);
 
@@ -109,16 +119,18 @@ namespace FlyEngine
 		}
 	}
 
-	void Renderer::DrawRequest(Utils::Buffer buffers, unsigned int indexCount)
+	void Renderer::DrawRequest(Utils::Buffers buffers, unsigned int indexCount)
 	{
 		glBindVertexArray(buffers.VAO);
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 	}
 
 	void Renderer::UseTextures(GLenum textureType, GLuint textureID)
 	{
 		glActiveTexture(textureType);
 		glBindTexture(GL_TEXTURE_2D, textureID);
+		glActiveTexture(GL_TEXTURE0);
 	}
 
 	void Renderer::SetMatrix4Uniform(unsigned int shaderID, const GLchar* variableName, glm::mat4x4 matrix)
@@ -194,27 +206,24 @@ namespace FlyEngine
 		glUniform1i(uniformLocation, (int)value);
 	}
 
-	void Renderer::SetSpotLight(Lights::SpotLight* light)
+	void Renderer::SetSpotLight(Lights::SpotLight* light, unsigned int shaderID)
 	{
-		unsigned int id = actualShader->GetShaderID();
-		SetBoolUniform(id, "spotLight.isActive", light->IsActive());
-		SetVec3Uniform(id, "spotLight.ambient", light->GetAmbient());
-		SetVec3Uniform(id, "spotLight.specular", light->GetSpecular());
-		SetVec3Uniform(id, "spotLight.diffuse", light->GetDiffuse());
-		SetVec3Uniform(id, "spotLight.position", light->GetPosition());
-		SetVec3Uniform(id, "spotLight.direction", light->GetDirection());
-		SetFloatUniform(id, "spotLight.constant", light->GetConstant());
-		SetFloatUniform(id, "spotLight.linear", light->GetLinear());
-		SetFloatUniform(id, "spotLight.quadratic", light->GetQuadratic());
-		SetFloatUniform(id, "spotLight.cutOff", light->GetCutOff());
-		SetFloatUniform(id, "spotLight.outerCutOff", light->GetOuterCutOff());
-
-		SetVec3Uniform(id, "spotLight.lightColor", light->GetColor().GetColorV3());
+		SetBoolUniform( shaderID, "spotLight.isActive", light->IsActive());
+		SetVec3Uniform( shaderID, "spotLight.ambient", light->GetAmbient());
+		SetVec3Uniform( shaderID, "spotLight.specular", light->GetSpecular());
+		SetVec3Uniform (shaderID, "spotLight.diffuse", light->GetDiffuse());
+		SetVec3Uniform( shaderID, "spotLight.position", light->GetPosition());
+		SetVec3Uniform( shaderID, "spotLight.direction", light->GetDirection());
+		SetVec3Uniform( shaderID, "spotLight.lightColor", light->GetColor().GetColorV3());
+		SetFloatUniform(shaderID, "spotLight.constant", light->GetConstant());
+		SetFloatUniform(shaderID, "spotLight.linear", light->GetLinear());
+		SetFloatUniform(shaderID, "spotLight.quadratic", light->GetQuadratic());
+		SetFloatUniform(shaderID, "spotLight.cutOff", light->GetCutOff());
+		SetFloatUniform(shaderID, "spotLight.outerCutOff", light->GetOuterCutOff());
 	}
 
-	void Renderer::SetPointLight(Lights::PointLight* light, int index)
+	void Renderer::SetPointLight(Lights::PointLight* light, int index, unsigned int shaderID)
 	{
-		unsigned int id = actualShader->GetShaderID();
 		std::string text;
 		std::string base = "pointLights[";
 		base += std::to_string(index);
@@ -222,65 +231,108 @@ namespace FlyEngine
 
 		text = base;
 		text += "ambient";
-		SetVec3Uniform(id, &text[0], light->GetAmbient());
+		SetVec3Uniform(shaderID, &text[0], light->GetAmbient());
 
 		text = base;
 		text += "specular";
-		SetVec3Uniform(id, &text[0], light->GetSpecular());
+		SetVec3Uniform(shaderID, &text[0], light->GetSpecular());
 
 		text = base;
 		text += "diffuse";
-		SetVec3Uniform(id, &text[0], light->GetDiffuse());
+		SetVec3Uniform(shaderID, &text[0], light->GetDiffuse());
 
 		text = base;
 		text += "position";
-		SetVec3Uniform(id, &text[0], light->GetPosition());
+		SetVec3Uniform(shaderID, &text[0], light->GetPosition());
 
 		text = base;
 		text += "constant";
-		SetFloatUniform(id, &text[0], light->GetConstant());
+		SetFloatUniform(shaderID, &text[0], light->GetConstant());
 
 		text = base;
 		text += "linear";
-		SetFloatUniform(id, &text[0], light->GetLinear());
+		SetFloatUniform(shaderID, &text[0], light->GetLinear());
 
 		text = base;
 		text += "quadratic";
-		SetFloatUniform(id, &text[0], light->GetQuadratic());
+		SetFloatUniform(shaderID, &text[0], light->GetQuadratic());
 
 		text = base;
 		text += "isActive";
-		SetBoolUniform(id, &text[0], light->IsActive());
+		SetBoolUniform(shaderID, &text[0], light->IsActive());
 
 		text = base;
 		text += "lightColor";
-		SetVec3Uniform(id, &text[0], light->GetColor().GetColorV3());
+		SetVec3Uniform(shaderID, &text[0], light->GetColor().GetColorV3());
 	}
 
-	void Renderer::SetDirectionalLight(Lights::DirectionalLight* light)
+	void Renderer::SetDirectionalLight(Lights::DirectionalLight* light, unsigned int shaderID)
 	{
-		unsigned int id = actualShader->GetShaderID();
-		SetBoolUniform(id, "dirLight.isActive", light->IsActive());
-		SetVec3Uniform(id, "dirLight.direction", light->GetDirection());
-		SetVec3Uniform(id, "dirLight.ambient", light->GetAmbient());
-		SetVec3Uniform(id, "dirLight.specular", light->GetSpecular());
-		SetVec3Uniform(id, "dirLight.diffuse", light->GetDiffuse());
-		SetVec3Uniform(id, "dirLight.lightColor", light->GetColor().GetColorV3());
+		SetBoolUniform(shaderID, "dirLight.isActive", light->IsActive());
+		SetVec3Uniform(shaderID, "dirLight.direction", light->GetDirection());
+		SetVec3Uniform(shaderID, "dirLight.ambient", light->GetAmbient());
+		SetVec3Uniform(shaderID, "dirLight.specular", light->GetSpecular());
+		SetVec3Uniform(shaderID, "dirLight.diffuse", light->GetDiffuse());
+		SetVec3Uniform(shaderID, "dirLight.lightColor", light->GetColor().GetColorV3());
 	}
 
-	void Renderer::CreateShader(std::string name, const char* fPath, const char* vPath, const char* gPath)
+	void Renderer::DrawMesh(Entities::Mesh* mesh, std::string modelName)
 	{
-		shaderMap[name] = new Shader(fPath, vPath, name ,gPath);
-	}
 
-	Shader* Renderer::GetShader(std::string shaderName)
-	{
-		auto it = shaderMap.find(shaderName);
-		if (it != shaderMap.end())
+		std::vector<std::string> order = mesh->GetMaterial()->GetTextureOrder();
+
+		for (unsigned int i = 0; i < order.size(); i++)
 		{
-			return it->second;
-		}
-		return nullptr;
-	}
+			std::string base = "material.";
 
+			std::string uniformVariable = base;
+			uniformVariable += order[i];
+
+			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+
+			Texture* tx = mesh->GetMaterial()->GetTexture(order[i]);
+
+			tx->Bind(i);
+			SetIntUniform(mesh->GetShaderID(), "kijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", i);
+		}
+		
+		SetFloatUniform(mesh->GetShaderID(), "material.shininess", 64/*mesh->GetMaterial()->GetSpecs()->GetShininess()*/);
+
+		// draw mesh
+		DrawRequest(*(mesh->GetBuffers()), mesh->GetIndexes().size());
+
+		// always good practice to set everything back to defaults once configured.
+		glActiveTexture(GL_TEXTURE0);
+
+		std::cout << "\n\n";
+
+		GLint i;
+		GLint count;
+
+		GLint size; // size of the variable
+		GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+		const GLsizei bufSize = 40; // maximum name length
+		GLchar name[bufSize]; // variable name in GLSL
+		GLsizei length; // name length
+
+		glGetProgramiv(mesh->GetShaderID(), GL_ACTIVE_ATTRIBUTES, &count);
+		printf("Active Attributes: %d\n", count);
+
+		for (i = 0; i < count; i++)
+		{
+			glGetActiveAttrib(mesh->GetShaderID(), (GLuint)i, bufSize, &length, &size, &type, name);
+
+			printf("Attribute #%d Type: %u Name: %s\n", i, type, name);
+		}
+		glGetProgramiv(mesh->GetShaderID(), GL_ACTIVE_UNIFORMS, &count);
+		printf("Active Uniforms: %d\n", count);
+
+		for (i = 0; i < count; i++)
+		{
+			glGetActiveUniform(mesh->GetShaderID(), (GLuint)i, bufSize, &length, &size, &type, name);
+
+			printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+		}
+	}
 }
