@@ -59,7 +59,7 @@ namespace FlyEngine
 			vertexSize = 0;
 
 			material = nullptr;
-			buffers = new Utils::Buffer();
+			buffers = new Utils::Buffers();
 			active = true;
 
 			printModificationMessage = false;
@@ -337,6 +337,16 @@ namespace FlyEngine
 			
 		}
 
+		void Entity::SetPosition(float x)
+		{
+			SetPosition(x, x, x);
+		}
+
+		void Entity::SetPosition(glm::vec3 pos)
+		{
+			SetPosition(pos.x, pos.y, pos.z);
+		}
+
 		void Entity::SetRotation(float x, float y, float z)
 		{
 			rotationVector = glm::vec3(x, y, z);
@@ -352,6 +362,11 @@ namespace FlyEngine
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
+		}
+
+		void Entity::SetRotation(glm::vec3 rot)
+		{
+			SetRotation(rot.x, rot.y, rot.z);
 		}
 
 		void Entity::SetRotation(glm::quat rot)
@@ -385,6 +400,11 @@ namespace FlyEngine
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
+		}
+
+		void Entity::SetScale(glm::vec3 scale)
+		{
+			SetScale(scale.x, scale.y, scale.z);
 		}
 
 		void Entity::SetScale(float scale)
@@ -429,6 +449,11 @@ namespace FlyEngine
 			shouldUpdateModelMatrix = true;
 		}
 
+		void Entity::Translate(glm::vec3 pos)
+		{
+			Translate(pos.x, pos.y, pos.z);
+		}
+
 		void Entity::Rotate(float x, float y, float z)
 		{
 			glm::quat rotX = glm::angleAxis(glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -441,11 +466,26 @@ namespace FlyEngine
 			shouldUpdateModelMatrix = true;
 		}
 
+		void Entity::Rotate(glm::vec3 rot)
+		{
+			Rotate(rot.x, rot.y, rot.z);
+		}
+
 		void Entity::Scale(float x, float y, float z)
 		{
 			scaleVector *= glm::vec3(x, y, z);
 			scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
 			shouldUpdateModelMatrix = true;
+		}
+
+		void Entity::Scale(glm::vec3 scale)
+		{
+			Scale(scale.x, scale.y, scale.z);
+		}
+
+		void Entity::Scale(float scale)
+		{
+			Scale(scale, scale, scale);
 		}
 
 		void Entity::SetMaterial(Materials::Material* newMaterial)
@@ -470,7 +510,7 @@ namespace FlyEngine
 			return material->GetShader()->GetShaderID();
 		}
 
-		FlyEngine::Utils::Buffer* Entity::GetBuffers()
+		FlyEngine::Utils::Buffers* Entity::GetBuffers()
 		{
 			return buffers;
 		}

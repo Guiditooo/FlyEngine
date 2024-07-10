@@ -30,7 +30,7 @@ namespace FlyEngine
 		protected:
 			std::vector<Utils::VertexAttribute> vertexAttributes;
 
-			Utils::Buffer* buffers;
+			Utils::Buffers* buffers;
 			bool active;
 
 			Materials::Material* material;
@@ -95,10 +95,16 @@ namespace FlyEngine
 			glm::mat4 GetModelMatrix();
 
 			virtual void SetPosition(float x, float y, float z);
+			virtual void SetPosition(float x);
+			virtual void SetPosition(glm::vec3 pos);
+
 			virtual void SetRotation(float x, float y, float z);
+			virtual void SetRotation(glm::vec3 rot);
 			virtual void SetRotation(glm::quat rot);
-			void SetScale(float x, float y, float z);
-			void SetScale(float scale);
+
+			virtual void SetScale(float x, float y, float z);
+			virtual void SetScale(glm::vec3 scale);
+			virtual void SetScale(float scale);
 
 			glm::vec3 GetPosition();
 			glm::vec3 GetRotation();
@@ -116,14 +122,20 @@ namespace FlyEngine
 			void MoveDown(float amount);
 
 			virtual void Translate(float x, float y, float z);
+			virtual void Translate(glm::vec3 pos);
+
 			virtual void Rotate(float x, float y, float z);
-			void Scale(float x, float y, float z);
+			virtual void Rotate(glm::vec3 rot);
+
+			virtual void Scale(float x, float y, float z);
+			virtual void Scale(glm::vec3 scale);
+			virtual void Scale(float scale);
 
 			Materials::Material* GetMaterial();
 			Shader* GetShader();
 			int GetShaderID();
 
-			Utils::Buffer* GetBuffers();
+			Utils::Buffers* GetBuffers();
 			std::vector<Utils::VertexAttribute> GetVertexAttributes();
 
 			std::vector<float> GetVertexList();
