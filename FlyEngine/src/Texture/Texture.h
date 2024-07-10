@@ -12,6 +12,7 @@ namespace FlyEngine
 	private:
 		unsigned int id;
 		std::string path;
+		std::string type;
 		int width;
 		int height;
 
@@ -22,6 +23,8 @@ namespace FlyEngine
 
 		void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
+
+		void SetType(std::string type);
 
 		unsigned int GetID() const;
 		const std::string& GetPath();

@@ -25,6 +25,11 @@ void FlyEngine::Texture::UnBind() const
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void FlyEngine::Texture::SetType(std::string type)
+{
+	this->type = type;
+}
+
 unsigned int FlyEngine::Texture::GetID() const
 {
 	return id;
