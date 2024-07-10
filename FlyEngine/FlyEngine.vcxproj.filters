@@ -123,6 +123,15 @@
     <Filter Include="Mesh">
       <UniqueIdentifier>{11a5146b-e138-452c-8c08-392c6ddc7818}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{c9e77dbe-251c-484d-ba5e-2f5302ac701c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\MaterialManager">
+      <UniqueIdentifier>{4e1a732e-388a-40de-b430-7d09e96db1dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ShaderManager">
+      <UniqueIdentifier>{8c0a322f-dc96-4db1-baf9-1777ea4ef11b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -222,6 +231,12 @@
     </ClCompile>
     <ClCompile Include="src\Vertex\Vertex.cpp">
       <Filter>Fly Functions\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MaterialManager\MaterialManager.cpp">
+      <Filter>Managers\MaterialManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderManager\ShaderManager.cpp">
+      <Filter>Managers\ShaderManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +354,12 @@
     </ClInclude>
     <ClInclude Include="src\Vertex\Vertex.h">
       <Filter>Fly Functions\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MaterialManager\MaterialManager.h">
+      <Filter>Managers\MaterialManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderManager\ShaderManager.h">
+      <Filter>Managers\ShaderManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
