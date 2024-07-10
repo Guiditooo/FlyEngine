@@ -25,7 +25,7 @@ namespace FlyEngine
 			std::vector<std::string> textureOrder;
 			Shader* shader;
 		public:
-			Material(std::string name, Shader* shader);
+			Material(std::string name, Shader* shader = nullptr);
 			~Material();
 
 			void ApplyTextures();
@@ -35,11 +35,13 @@ namespace FlyEngine
 			void SetTextureOrder(const std::vector<std::string>& order);
 			void SetSpecs(MaterialSpecification* newSpecs);
 
+			std::vector<std::string> GetTextureOrder();
 			Texture* GetTexture(const std::string& name) const;
 			MaterialSpecification* GetSpecs();
 			std::string GetName();
 
 			Shader* GetShader();
+			unsigned int GetShaderID();
 		};
 	}
 }

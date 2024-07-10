@@ -1,5 +1,7 @@
 #include "Material.h"
 
+#include "ShaderManager/ShaderManager.h"
+
 #include "Shader/Shader.h"
 
 namespace FlyEngine
@@ -12,7 +14,8 @@ namespace FlyEngine
 			specs = new MaterialSpecification();
 			specs->SetSpecs(MaterialList::WhitePlastic);
 			this->name = name;
-			this->shader = shader;
+			
+			this->shader = shader == nullptr ? Managers::ShaderManager::GetDefaultShader() : shader;
 		}
 
 		Material::~Material()
@@ -46,7 +49,8 @@ namespace FlyEngine
 		{
 			if (textureMap.find(name) != textureMap.end())
 			{
-				delete textureMap[name];
+				std::cout << " Texture " << name << " already exists in [" << this->name << "] \n";
+				return;
 			}
 			textureMap[name] = texture;
 
@@ -56,6 +60,7 @@ namespace FlyEngine
 			{
 				textureOrder.push_back(name);
 			}
+			texture->SetType(name);
 		}
 
 		void Material::SetTextureOrder(const std::vector<std::string>& order)
@@ -66,6 +71,11 @@ namespace FlyEngine
 		void Material::SetSpecs(MaterialSpecification* newSpecs)
 		{
 			specs = newSpecs;
+		}
+
+		std::vector<std::string> Material::GetTextureOrder()
+		{
+			return textureOrder;
 		}
 
 		Texture* Material::GetTexture(const std::string& name) const
@@ -90,6 +100,10 @@ namespace FlyEngine
 		Shader* Material::GetShader()
 		{
 			return shader;
+		}
+		unsigned int Material::GetShaderID()
+		{
+			return shader->GetShaderID();
 		}
 	}
 
