@@ -1,50 +1,167 @@
 #include "Model.h"
 
 #include <iostream>
+#include <algorithm>
 
 #include "ModelImporter/ModelImporter.h"
+#include "Mesh/Mesh.h"
 
 namespace FlyEngine
 {
-
-    FlyEngine::Entities::Model::Model(bool gamma) : Entity3D("Model")
+    namespace Entities
     {
-        gammaCorrection = gamma;
-    }
+        
+        Model::Model(std::string modelName, bool gamma) : Entity3D(modelName)
+        {
+            gammaCorrection = gamma;
+        }
 
-    void Entities::Model::Draw(unsigned int shaderID)
-    {
-        for (int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shaderID);
-    }
+        void Model::Draw(unsigned int shaderID)
+        {
+        }
 
-    void Entities::Model::Draw()
-    {
-        //Deprecated
-        /*
-        material->Apply();
-        Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
-        Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-        Renderer::DrawRequest(VAO, indexCount);
-        */
-    }
-    glm::vec3 Entities::Model::GetDimesions()
-    {
-        glm::vec3 min(std::numeric_limits<float>::max());
-        glm::vec3 max(std::numeric_limits<float>::lowest());
+        void Model::Draw()
+        {
+            //Deprecated
+            /*
+            material->Apply();
+            Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
+            Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
+            Renderer::DrawRequest(VAO, indexCount);
+            */
+        }
 
-        for (const auto& mesh : meshes) {
-            for (const auto& vertex : mesh.vertices) {
-                min.x = std::min(min.x, vertex.Position.x);
-                min.y = std::min(min.y, vertex.Position.y);
-                min.z = std::min(min.z, vertex.Position.z);
-
-                max.x = std::max(max.x, vertex.Position.x);
-                max.y = std::max(max.y, vertex.Position.y);
-                max.z = std::max(max.z, vertex.Position.z);
+        void Model::UpdateMeshesTransform()
+        {
+            for (Mesh* mesh : meshes) 
+            {
+                mesh->SetPosition(positionVector);
+                mesh->SetRotation(rotationVector);
+                mesh->SetScale(scaleVector);
             }
         }
 
-        return max - min;
+        void Model::SetDirectory(std::string directory)
+        {
+            this->directory = directory;
+        }
+
+        void Model::AddMesh(Mesh* mesh)
+        {
+            mesh->SetPosition(positionVector);
+            mesh->SetRotation(rotationVector);
+            mesh->SetScale(scaleVector);
+            meshes.push_back(mesh);
+        }
+
+        glm::vec3 Model::GetDimesions()
+        {
+            glm::vec3 min(std::numeric_limits<float>::max());
+            glm::vec3 max(std::numeric_limits<float>::lowest());
+
+            for (Mesh* mesh : meshes) 
+            {
+                for (const auto& vertex : mesh->GetVertices()) 
+                {
+                    min.x = std::min(min.x, vertex.Position.x);
+                    min.y = std::min(min.y, vertex.Position.y);
+                    min.z = std::min(min.z, vertex.Position.z);
+
+                    max.x = std::max(max.x, vertex.Position.x);
+                    max.y = std::max(max.y, vertex.Position.y);
+                    max.z = std::max(max.z, vertex.Position.z);
+                }
+            }
+
+            return max - min;
+        }
+        std::vector<Mesh*> Model::GetMeshes()
+        {
+            return meshes;
+        }
+        std::string Model::GetDirectory()
+        {
+            return directory;
+        }
+        void Model::SetPosition(float x, float y, float z)
+        {
+            Entity::SetPosition(x, y, z);
+            UpdateMeshesTransform();
+        }
+        void Model::SetPosition(float x)
+        {
+            Entity::SetPosition(x);
+            UpdateMeshesTransform();
+        }
+        void Model::SetPosition(glm::vec3 pos)
+        {
+            Entity::SetPosition(pos);
+            UpdateMeshesTransform();
+        }
+        void Model::SetRotation(float x, float y, float z)
+        {
+            Entity::SetRotation(x,y,z);
+            UpdateMeshesTransform();
+        }
+        void Model::SetRotation(glm::vec3 rot)
+        {
+            Entity::SetRotation(rot);
+            UpdateMeshesTransform();
+        }
+        void Model::SetRotation(glm::quat rot)
+        {
+            Entity::SetRotation(rot);
+            UpdateMeshesTransform();
+        }
+        void Model::SetScale(float x, float y, float z)
+        {
+            Entity::SetScale(x, y, z);
+            UpdateMeshesTransform();
+        }
+        void Model::SetScale(glm::vec3 scale)
+        {
+            Entity::SetScale(scale);
+            UpdateMeshesTransform();
+        }
+        void Model::SetScale(float scale)
+        {
+            Entity::SetScale(scale);
+            UpdateMeshesTransform();
+        }
+        void Model::Translate(float x, float y, float z)
+        {
+            Entity::Translate(x,y,z);
+            UpdateMeshesTransform();
+        }
+        void Model::Translate(glm::vec3 pos)
+        {
+            Entity::Translate(pos);
+            UpdateMeshesTransform();
+        }
+        void Model::Rotate(float x, float y, float z)
+        {
+            Entity::Rotate(x,y,z);
+            UpdateMeshesTransform();
+        }
+        void Model::Rotate(glm::vec3 rot)
+        {
+            Entity::Rotate(rot);
+            UpdateMeshesTransform();
+        }
+        void Model::Scale(float x, float y, float z)
+        {
+            Entity::Scale(x,y,z);
+            UpdateMeshesTransform();
+        }
+        void Model::Scale(glm::vec3 scale)
+        {
+            Entity::Scale(scale);
+            UpdateMeshesTransform();
+        }
+        void Model::Scale(float scale)
+        {
+            Entity::Scale(scale);
+            UpdateMeshesTransform();
+        }
     }
 }
