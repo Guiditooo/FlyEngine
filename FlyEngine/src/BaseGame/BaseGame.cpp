@@ -118,6 +118,7 @@ namespace FlyEngine
 		{
 			if (entity->IsActive())
 			{
+				entity->UseShader();
 				SetMatrixUniforms(entity);
 
 				SetMaterialUniforms(entity);

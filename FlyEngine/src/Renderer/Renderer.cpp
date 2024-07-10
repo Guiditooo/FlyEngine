@@ -50,6 +50,7 @@ namespace FlyEngine
 		std::vector<Entities::Mesh*> meshes = toDraw->GetMeshes();
 		for (int i = 0; i < meshes.size(); i++)
 		{
+			meshes[i]->UseShader();
 			unsigned int id = meshes[i]->GetShaderID();
 
 			SetMatrix4Uniform(id, "view", viewMat);
@@ -293,7 +294,7 @@ namespace FlyEngine
 			Texture* tx = mesh->GetMaterial()->GetTexture(order[i]);
 
 			tx->Bind(i);
-			SetIntUniform(mesh->GetShaderID(), "kijkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", i);
+			SetIntUniform(mesh->GetShaderID(), &uniformVariable[0], i);
 		}
 		
 		SetFloatUniform(mesh->GetShaderID(), "material.shininess", 64/*mesh->GetMaterial()->GetSpecs()->GetShininess()*/);
@@ -304,35 +305,5 @@ namespace FlyEngine
 		// always good practice to set everything back to defaults once configured.
 		glActiveTexture(GL_TEXTURE0);
 
-		std::cout << "\n\n";
-
-		GLint i;
-		GLint count;
-
-		GLint size; // size of the variable
-		GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-		const GLsizei bufSize = 40; // maximum name length
-		GLchar name[bufSize]; // variable name in GLSL
-		GLsizei length; // name length
-
-		glGetProgramiv(mesh->GetShaderID(), GL_ACTIVE_ATTRIBUTES, &count);
-		printf("Active Attributes: %d\n", count);
-
-		for (i = 0; i < count; i++)
-		{
-			glGetActiveAttrib(mesh->GetShaderID(), (GLuint)i, bufSize, &length, &size, &type, name);
-
-			printf("Attribute #%d Type: %u Name: %s\n", i, type, name);
-		}
-		glGetProgramiv(mesh->GetShaderID(), GL_ACTIVE_UNIFORMS, &count);
-		printf("Active Uniforms: %d\n", count);
-
-		for (i = 0; i < count; i++)
-		{
-			glGetActiveUniform(mesh->GetShaderID(), (GLuint)i, bufSize, &length, &size, &type, name);
-
-			printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
-		}
 	}
 }

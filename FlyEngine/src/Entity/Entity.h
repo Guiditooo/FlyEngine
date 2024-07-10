@@ -149,6 +149,8 @@ namespace FlyEngine
 
 			void ToggleModificationMessage(bool isActive);
 
+			void UseShader();
+
 			virtual void Draw() = 0;
 
 		private: 
