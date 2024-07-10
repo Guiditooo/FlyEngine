@@ -31,6 +31,8 @@ namespace FlyEngine
 		std::list<Texture*> textureList;
 		std::list<Lights::Light*> lightList;
 
+		CameraController* cameraController;
+
 		Lights::DirectionalLight* directionalLight;
 
 		bool isRunning;
@@ -59,7 +61,7 @@ namespace FlyEngine
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
 
-		void MouseCallback(double xpos, double ypos);
+		void GetMouseMovement();
 
 		void InternalInit();
 		void InternalUpdate();
@@ -102,6 +104,9 @@ namespace FlyEngine
 			float cutOff = glm::cos(glm::radians(12.5f)),
 			float outerCutOff = glm::cos(glm::radians(15.0f))
 		);
+
+		void ShowCursor();
+		void HideCursor();
 
 	protected:
 		std::string initialWindowName;

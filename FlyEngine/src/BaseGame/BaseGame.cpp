@@ -19,6 +19,14 @@
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
+void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+FlyEngine::CameraController* newCamera;
+bool isFirstTime = true;
+
+static double lastMouseX;
+static double  lastMouseY;
+
+
 namespace FlyEngine
 {
 
@@ -36,10 +44,14 @@ namespace FlyEngine
 
 		renderer = nullptr;
 
+		cameraController = nullptr;
+
 		initialWindowName = "FlyEngine";
 		initialWindowWidth = 0;
 		initialWindowHeight = 0;
 		checkEsc = true;
+
+		isFirstTime = true;
 
 		isRunning = false;
 		directionalLight = CreateDirectionalLight();
@@ -116,7 +128,7 @@ namespace FlyEngine
 	{
 		for (Entities::Entity* entity : entityList)
 		{
-			if (entity->IsActive())
+			if (entity->IsActive() && !entity->IsCameraTarget())
 			{
 				entity->UseShader();
 				SetMatrixUniforms(entity);
@@ -184,6 +196,12 @@ namespace FlyEngine
 	float BaseGame::PixelsToEngine(int objectWidthInPixels, float windowDimension)
 	{
 		return (objectWidthInPixels * 1.0f) / windowDimension;
+	}
+
+
+	void BaseGame::GetMouseMovement()
+	{
+
 	}
 
 
@@ -263,6 +281,16 @@ namespace FlyEngine
 		return light;
 	}
 
+	void BaseGame::ShowCursor()
+	{
+		glfwSetInputMode(window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
+	void BaseGame::HideCursor()
+	{
+		glfwSetInputMode(window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
 	void BaseGame::InternalInit()
 	{
 		Debugger::ConsoleMessage("Starting Fly Engine.", 2, 0, 1, 0);
@@ -294,12 +322,16 @@ namespace FlyEngine
 			return;
 		}
 
+		glfwSetCursorPosCallback(window->GetWindow(), MouseCallback);
+
 		mainCamera = new Camera();
+
+
 
 		SetUpOpenGlFunctions();
 
 		Input::SetContextWindow(window);
-		
+
 		renderer = new Renderer();
 
 
@@ -308,6 +340,7 @@ namespace FlyEngine
 
 	void BaseGame::InternalUpdate()
 	{
+		GetMouseMovement();
 		renderer->SetBackgroundColor(Color::GetColor(FlyEngine::COLOR::MOSS_GREEN));
 		if (checkEsc)
 		{
@@ -366,11 +399,10 @@ namespace FlyEngine
 
 		while (isRunning && !glfwWindowShouldClose(window->GetWindow()))
 		{
+			glfwPollEvents();
 			Input::Update();
-
 			InternalUpdate();
 			InternalDraw();
-			glfwPollEvents();
 		}
 
 		InternalDeinit();
@@ -393,20 +425,26 @@ namespace FlyEngine
 
 	CameraController* BaseGame::CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target, float followDistance)
 	{
-		CameraController* cc = new CameraController(controllingCamera, window);
-		cc->SetMode(cameraMode);
-		cc->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
+		if (cameraController == nullptr)
+		{
+			cameraController = new CameraController(controllingCamera, window);
+			cameraController->SetMode(cameraMode);
+			cameraController->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
 
-		std::string text = "CameraController Created!";
-		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+			std::string text = "CameraController Created!";
+			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+			
+			newCamera = cameraController;
 
-		return cc;
+			
+		}
+		return cameraController;
 	}
 
 
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
-		Entities::Model* model = Importers::ModelImporter::LoadModel(name,path);
+		Entities::Model* model = Importers::ModelImporter::LoadModel(name, path);
 
 
 		//glm::vec3 dims = model->GetDimesions();
@@ -443,4 +481,23 @@ namespace FlyEngine
 		return c;
 	}
 
+}
+
+void MouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+
+	if (isFirstTime)
+	{
+		lastMouseX = xpos;
+		lastMouseY = ypos;
+		isFirstTime = false;
+	}
+
+	float xOffset = xpos - lastMouseX;
+	float  yOffset = lastMouseY - ypos; 
+
+	lastMouseX = xpos;
+	lastMouseY = ypos;
+
+	newCamera->ProcessMouseMovement(xOffset, yOffset);
 }

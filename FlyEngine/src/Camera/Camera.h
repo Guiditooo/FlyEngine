@@ -19,8 +19,6 @@ namespace FlyEngine
 	private:
 		ProjectionType projectionType;
 
-		glm::mat4 projMatrix;
-		glm::mat4 viewMatrix;
 
 		float fov; // = 45.0f;  // Campo de visión en grados
 		float aspectRatio; //= screenWidth / screenHeight; Relación de aspecto (ancho / alto de la ventana)
@@ -36,6 +34,9 @@ namespace FlyEngine
 		Camera(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
 		~Camera();
 
+		glm::mat4 projMatrix; //cambiar
+		glm::mat4 viewMatrix;
+
 		void Draw() override;
 		void Update();
 
@@ -49,6 +50,9 @@ namespace FlyEngine
 
 		void Translate(float x, float y, float z) override;
 		void Rotate(float x, float y, float z) override;
+
+		void WorldRotate(float x, float y, float z) override;
+		void WorldRotate(glm::vec3 rot) override;
 
 		void SetPosition(float x, float y, float z) override;
 		void SetRotation(float x, float y, float z) override;

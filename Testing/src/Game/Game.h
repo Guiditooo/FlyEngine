@@ -51,12 +51,15 @@ namespace FlyGame
 
 		MovingObject movingObject;
 
+		Entities::Entity* movingEntity;
+
 
 		void MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement = true);
 		void MoveObject(FlyEngine::Lights::Light* light, bool showMovement = true);
 
 		void CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Entities::Entity* thing);
 		void CheckForScaling(KeyCode maximizeKey, KeyCode minimizeKey, Entities::Entity* thing);
+		void SetCameraTarget(Entities::Entity* target, CameraMode mode);
 
 	public:
 		Game(int width, int height, std::string name = "%NaN");

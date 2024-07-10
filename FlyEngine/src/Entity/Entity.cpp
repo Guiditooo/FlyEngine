@@ -267,6 +267,16 @@ namespace FlyEngine
 			return active;
 		}
 
+		void Entity::SetAsCameraTarget(bool value)
+		{
+			settedAsCameraTarget = value;
+		}
+
+		bool Entity::IsCameraTarget()
+		{
+			return settedAsCameraTarget;
+		}
+
 		void Entity::SetName(std::string newName)
 		{
 			name = newName;
@@ -427,9 +437,48 @@ namespace FlyEngine
 			return scaleVector;
 		}
 
+		void Entity::SetFront(glm::vec3 front)
+		{
+			/*
+			modelMatrix[2] = glm::vec4(glm::normalize(front), modelMatrix[3].w);
+
+			float pitch = glm::degrees(asin(-modelMatrix[2].y));
+			float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
+			float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
+
+			rotationVector = glm::vec3(pitch, yaw, roll);
+
+			SetRotation(rotationVector);
+			*/
+		}
+
+		void Entity::SetUp(glm::vec3 up)
+		{
+			modelMatrix[1] = glm::vec4(glm::normalize(up), modelMatrix[3].w);
+
+			float pitch = glm::degrees(asin(-modelMatrix[2].y));
+			float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
+			float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
+
+			rotationVector = glm::vec3(pitch, yaw, roll);
+			SetRotation(rotationVector);
+		}
+
+		void Entity::SetRight(glm::vec3 right)
+		{
+			modelMatrix[0] = glm::vec4(glm::normalize(right), modelMatrix[3].w);
+
+			float pitch = glm::degrees(asin(-modelMatrix[2].y));
+			float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
+			float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
+
+			rotationVector = glm::vec3(pitch, yaw, roll);
+			SetRotation(rotationVector);
+		}
+
 		glm::vec3 Entity::GetFront()
 		{
-			return GetModelMatrix()[2];
+			return -GetModelMatrix()[2];
 		}
 
 		glm::vec3 Entity::GetUp()
@@ -456,9 +505,42 @@ namespace FlyEngine
 
 		void Entity::Rotate(float x, float y, float z)
 		{
-			glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
+			
+			/*glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
 			glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
 			glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
+			glm::quat rot = rotZ * rotY * rotX;
+			rotationQuaternion = rot * rotationQuaternion;
+			*/
+			const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f), glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+			const glm::mat4 transformY = glm::rotate(glm::mat4(1.0f), glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+			const glm::mat4 transformZ = glm::rotate(glm::mat4(1.0f), glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+			rotationVector = glm::vec3(x,y,z);
+			rotationMatrix = transformY * transformX * transformZ;
+			//rotationVector = glm::eulerAngles(rotationQuaternion);
+			//rotationMatrix = glm::mat4_cast(rotationQuaternion);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Rotation of ";
+				text += name;
+				text += " successfully to: ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(rotationVector.x, rotationVector.y, rotationVector.z));
+			}
+		}
+
+		void Entity::Rotate(glm::vec3 rot)
+		{
+			Rotate(rot.x, rot.y, rot.z);
+		}
+
+		void Entity::WorldRotate(float x, float y, float z)
+		{
+			glm::quat rotX = glm::angleAxis(glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+			glm::quat rotY = glm::angleAxis(glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::quat rotZ = glm::angleAxis(glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
 			glm::quat rot = rotZ * rotY * rotX;
 			rotationQuaternion = rot * rotationQuaternion;
 			rotationVector = glm::eulerAngles(rotationQuaternion);
@@ -475,9 +557,9 @@ namespace FlyEngine
 			}
 		}
 
-		void Entity::Rotate(glm::vec3 rot)
+		void Entity::WorldRotate(glm::vec3 rot)
 		{
-			Rotate(rot.x, rot.y, rot.z);
+			WorldRotate(rot.x, rot.y, rot.z);
 		}
 
 		void Entity::Scale(float x, float y, float z)

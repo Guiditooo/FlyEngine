@@ -109,7 +109,7 @@ namespace FlyEngine
 		Entity::Translate(x, y, z); 
 
 		glm::vec3 direction = positionVector - GetFront();
-		viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
 	}
 
 	void Camera::Rotate(float x, float y, float z)
@@ -117,7 +117,20 @@ namespace FlyEngine
 		Entity::Rotate(x, y, z);
 
 		glm::vec3 direction = positionVector - GetFront();
-		viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+	}
+
+	void Camera::WorldRotate(float x, float y, float z)
+	{
+		Entity::WorldRotate(x, y, z);
+
+		glm::vec3 direction = positionVector - GetFront();
+		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+	}
+
+	void Camera::WorldRotate(glm::vec3 rot)
+	{
+		WorldRotate(rot.x, rot.y, rot.z);
 	}
 
 	void Camera::SetPosition(float x, float y, float z)
@@ -125,7 +138,7 @@ namespace FlyEngine
 		Entity::SetPosition(x, y, z);
 
 		glm::vec3 direction = positionVector - GetFront();
-		viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
 	}
 
 	void Camera::SetRotation(float x, float y, float z)
@@ -133,7 +146,7 @@ namespace FlyEngine
 		Entity::SetRotation(x, y, z);
 
 		glm::vec3 direction = positionVector - GetFront();
-		viewMatrix = glm::lookAt(positionVector, direction, GetUp());
+		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
 	}
 
 }

@@ -47,7 +47,9 @@ namespace FlyEngine
 			glm::quat rotationQuaternion;
 			glm::vec3 scaleVector;
 
+			bool settedAsCameraTarget = false;
 			bool shouldUpdateModelMatrix = false;
+			bool printModificationMessage;
 
 			void CreateBaseEntity(std::string name);
 
@@ -60,7 +62,6 @@ namespace FlyEngine
 
 			void PrintCreationMsg();
 
-			bool printModificationMessage;
 
 			std::string name;
 
@@ -80,6 +81,9 @@ namespace FlyEngine
 
 			void SetActive(bool isActive);
 			bool IsActive();
+
+			void SetAsCameraTarget(bool value);
+			bool IsCameraTarget();
 
 			void SetName(std::string newName);
 
@@ -110,6 +114,10 @@ namespace FlyEngine
 			glm::vec3 GetRotation();
 			glm::vec3 GetScale();
 
+			void SetFront(glm::vec3 front);
+			void SetUp(glm::vec3 up);
+			void SetRight(glm::vec3 right);
+
 			glm::vec3 GetFront();
 			glm::vec3 GetUp();
 			glm::vec3 GetRight();
@@ -126,6 +134,9 @@ namespace FlyEngine
 
 			virtual void Rotate(float x, float y, float z);
 			virtual void Rotate(glm::vec3 rot);
+
+			virtual void WorldRotate(float x, float y, float z);
+			virtual void WorldRotate(glm::vec3 rot);
 
 			virtual void Scale(float x, float y, float z);
 			virtual void Scale(glm::vec3 scale);

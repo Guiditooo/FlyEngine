@@ -18,8 +18,8 @@ namespace FlyEngine
 
 	struct FLY_API CameraRotation
 	{
-		float yaw;// = -90.0f; // Yaw inicial rot y
-		float pitch;// = 0.0f; // Pitch inicial rot x
+		float yaw = -90.0f;
+		float pitch = 0.0f;
 	};
 
 	struct FLY_API ObjetiveParams
@@ -39,8 +39,8 @@ namespace FlyEngine
 	private:
 		Camera* camera;
 		CameraRotation cameraRotation;
-		float rotationSensibility;
-		float translateSensibility;
+		float rotationSensitivity ;
+		float translateSensitivity;
 
 		CameraMode cameraMode;
 
@@ -48,6 +48,8 @@ namespace FlyEngine
 		float lastY;
 
 		ObjetiveParams* objetiveParams;
+
+		bool isMouseMovementOn;
 
 		void FreeMovement(bool &cameraMoved);
 		void FirstPersonMovement(bool &cameraMoved);
@@ -61,13 +63,20 @@ namespace FlyEngine
 		void SetCamera(Camera* newCamera);
 		void SetObjetiveParameters(ObjetiveParams* newObjParams);
 		void SetMode(CameraMode mode);
-		void SetTarget(Entities::Entity* target);
+		void SetFirstTarget(Entities::Entity* target);
+		void SetThirdTarget(Entities::Entity* target, float distance);
 		void SetDistanceToTarget(float distanceToTarget);
+
+
+		Entities::Entity* GetTarget();
+
+		void SetMouseMovementOn(bool value);
+		bool IsMouseMovementOn();
 
 		Camera* GetCamera();
 
 		void Update(bool showMessage);   
-		void ProcessMouseMovement(float xpos, float ypos);
+		void ProcessMouseMovement(float xOffset, float yOffset);
 	};
 }
 #endif // 

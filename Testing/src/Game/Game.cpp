@@ -34,6 +34,8 @@ namespace FlyGame
 
 		texture = nullptr;
 
+		movingEntity = nullptr;
+
 		cameraController = nullptr;
 
 		movingObject = MovingObject::Cube;
@@ -72,9 +74,10 @@ namespace FlyGame
 		srand(static_cast<unsigned int>(time(nullptr)));
 
 		mainCamera->SetPosition(0.0f, 1.0f, 5.0f);
-		//mainCamera->SetRotation(-90, 0, 0);
+		mainCamera->SetRotation(0, 90, 0);
 
 		cameraController = CreateCameraController(mainCamera,0.05f, 0.2f, CameraMode::Free);
+
 
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 		pared1 = CreateRectangle(0, 1000, -1000, 1000, 1000);
@@ -170,6 +173,9 @@ namespace FlyGame
 		pointLightStatic->SetPosition(glm::vec3( 1, 5, 0));
 		pointLightStatic->SetColor(COLOR::CYAN);
 
+		
+		pointLight->SetActive(false);
+
 		piso->SetActive(true);
 		pared1->SetActive(false);
 		pared2->SetActive(false);
@@ -186,24 +192,89 @@ namespace FlyGame
 
 	void Game::Update()
 	{
+		if (Input::GetKeyPressed(KeyCode::KEY_F10))
+		{
+			cameraController->SetMouseMovementOn(true);
+			HideCursor();
+		}
+		if (Input::GetKeyPressed(KeyCode::KEY_F9))
+		{
+			cameraController->SetMouseMovementOn(false);
+			ShowCursor();
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_1))
+		{
+			if (movingEntity != nullptr)
+				cameraController->SetFirstTarget(movingEntity);
+		}
+		
+		if (Input::GetKeyPressed(KeyCode::KEY_2))
+		{
+			cameraController->SetMode(CameraMode::Free);
+		}
+		
+		if (Input::GetKeyPressed(KeyCode::KEY_3))
+		{
+			if(movingEntity!=nullptr)
+				cameraController->SetThirdTarget(movingEntity,10);
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_0))
+		{
+			//SetCameraTarget(ironGiant, CameraMode::FirstPerson);
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_9))
+		{
+			//SetCameraTarget(teapod,CameraMode::FirstPerson);
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_8))
+		{
+			//cameraController->SetThirdTarget(movingEntity, 1500);
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_7))
+		{
+			//cameraController->SetThirdTarget(movingEntity, 1500);
+		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
-			movingObject = MovingObject::Cube;
-			Debugger::ConsoleMessage("Moving Cube");
+			movingEntity = box2;
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_2))
 		{
 			movingObject = MovingObject::Camera;
 			Debugger::ConsoleMessage("Moving Camera");
+			movingEntity = nullptr;
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_3))
 		{
-			movingObject = MovingObject::Light;
-			Debugger::ConsoleMessage("Moving Player");
+			movingEntity = ironGiant;
 		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_T))
+		{
+			pointLight->SetActive(true);
+		}
+		if (Input::GetKeyPressed(KeyCode::KEY_G))
+		{
+			pointLight->SetActive(false);
+		}
+
+		if (Input::GetKeyPressed(KeyCode::KEY_R))
+		{
+			pointLightStatic->SetActive(true);
+		}
+		if (Input::GetKeyPressed(KeyCode::KEY_F))
+		{
+			pointLightStatic->SetActive(false);
+		}
+		
 
 		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, box);
 		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, barrel);
@@ -214,23 +285,20 @@ namespace FlyGame
 		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, teapod);
 
 
-		switch (movingObject)
+		//cameraController->SetMode(CameraMode::Free);
+		cameraController->Update(true);
+		
+		if (movingObject == MovingObject::Camera)
 		{
-		case FlyGame::MovingObject::Cube:
-			MoveObject(backpack, true);
-			break;
-		case FlyGame::MovingObject::Camera:
-			cameraController->Update(false);
 			spotLight->SetPosition(cameraController->GetCamera()->GetPosition());
-			pointLight->SetPosition(cameraController->GetCamera()->GetPosition());
 			spotLight->SetDirection(-cameraController->GetCamera()->GetFront());
-			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());
-			break;
-		case FlyGame::MovingObject::Light:
-			MoveObject(ironGiant, true);
-			break;
-		default:
-			break;
+			/*pointLight->SetPosition(cameraController->GetCamera()->GetPosition());
+			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());*/
+		}
+
+		if (movingEntity!=nullptr)
+		{
+			MoveObject(movingEntity);
 		}
 	}
 
@@ -385,6 +453,19 @@ namespace FlyGame
 			float scaleSens = 0.99f;
 			thing->Scale(scaleSens);
 		}
+	}
+
+	void Game::SetCameraTarget(Entities::Entity* target, CameraMode mode)
+	{
+		/*
+		cameraController->SetMode(mode);
+		movingEntity = target;
+		if(cameraController->GetTarget()!=nullptr)
+			cameraController->GetTarget()->SetAsCameraTarget(false);
+		cameraController->SetTarget(target);
+		target->SetAsCameraTarget(true);
+		MoveObject(target);
+		*/
 	}
 
 }
