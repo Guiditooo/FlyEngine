@@ -26,8 +26,8 @@ namespace FlyGame
 		Entities::Rectangle* pared1;
 		Entities::Rectangle* pared2;
 		
-		Entities::Cube* player;
-		Entities::Cube* cube;
+		Entities::Cube* box;
+		Entities::Cube* box2;
 
 		Texture* texture;
 
@@ -35,11 +35,17 @@ namespace FlyGame
 		Lights::PointLight* pointLightStatic;
 		Lights::SpotLight* spotLight;
 
-		Entities::Model* model;
-		Entities::Model* model2;
-		Entities::Model* model3;
-		Entities::Model* model4;
-		Entities::Model* model5;
+		Entities::Model* backpack;
+
+		Entities::Model* barrel;
+		Entities::Model* barrel2;
+		Entities::Model* barrel3;
+
+		Entities::Model* delorean;
+
+		Entities::Model* ironGiant;
+
+		Entities::Model* teapod;
 
 		int aux = 0;
 

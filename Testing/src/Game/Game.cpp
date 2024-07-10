@@ -23,11 +23,11 @@ namespace FlyGame
 		cameraController = nullptr;
 
 		rec = nullptr;
-		player = nullptr;
+		box = nullptr;
 		piso = nullptr;
 		pared1 = nullptr;
 		pared2 = nullptr;
-		cube = nullptr;
+		box2 = nullptr;
 		pointLight = nullptr;
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
@@ -45,26 +45,26 @@ namespace FlyGame
 			delete rec;
 		rec = nullptr;
 
-		if (player != nullptr)
-			delete player;
-		player = nullptr;
+		if (box != nullptr)
+			delete box;
+		box = nullptr;
 
 		if (piso != nullptr)
 			delete piso;
 		piso = nullptr;
 
-		if (cube != nullptr)
-			delete cube;
-		cube = nullptr;
+		if (box2 != nullptr)
+			delete box2;
+		box2 = nullptr;
 
 		if (cameraController != nullptr)
 			delete cameraController;
 		cameraController = nullptr;
 
 
-		if (model != nullptr)
-			delete model;
-		model = nullptr;
+		if (backpack != nullptr)
+			delete backpack;
+		backpack = nullptr;
 	}
 	
 	void Game::Init()
@@ -80,20 +80,24 @@ namespace FlyGame
 		pared1 = CreateRectangle(0, 1000, -1000, 1000, 1000);
 		pared2 = CreateRectangle(1000, 1000, 0, 1000, 1000);
 
-		player = CreateCube(0, 1, 0, 100);
-		cube = CreateCube(2, 1, 0, 100);
+		box = CreateCube(0, 1, 0, 100);
+		box2 = CreateCube(2, 1, 0, 100);
 
 		piso->SetName("Piso");
 		pared1->SetName("Pared1");
 		pared2->SetName("Pared2");
-		player->SetName("Player");
-		cube->SetName("Cubo Uno");
+		box->SetName("Player");
+		box2->SetName("Cubo Uno");
 
-		model = CreateModel("res/Models/Backpack/backpack.obj", "Backpack");
-		model2 = CreateModel("res/Models/Barril/Barril.fbx", "Barril");
-		model3 = CreateModel("res/Models/Delorean/delorean_low.fbx", "Delorean");
-		model4 = CreateModel("res/Models/Iron Giant/irongiant_low.fbx", "Iron Giant");
-		model5 = CreateModel("res/Models/Teapod/teapod.fbx", "teapod");
+		backpack = CreateModel("res/Models/Backpack/backpack.obj", "Backpack");
+
+		barrel = CreateModel("res/Models/Barril/Barril.fbx", "Barril 1");
+		barrel2 = CreateModel("res/Models/Barril/Barril.fbx", "Barril 2");
+		barrel3 = CreateModel("res/Models/Barril/Barril.fbx", "Barril 3");
+
+		delorean = CreateModel("res/Models/Delorean/delorean_low.fbx", "Delorean");
+		ironGiant = CreateModel("res/Models/Iron Giant/irongiant_low.fbx", "Iron Giant");
+		teapod = CreateModel("res/Models/Teapod/teapod.fbx", "teapod");
 
 		pointLight = CreatePointLight(mainCamera->GetPosition());
 		pointLightStatic = CreatePointLight();
@@ -109,11 +113,59 @@ namespace FlyGame
 		boxMat->AddTexture("specular", CreateTexture("res/Textures/Box/Box_S.png"));
 		boxMat->SetTextureOrder({ "diffuse", "specular" });
 
-		player->SetMaterial(boxMat);
+		box->SetMaterial(boxMat);
+		box2->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
 
-		piso->SetRotation(-90, 0, 0);
+		box->SetScale(0.65f);
+		box2->SetScale(0.2f);
+
+		box->SetPosition(-0.745f, 0.3f, -0.88f);
+		box2->SetPosition(-0.85f, 0.7f, -0.74f);
+
+		std::string barrelMaterial = "Barrel_Mat";
+		Managers::MaterialManager::CreateMaterial(barrelMaterial);
+		Materials::Material* barrelMat = Managers::MaterialManager::GetMaterial(barrelMaterial);
+		barrelMat->AddTexture("diffuse", CreateTexture("res/Models/Barril/diffuse.png"));
+		barrelMat->AddTexture("specular", CreateTexture("res/Models/Barril/roughness.png"));
+		barrelMat->SetTextureOrder({ "diffuse", "specular" });
+
+		barrel->SetMaterial(barrelMat);
+		barrel->UseBaseMaterial(true);
+		barrel2->SetMaterial(barrelMat);
+		barrel2->UseBaseMaterial(true);
+		barrel3->SetMaterial(barrelMat);
+		barrel3->UseBaseMaterial(true);
+
+		barrel->SetScale(0.15f, 0.2f, 0.18f);
+		barrel2->SetScale(0.14f, 0.14f, 0.14f);
+		barrel3->SetScale(0.14f,0.16f,0.14f);
+
+		barrel->SetPosition(1, 0, 0.93f);
+		barrel2->SetPosition(1, 0, 0.55f);
+		barrel3->SetPosition(0.65f, 0, 0.93f);
+
+		piso->SetRotation(-90, 90, 0);
 		pared2->SetRotation(0, -90, 0);
+
+		teapod->SetColor(COLOR::GREY);
+		teapod->SetScale(0.004f);
+		teapod->SetRotation(-90, 0, 0);
+		teapod->SetPosition(-0.52f, 0.62f, -0.675f);
+
+		delorean->SetColor(COLOR::MAGENTA);
+		delorean->SetScale(0.08f);
+		delorean->SetRotation(0, -30, 0);
+		delorean->SetPosition(-0.11f, 0.27f, 0.36f);
+
+		ironGiant->SetColor(COLOR::LIGHT_GREY);
+		ironGiant->SetScale(0.004f);
+		ironGiant->SetRotation(0, -30, 0);
+		ironGiant->SetPosition(1,0,-1);
+
+		backpack->SetScale(0.2f);
+		backpack->SetRotation(-171.969214f, 19.2966456f, -176.649076f);
+		backpack->SetPosition(1.147006f, 1.059893f, -1.274624f);
 
 		pointLightStatic->SetPosition(glm::vec3( 1, 5, 0));
 		pointLightStatic->SetColor(COLOR::CYAN);
@@ -121,13 +173,15 @@ namespace FlyGame
 		piso->SetActive(true);
 		pared1->SetActive(false);
 		pared2->SetActive(false);
-		player->SetActive(true);
-		cube->SetActive(true);
-		model->SetActive(true);
-		model2->SetActive(true);
-		model3->SetActive(true);
-		model4->SetActive(true);
-		model5->SetActive(true);
+		box->SetActive(true);
+		box2->SetActive(true);
+		backpack-> SetActive(true); //Mochila
+		barrel->SetActive(true); //Barril
+		barrel2->SetActive(true); //Barril
+		barrel3->SetActive(true); //Barril
+		delorean->SetActive(true); //Delorean
+		ironGiant->SetActive(true); //Gigante
+		teapod->SetActive(true); //Tetera
 	}
 
 	void Game::Update()
@@ -151,19 +205,19 @@ namespace FlyGame
 			Debugger::ConsoleMessage("Moving Player");
 		}
 
-		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, player);
-		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
-		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, model);
+		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, box);
+		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, barrel);
+		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, backpack);
 
-		CheckForEnabling(KeyCode::KEY_M, KeyCode::KEY_N, model3);
-		CheckForEnabling(KeyCode::KEY_B, KeyCode::KEY_V, model4);
-		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, model5);
+		CheckForEnabling(KeyCode::KEY_M, KeyCode::KEY_N, delorean);
+		CheckForEnabling(KeyCode::KEY_B, KeyCode::KEY_V, ironGiant);
+		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, teapod);
 
 
 		switch (movingObject)
 		{
 		case FlyGame::MovingObject::Cube:
-			MoveObject(model2, true);
+			MoveObject(backpack, true);
 			break;
 		case FlyGame::MovingObject::Camera:
 			cameraController->Update(false);
@@ -173,7 +227,7 @@ namespace FlyGame
 			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());
 			break;
 		case FlyGame::MovingObject::Light:
-			MoveObject(model, true);
+			MoveObject(ironGiant, true);
 			break;
 		default:
 			break;
@@ -188,7 +242,7 @@ namespace FlyGame
 	void Game::MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement)
 	{
 		bool objectMoved = false;
-		float sensibility = 0.05;
+		float sensibility = 0.01f;
 		float rotSensibility = 1;
 
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_W))
