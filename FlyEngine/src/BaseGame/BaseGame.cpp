@@ -9,16 +9,20 @@
 #include "TextureImporter/TextureImporter.h"
 #include "ModelImporter/ModelImporter.h"
 
+#include "MaterialManager/MaterialManager.h"
+
 #include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "FlyFunctions/Commons/Commons.h"
 #include "FlyFunctions/ColorCode/ColorCode.h"
-//#include "MaterialSpecification/MaterialSpecification.h"
+
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
 namespace FlyEngine
 {
+
+	using namespace Managers;
 
 	void FrameBufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
@@ -74,12 +78,12 @@ namespace FlyEngine
 		return mainCamera;
 	}
 
-	void BaseGame::CreateBuffers(Buffer* buffers)
+	void BaseGame::CreateBuffers(Buffers* buffers)
 	{
 		renderer->CreateBaseBuffers(*buffers);
 	}
 
-	void BaseGame::BindBuffers(Buffer* buffers, std::vector<float> vertex, std::vector<unsigned int> index)
+	void BaseGame::BindBuffers(Buffers* buffers, std::vector<float> vertex, std::vector<unsigned int> index)
 	{
 		renderer->BindBuffers(*buffers, vertex, vertex.size(), index, index.size());
 	}
@@ -102,8 +106,8 @@ namespace FlyEngine
 		{
 			if (model->IsActive())
 			{
-				SetMatrixUniforms(model);
-				renderer->DrawModel(model);
+				//renderer->DrawModel(model, glm::mat4x4(1.0f), glm::mat4x4(1.0f), glm::vec3(0.0f));
+				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetPosition());
 			}
 		}
 	}
@@ -118,7 +122,6 @@ namespace FlyEngine
 
 				SetMaterialUniforms(entity);
 				renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetColor().GetColorV3());
-
 				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
@@ -148,18 +151,18 @@ namespace FlyEngine
 		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetPosition());
 	}
 
-	void BaseGame::SetLightUniforms(Lights::Light* light, int index)
+	void BaseGame::SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID)
 	{
 		switch (light->GetLightType())
 		{
 		case Lights::LightType::Directional:
-			renderer->SetDirectionalLight((Lights::DirectionalLight*)light);
+			renderer->SetDirectionalLight((Lights::DirectionalLight*)light, shaderID);
 			break;
 		case Lights::LightType::Point:
-			renderer->SetPointLight((Lights::PointLight*)light, index);
+			renderer->SetPointLight((Lights::PointLight*)light, index, shaderID);
 			break;
 		case Lights::LightType::Spot:
-			renderer->SetSpotLight((Lights::SpotLight*)light);
+			renderer->SetSpotLight((Lights::SpotLight*)light, shaderID);
 			break;
 		default:
 			break;
@@ -168,7 +171,7 @@ namespace FlyEngine
 
 	void BaseGame::SetMaterialUniforms(Entities::Entity* entity)
 	{
-		unsigned int id = entity->GetShaderID(), tShaderID();
+		unsigned int id = entity->GetShaderID();
 		Materials::Material* mat = entity->GetMaterial();
 
 		mat->ApplyTextures();
@@ -182,17 +185,6 @@ namespace FlyEngine
 		return (objectWidthInPixels * 1.0f) / windowDimension;
 	}
 
-	void BaseGame::CreateDefaultMaterial()
-	{
-		CreateMaterial(DEFAULT_MAT_NAME, DEFAULT_SHADER_NAME);
-		Materials::Material* defMat = GetMaterial(DEFAULT_MAT_NAME);
-		defMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
-		defMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res\\Textures\\White.png", true));
-
-		std::vector<std::string> textureOrder = { "diffuse", "specular" };
-		defMat->SetTextureOrder(textureOrder);
-		SetMaterial(DEFAULT_MAT_NAME, defMat);
-	}
 
 	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
 	{
@@ -201,7 +193,7 @@ namespace FlyEngine
 		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
-		rec->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+		rec->SetMaterial(MaterialManager::GetDefaultMaterial());
 
 		CreateBuffers(rec->GetBuffers());
 		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
@@ -219,7 +211,7 @@ namespace FlyEngine
 	{
 		Entities::Triangle* tri = new Entities::Triangle();
 
-		tri->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+		tri->SetMaterial(MaterialManager::GetDefaultMaterial());
 
 		return tri;
 	}
@@ -231,7 +223,7 @@ namespace FlyEngine
 		cube->SetPosition(posX, posY, posZ);
 		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
 
-		cube->SetMaterial(materialsMap[DEFAULT_MAT_NAME]);
+		cube->SetMaterial(MaterialManager::GetDefaultMaterial());
 
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
@@ -306,10 +298,9 @@ namespace FlyEngine
 		SetUpOpenGlFunctions();
 
 		Input::SetContextWindow(window);
-
+		
 		renderer = new Renderer();
 
-		CreateDefaultMaterial();
 
 		Init();
 	}
@@ -411,40 +402,11 @@ namespace FlyEngine
 		return cc;
 	}
 
-	void BaseGame::CreateMaterial(std::string materialName, std::string shaderName)
-	{
-		materialsMap[materialName] = new Materials::Material(materialName, renderer->GetShader(shaderName));
-		std::string text = "Material Created: [" + materialName + "]!";
-		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-	}
-
-	Materials::Material* BaseGame::GetMaterial(std::string name)
-	{
-		auto it = materialsMap.find(name);
-		if (it != materialsMap.end())
-		{
-			return it->second;
-		}
-		return nullptr;
-	}
-
-	void BaseGame::SetMaterial(std::string matName, Materials::Material* mat)
-	{
-		materialsMap[matName] = mat;
-
-		std::string text = "Edited Created: [" + matName + "]!";
-		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-	}
-
-	Materials::Material* BaseGame::GetDefaultMaterial()
-	{
-		return GetMaterial(DEFAULT_MAT_NAME);
-	}
 
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
-		Entities::Model* model = Importers::ModelImporter::LoadModel(path);
-		model->SetName(name);
+		Entities::Model* model = Importers::ModelImporter::LoadModel(name,path);
+
 
 		//glm::vec3 dims = model->GetDimesions();
 		//float middleNumber = FindMiddleNumber(dims.x, dims.y, dims.z);
@@ -452,6 +414,10 @@ namespace FlyEngine
 		//float newScale = PixelsToEngine(middleNumber, windowSize);
 
 		//model->SetScale(newScale, newScale, newScale);
+
+		//CreateBuffers(model->GetBuffers());
+		//BindBuffers(model->GetBuffers(), model->GetVertexList(), rec->GetIndexList());
+		//SetVertexAttributes(rec->GetVertexAttributes());
 
 		std::string text = "Model Loaded: (" + model->GetName() + ")!";
 		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);

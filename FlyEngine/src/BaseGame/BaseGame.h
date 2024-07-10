@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <list>
-#include <unordered_map>
 
 #include "Exports/Exports.h"
 
@@ -17,12 +16,11 @@
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
 #include "Cube/Cube.h"
+#include "ShaderManager/ShaderManager.h"
 
 namespace FlyEngine
 {
 	class Window;
-
-	const std::string DEFAULT_MAT_NAME = "Default_Material";
 
 	class FLY_API BaseGame
 	{
@@ -35,8 +33,6 @@ namespace FlyEngine
 
 		Lights::DirectionalLight* directionalLight;
 
-		std::unordered_map<std::string, Materials::Material*> materialsMap;
-
 		bool isRunning;
 		bool checkEsc;
 
@@ -44,13 +40,11 @@ namespace FlyEngine
 
 		void SetUpOpenGlFunctions();
 
-		void CreateBuffers(Buffer* buffers);
-		void BindBuffers(Buffer* buffers, std::vector<float> vertex, std::vector<unsigned int> index);
+		void CreateBuffers(Buffers* buffers);
+		void BindBuffers(Buffers* buffers, std::vector<float> vertex, std::vector<unsigned int> index);
 		void SetVertexAttributes(std::vector<VertexAttribute> vertexAttributes);
 
 		void AddToObjectList(Entities::Entity* newRenderizableObject);//Cambiar a component
-
-		void CreateDefaultMaterial();
 
 		void DrawObjects();
 		void DrawModels();
@@ -60,7 +54,7 @@ namespace FlyEngine
 		void CalculateLights();
 
 		void SetMatrixUniforms(Entities::Entity* entity);
-		void SetLightUniforms(Lights::Light* light, int index);
+		void SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID = Managers::ShaderManager::GetDefaultShader()->GetShaderID());
 		void SetMaterialUniforms(Entities::Entity* entity);
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
@@ -91,11 +85,6 @@ namespace FlyEngine
 		Texture* CreateTexture(const char* path);
 
 		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);
-
-		void CreateMaterial(std::string materialName, std::string shaderName);
-		Materials::Material* GetMaterial(std::string name);
-		void SetMaterial(std::string matName, Materials::Material* mat);
-		Materials::Material* GetDefaultMaterial();
 
 		Entities::Model* CreateModel(std::string const& path, std::string name = "Model");
 
