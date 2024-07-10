@@ -6,6 +6,8 @@ struct Material
 {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D normal;
+    sampler2D height;
     float shininess;
 }; 
 
@@ -104,7 +106,7 @@ void main()
     //Result
     FragColor = vec4(result, 1.0);
     
-    //FragColor = vec4(1.0);
+    //FragColor = vec4(0.0);
 }
 
 
@@ -123,7 +125,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-    return (max((ambient + diffuse + specular) ,0.0) * light.lightColor);
+    return max((ambient + diffuse + specular) ,0.0);
 }
 
 
@@ -150,7 +152,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     //ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return (max((ambient + diffuse + specular),0.0) * light.lightColor);
+    return max((ambient + diffuse + specular),0.0);
 }
 
 
@@ -181,5 +183,5 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
-    return (max((ambient + diffuse + specular),0.0) * light.lightColor);
+    return max((ambient + diffuse + specular),0.0);
 }
