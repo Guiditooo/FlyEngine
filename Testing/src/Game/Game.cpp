@@ -3,6 +3,9 @@
 
 #include "Game.h"
 
+#include "MaterialManager/MaterialManager.h"
+#include "ShaderManager/ShaderManager.h"
+
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "TextureImporter/TextureImporter.h"
 #include "MaterialSpecification/MaterialSpecification.h"
@@ -25,33 +28,6 @@ namespace FlyGame
 		pared1 = nullptr;
 		pared2 = nullptr;
 		cube = nullptr;
-		light = nullptr;
-
-		pointLight = nullptr;
-		pointLightStatic = nullptr;
-		spotLight = nullptr;
-
-		texture = nullptr;
-
-		cameraController = nullptr;
-
-		movingObject = MovingObject::Cube;
-	}
-
-	Game::Game(int width, int height)
-	{
-		SetWindowParameters(width, height, "%NaN");
-
-		cameraController = nullptr;
-
-		rec = nullptr;
-		player = nullptr;
-		piso = nullptr;
-		pared1 = nullptr;
-		pared2 = nullptr;
-		cube = nullptr;
-		light = nullptr;
-
 		pointLight = nullptr;
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
@@ -81,17 +57,10 @@ namespace FlyGame
 			delete cube;
 		cube = nullptr;
 
-		if (light != nullptr)
-			delete light;
-		light = nullptr;
-
 		if (cameraController != nullptr)
 			delete cameraController;
 		cameraController = nullptr;
 
-		if (boxMat != nullptr)
-			delete boxMat;
-		boxMat = nullptr;
 
 		if (model != nullptr)
 			delete model;
@@ -113,18 +82,18 @@ namespace FlyGame
 
 		player = CreateCube(0, 1, 0, 100);
 		cube = CreateCube(2, 1, 0, 100);
-		light = CreateCube(0, 3, 0, 100);
 
 		piso->SetName("Piso");
 		pared1->SetName("Pared1");
 		pared2->SetName("Pared2");
 		player->SetName("Player");
 		cube->SetName("Cubo Uno");
-		light->SetName("Luz");
 
-		model = CreateModel("res/Models/Backpack/backpack.obj", "Modelo 1");
-
-		//piso->SetColor(COLOR::MAGENTA);
+		model = CreateModel("res/Models/Backpack/backpack.obj", "Backpack");
+		model2 = CreateModel("res/Models/Barril/Barril.fbx", "Barril");
+		model3 = CreateModel("res/Models/Delorean/delorean_low.fbx", "Delorean");
+		model4 = CreateModel("res/Models/Iron Giant/irongiant_low.fbx", "Iron Giant");
+		model5 = CreateModel("res/Models/Teapod/teapod.fbx", "teapod");
 
 		pointLight = CreatePointLight(mainCamera->GetPosition());
 		pointLightStatic = CreatePointLight();
@@ -132,11 +101,13 @@ namespace FlyGame
 
 		pointLightStatic->SetName("Static Light");
 
-		boxMat = CreateMaterial("Box");
-		boxMat->AddTexture("diffuse", CreateTexture("res\\Textures\\Box.png"));
-		boxMat->AddTexture("specular", CreateTexture("res\\Textures\\Box_S.png"));
-		boxMat->SetTextureOrder({ "diffuse", "specular" });
+		std::string boxMaterial = "Box_Mat";
+		Managers::MaterialManager::CreateMaterial(boxMaterial);
+		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
+		boxMat->AddTexture("diffuse", CreateTexture("res/Textures/Box/Box.png"));
+		boxMat->AddTexture("specular", CreateTexture("res/Textures/Box/Box_S.png"));
+		boxMat->SetTextureOrder({ "diffuse", "specular" });
 
 		player->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
@@ -152,8 +123,11 @@ namespace FlyGame
 		pared2->SetActive(false);
 		player->SetActive(true);
 		cube->SetActive(true);
-		light->SetActive(false);
 		model->SetActive(true);
+		model2->SetActive(true);
+		model3->SetActive(true);
+		model4->SetActive(true);
+		model5->SetActive(true);
 	}
 
 	void Game::Update()
@@ -178,13 +152,18 @@ namespace FlyGame
 		}
 
 		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, player);
-		//CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
+		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
 		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, model);
+
+		CheckForEnabling(KeyCode::KEY_M, KeyCode::KEY_N, model3);
+		CheckForEnabling(KeyCode::KEY_B, KeyCode::KEY_V, model4);
+		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, model5);
+
 
 		switch (movingObject)
 		{
 		case FlyGame::MovingObject::Cube:
-			//MoveObject(model2, false);
+			MoveObject(model2, true);
 			break;
 		case FlyGame::MovingObject::Camera:
 			cameraController->Update(false);
@@ -194,7 +173,7 @@ namespace FlyGame
 			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());
 			break;
 		case FlyGame::MovingObject::Light:
-			MoveObject(model, false);
+			MoveObject(model, true);
 			break;
 		default:
 			break;
@@ -268,16 +247,7 @@ namespace FlyGame
 			entity->Rotate(0.0f, 0.0f, rotSensibility);
 		}
 
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_ADD))
-		{
-			float scaleSens = 1.01f;
-			entity->Scale(scaleSens, scaleSens, scaleSens);
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_SUBTRACT))
-		{
-			float scaleSens = 0.99f;
-			entity->Scale(scaleSens, scaleSens, scaleSens);
-		}
+		CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, entity);
 
 
 		if (objectMoved && showMovement)
@@ -346,6 +316,20 @@ namespace FlyGame
 		{
 			thing->SetActive(false);
 			Debugger::ConsoleMessage(thing->GetName(), false);
+		}
+	}
+
+	void Game::CheckForScaling(KeyCode maximizeKey, KeyCode minimizeKey, Entities::Entity* thing)
+	{
+		if (Input::GetKeyPressed(maximizeKey))
+		{
+			float scaleSens = 1.01f;
+			thing->Scale(scaleSens);
+		}
+		if (Input::GetKeyPressed(minimizeKey))
+		{
+			float scaleSens = 0.99f;
+			thing->Scale(scaleSens);
 		}
 	}
 

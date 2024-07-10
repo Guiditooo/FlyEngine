@@ -28,7 +28,6 @@ namespace FlyGame
 		
 		Entities::Cube* player;
 		Entities::Cube* cube;
-		Entities::Cube* light;
 
 		Texture* texture;
 
@@ -37,22 +36,24 @@ namespace FlyGame
 		Lights::SpotLight* spotLight;
 
 		Entities::Model* model;
-		//Entities::Model* model2;
+		Entities::Model* model2;
+		Entities::Model* model3;
+		Entities::Model* model4;
+		Entities::Model* model5;
 
 		int aux = 0;
 
 		MovingObject movingObject;
 
-		Materials::Material* boxMat;
 
 		void MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement = true);
 		void MoveObject(FlyEngine::Lights::Light* light, bool showMovement = true);
 
 		void CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Entities::Entity* thing);
+		void CheckForScaling(KeyCode maximizeKey, KeyCode minimizeKey, Entities::Entity* thing);
 
 	public:
-		Game(int width, int height, std::string name);
-		Game(int width, int height);
+		Game(int width, int height, std::string name = "%NaN");
 		~Game();
 
 		void Init() override;
