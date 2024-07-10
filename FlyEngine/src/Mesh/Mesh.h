@@ -34,16 +34,11 @@ namespace FlyEngine
 			void SetupMesh();
 		public:
 
-			Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Materials::Material* material);
+			Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Materials::Material* material, std::string meshName = "Mesh");
 
-			//Utils::Buffers GetBuffers();
 			std::vector<Vertex> GetVertices();
 			std::vector<unsigned int> GetIndexes();
-			//Materials::Material* GetMaterial();
 
-			//unsigned int GetShaderID();
-
-			// Heredado vía Entity
 			void Draw() override;
 		};
 

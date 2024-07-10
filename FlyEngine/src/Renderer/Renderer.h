@@ -30,12 +30,17 @@ namespace FlyEngine
 		class Mesh;
 	}
 
+	namespace Materials
+	{
+		class Material;
+	}
+
 	class Renderer
 	{
 	private:
 		Color* bgColor;
 
-		void DrawMesh(Entities::Mesh* mesh, std::string modelName);
+		void DrawMesh(Entities::Mesh* mesh, std::string modelName, Materials::Material* mat = nullptr);
 
 	public:
 		Renderer();
