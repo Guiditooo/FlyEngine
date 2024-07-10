@@ -37,7 +37,7 @@ namespace FlyGame
 		Lights::SpotLight* spotLight;
 
 		Entities::Model* model;
-		//Entities::Model* model2;
+		Entities::Model* model2;
 
 		int aux = 0;
 

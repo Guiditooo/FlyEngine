@@ -122,7 +122,8 @@ namespace FlyGame
 		cube->SetName("Cubo Uno");
 		light->SetName("Luz");
 
-		model = CreateModel("res/Models/Backpack/backpack.obj", "Modelo 1");
+		model2 = CreateModel("res/Models/R35/R35.obj", "Delorean");
+		model = CreateModel("res/Models/Backpack/backpack.obj", "Backpack");
 
 		//piso->SetColor(COLOR::MAGENTA);
 
@@ -146,6 +147,9 @@ namespace FlyGame
 
 		pointLightStatic->SetPosition(glm::vec3( 1, 5, 0));
 		pointLightStatic->SetColor(COLOR::CYAN);
+
+		model2->SetRotation(0, 180, 0);
+		model2->SetColor(COLOR::MAGENTA);
 
 		piso->SetActive(true);
 		pared1->SetActive(false);
@@ -178,13 +182,13 @@ namespace FlyGame
 		}
 
 		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, player);
-		//CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
+		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, model2);
 		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, model);
 
 		switch (movingObject)
 		{
 		case FlyGame::MovingObject::Cube:
-			//MoveObject(model2, false);
+			MoveObject(model2, false);
 			break;
 		case FlyGame::MovingObject::Camera:
 			cameraController->Update(false);

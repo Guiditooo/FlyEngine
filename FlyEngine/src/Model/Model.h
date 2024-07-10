@@ -23,7 +23,7 @@ namespace FlyEngine
 
             Model(bool gamma = false);
 
-            void Draw(unsigned int shaderID);
+            void Draw(unsigned int shaderID, glm::vec3 objColor = glm::vec3(1.0f));
             void Draw() override;
         private:
         };

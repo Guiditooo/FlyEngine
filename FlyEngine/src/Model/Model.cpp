@@ -12,10 +12,10 @@ namespace FlyEngine
         gammaCorrection = gamma;
     }
 
-    void Entities::Model::Draw(unsigned int shaderID)
+    void Entities::Model::Draw(unsigned int shaderID, glm::vec3 objColor)
     {
         for (int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shaderID);
+            meshes[i].Draw(shaderID, objColor);
     }
 
     void Entities::Model::Draw()

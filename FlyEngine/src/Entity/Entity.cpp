@@ -426,9 +426,9 @@ namespace FlyEngine
 
 		void Entity::Rotate(float x, float y, float z)
 		{
-			glm::quat rotX = glm::angleAxis(glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
-			glm::quat rotY = glm::angleAxis(glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
-			glm::quat rotZ = glm::angleAxis(glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+			glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
+			glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
+			glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
 			glm::quat rot = rotZ * rotY * rotX;
 			rotationQuaternion = rot * rotationQuaternion;
 			rotationVector = glm::eulerAngles(rotationQuaternion);

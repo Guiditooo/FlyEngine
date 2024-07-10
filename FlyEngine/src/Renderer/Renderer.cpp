@@ -51,7 +51,10 @@ namespace FlyEngine
 
 	void Renderer::DrawModel(Entities::Model* toDraw)
 	{
-		toDraw->Draw(modelShader->GetShaderID());
+		if(toDraw->textures_loaded.size()>0)
+			toDraw->Draw(modelShader->GetShaderID());
+		else
+			toDraw->Draw(modelShader->GetShaderID(),toDraw->GetColor().GetColorV3());
 	}
 
 	void Renderer::SetBackgroundColor(Color* newBgColor)

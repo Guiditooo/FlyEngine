@@ -34,7 +34,7 @@ namespace FlyEngine
 			unsigned int VAO;
 
 			Mesh(std::vector<Entities::Vertex> vertices, std::vector<unsigned int> indices, std::vector<Entities::Texture> textures);
-			void Draw(unsigned int shaderID);
+			void Draw(unsigned int shaderID, glm::vec3 objColor);
 		private:
 			unsigned int VBO, EBO;
 
