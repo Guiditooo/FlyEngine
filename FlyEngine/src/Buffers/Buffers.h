@@ -5,7 +5,7 @@ namespace FlyEngine
 {
 	namespace Utils
 	{
-		struct Buffer
+		struct Buffers
 		{
 			unsigned int VBO = 0; //Vertex Buffer Object
 			unsigned int VAO = 0; //Vertex Array Object
