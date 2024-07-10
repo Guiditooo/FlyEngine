@@ -1,14 +1,21 @@
 #include "TextureImporter.h"
 
 #include <iostream>
+#include <filesystem>
+#include <vector>
+#include <set>
+#include <string>
+#include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+const std::vector<std::string> supportedExtensions = { ".png", ".jpg", ".jpeg", ".bmp", ".tga" };
+
+namespace fs = std::filesystem;
 
 namespace FlyEngine
 {
-
 	namespace Importers
 	{
 
@@ -51,6 +58,24 @@ namespace FlyEngine
 
             return new Texture(textureID, width, height, path);
 		}
+
+        Texture* TextureImporter::SearchTexture(const std::string& directory, const std::string& filename)
+        {
+            for (const auto& entry : fs::directory_iterator(directory)) 
+            {
+                if (entry.is_regular_file()) 
+                {
+                    std::string extension = entry.path().extension().string();
+                    std::string name = entry.path().stem().string(); // Get the filename without extension
+                    if (name == filename && std::find(supportedExtensions.begin(), supportedExtensions.end(), extension) != supportedExtensions.end()) 
+                    {
+                        return LoadTexture(entry.path().string().c_str(), true);
+                    }
+                }
+            }
+            std::cerr << "Texture not found: " << directory << "/" << filename << std::endl;
+            return new Texture(0, 0, 0, "");
+        }
 
         unsigned int TextureImporter::TextureFromFile(const char* path, std::string& directory, bool gamma)
         {

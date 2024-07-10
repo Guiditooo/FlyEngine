@@ -6,19 +6,14 @@
 
 namespace FlyEngine
 {
-	namespace Entities
-	{
-		struct Texture;
-	}
-
 	namespace Importers
 	{
-
 		class FLY_API TextureImporter
 		{
 		private:
 		public:
 			static Texture* LoadTexture(const char* path, bool sendMessage);
+			static Texture* SearchTexture(const std::string& directory, const std::string& filename);
 			static unsigned int TextureFromFile(const char* path, std::string& directory, bool gamma = false);
 			static void Init(bool flip);
 		};
