@@ -24,8 +24,6 @@ namespace FlyEngine
 		{
 			Entities::Model* model = new Entities::Model(modelName);
 
-			model->Translate(0, 0, 5);
-
 			// read file via ASSIMP
 			Assimp::Importer importer;
 
@@ -75,6 +73,8 @@ namespace FlyEngine
 			std::vector<Entities::Vertex> vertices;
 			std::vector<unsigned int> indices;
 			std::vector<Texture> textures;
+
+			bool alreadyCreatedTexture = false;
 
 			// walk through each of the mesh's vertices
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -142,6 +142,7 @@ namespace FlyEngine
 			// specular: texture_specularN
 			// normal: texture_normalN
 
+
 			if (mesh->mMaterialIndex > 0) //Si el modelo reconoce que hay materiales
 			{
 				std::string path = model->GetDirectory();
@@ -149,7 +150,7 @@ namespace FlyEngine
 				std::string type;
 
 				std::string matName = model->GetName() + "_mat";
-				Managers::MaterialManager::CreateMaterial(matName,Managers::ShaderManager::MODEL_SHADER_NAME);
+				Managers::MaterialManager::CreateMaterial(matName, Managers::ShaderManager::MODEL_SHADER_NAME);
 				Materials::Material* mat = Managers::MaterialManager::GetMaterial(matName);
 
 				bool changed = false;
@@ -162,6 +163,10 @@ namespace FlyEngine
 						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
 						changed = true;
 					}
+					else
+					{
+						alreadyCreatedTexture = true;
+					}
 					order.push_back(type);
 				}
 
@@ -172,6 +177,10 @@ namespace FlyEngine
 					{
 						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
 						changed = true;
+					}
+					else
+					{
+						alreadyCreatedTexture = true;
 					}
 					order.push_back(type);
 				}
@@ -184,6 +193,10 @@ namespace FlyEngine
 						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
 						changed = true;
 					}
+					else
+					{
+						alreadyCreatedTexture = true;
+					}
 					order.push_back(type);
 				}
 
@@ -195,6 +208,10 @@ namespace FlyEngine
 						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
 						changed = true;
 					}
+					else
+					{
+						alreadyCreatedTexture = true;
+					}
 					order.push_back(type);
 				}
 
@@ -202,6 +219,10 @@ namespace FlyEngine
 				{
 					mat->SetTextureOrder(order);
 					Managers::MaterialManager::SetMaterial(matName, mat);
+					return new Entities::Mesh(vertices, indices, mat);
+				}
+				if (alreadyCreatedTexture)
+				{
 					return new Entities::Mesh(vertices, indices, mat);
 				}
 			}
