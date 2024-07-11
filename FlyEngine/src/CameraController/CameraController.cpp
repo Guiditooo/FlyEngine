@@ -107,6 +107,7 @@ namespace FlyEngine
 
 		if (showMessage && cameraMoved)
 		{
+			/*
 			std::string text = "- Camera Updated Position: (";
 			text += std::to_string(camera->GetPosition().x);
 			text += ",";
@@ -115,6 +116,7 @@ namespace FlyEngine
 			text += std::to_string(camera->GetPosition().z);
 			text += ")";
 			Debugger::ConsoleMessage(&text[0], 1, 0, 1, 0);
+			*/
 		}
 	}
 
@@ -140,13 +142,13 @@ namespace FlyEngine
 		front.z = sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 		//camera->SetFront(glm::normalize(front));
 
-		camera->Rotate(cameraRotation.pitch, -cameraRotation.yaw, 0);
-
+		camera->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+		/*
 		std::string text = "- ";
 		text += camera->GetName();
-		text += " Updated Pos: ";
-		Debugger::ConsoleMessage(&text[0], camera->GetPosition());
-
+		text += " Updated Rot: ";
+		Debugger::ConsoleMessage(&text[0], camera->GetRotation());
+		*/
 	}
 
 	void CameraController::FreeMovement(bool& cameraMoved)
@@ -180,37 +182,6 @@ namespace FlyEngine
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_D))
 		{
 			camera->MoveRight(translateSensitivity);
-			cameraMoved = true;
-		}
-
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_I))
-		{
-			camera->Rotate(rotationSensitivity, 0.0f, 0.0f);
-			cameraMoved = true;
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_K))
-		{
-			camera->Rotate(-rotationSensitivity, 0.0f, 0.0f);
-			cameraMoved = true;
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_J))
-		{
-			camera->Rotate(0.0f, rotationSensitivity, 0.0f);
-			cameraMoved = true;
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_L))
-		{
-			camera->Rotate(0.0f, -rotationSensitivity, 0.0f);
-			cameraMoved = true;
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_U))
-		{
-			camera->Rotate(0.0f, 0.0f, rotationSensitivity);
-			cameraMoved = true;
-		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_O))
-		{
-			camera->Rotate(0.0f, 0.0f, -rotationSensitivity);
 			cameraMoved = true;
 		}
 
@@ -278,12 +249,17 @@ namespace FlyEngine
 			float cameraY = targetPosition.y + distanceToTarget * sin(glm::radians(cameraRotation.pitch));
 			float cameraZ = targetPosition.z + distanceToTarget * sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 			*/
+			camera->viewMatrix = glm::lookAt(camera->GetPosition(), objetiveParams->target->GetPosition(), camera->GetUp());			
 
-			camera->viewMatrix = glm::lookAt(camera->GetPosition(), objetiveParams->target->GetPosition(), camera->GetUp());
+			glm::vec3 targetPos = objetiveParams->target->GetPosition() + camera->GetFront() * 5.0f;
+			camera->SetPosition(targetPos.x, targetPos.y, targetPos.z);
 
+			float rotY = previousRot.y - objetiveParams->target->GetRotation().y;
+			cameraRotation.yaw += glm::degrees(rotY);
 
-			//glm::vec3 targetPos = objetiveParams->target->GetPosition() + camera->GetFront()*objetiveParams->distanceFromObjetive;
-			//camera->SetPosition(targetPos.x, targetPos.y, targetPos.z);
+			camera->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+			
+			previousRot = objetiveParams->target->GetRotation();
 
 		}
 

@@ -281,6 +281,11 @@ namespace FlyEngine
 		return light;
 	}
 
+	Lights::DirectionalLight* BaseGame::GetDirectionalLight()
+	{
+		return directionalLight;
+	}
+
 	void BaseGame::ShowCursor()
 	{
 		glfwSetInputMode(window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);

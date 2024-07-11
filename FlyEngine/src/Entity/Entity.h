@@ -132,6 +132,7 @@ namespace FlyEngine
 			virtual void Translate(float x, float y, float z);
 			virtual void Translate(glm::vec3 pos);
 
+			virtual void RotateAround(float x, float y, float z);
 			virtual void Rotate(float x, float y, float z);
 			virtual void Rotate(glm::vec3 rot);
 

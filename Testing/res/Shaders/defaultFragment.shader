@@ -125,7 +125,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-    return max((ambient + diffuse + specular) ,0.0);
+    return max((ambient + diffuse + specular) * light.lightColor ,0.0);
 }
 
 
@@ -152,7 +152,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     //ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return max((ambient + diffuse + specular),0.0);
+    return max((ambient + diffuse + specular) * light.lightColor,0.0);
 }
 
 
@@ -183,5 +183,5 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
-    return max((ambient + diffuse + specular),0.0);
+    return max((ambient + diffuse + specular) * light.lightColor,0.0);
 }

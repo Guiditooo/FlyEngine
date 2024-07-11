@@ -105,6 +105,8 @@ namespace FlyEngine
 			float outerCutOff = glm::cos(glm::radians(15.0f))
 		);
 
+		Lights::DirectionalLight* GetDirectionalLight();
+
 		void ShowCursor();
 		void HideCursor();
 

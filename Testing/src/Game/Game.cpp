@@ -41,7 +41,7 @@ namespace FlyGame
 		movingObject = MovingObject::Cube;
 	}
 
-	Game::~Game() 
+	Game::~Game()
 	{
 		if (rec != nullptr)
 			delete rec;
@@ -68,15 +68,14 @@ namespace FlyGame
 			delete backpack;
 		backpack = nullptr;
 	}
-	
+
 	void Game::Init()
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
 
 		mainCamera->SetPosition(0.0f, 1.0f, 5.0f);
-		mainCamera->SetRotation(0, 90, 0);
 
-		cameraController = CreateCameraController(mainCamera,0.05f, 0.2f, CameraMode::Free);
+		cameraController = CreateCameraController(mainCamera, 0.05f, 0.2f, CameraMode::Free);
 
 
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
@@ -104,7 +103,7 @@ namespace FlyGame
 
 		pointLight = CreatePointLight(mainCamera->GetPosition());
 		pointLightStatic = CreatePointLight();
-		spotLight = CreateSpotLight(mainCamera->GetPosition(),-mainCamera->GetFront());
+		spotLight = CreateSpotLight(mainCamera->GetPosition(), -mainCamera->GetFront());
 
 		pointLightStatic->SetName("Static Light");
 
@@ -142,7 +141,7 @@ namespace FlyGame
 
 		barrel->SetScale(0.15f, 0.2f, 0.18f);
 		barrel2->SetScale(0.14f, 0.14f, 0.14f);
-		barrel3->SetScale(0.14f,0.16f,0.14f);
+		barrel3->SetScale(0.14f, 0.16f, 0.14f);
 
 		barrel->SetPosition(1, 0, 0.93f);
 		barrel2->SetPosition(1, 0, 0.55f);
@@ -164,24 +163,24 @@ namespace FlyGame
 		ironGiant->SetColor(COLOR::LIGHT_GREY);
 		ironGiant->SetScale(0.004f);
 		ironGiant->SetRotation(0, -30, 0);
-		ironGiant->SetPosition(1,0,-1);
+		ironGiant->SetPosition(1, 0, -1);
 
 		backpack->SetScale(0.2f);
 		backpack->SetRotation(-171.969214f, 19.2966456f, -176.649076f);
 		backpack->SetPosition(1.147006f, 1.059893f, -1.274624f);
 
-		pointLightStatic->SetPosition(glm::vec3( 1, 5, 0));
+		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
 		pointLightStatic->SetColor(COLOR::CYAN);
 
-		
-		pointLight->SetActive(false);
+		spotLight->SetPosition(glm::vec3(0,2,0));
+		spotLight->SetDirection(piso->GetPosition() - spotLight->GetPosition());
 
 		piso->SetActive(true);
 		pared1->SetActive(false);
 		pared2->SetActive(false);
 		box->SetActive(true);
 		box2->SetActive(true);
-		backpack-> SetActive(true); //Mochila
+		backpack->SetActive(true); //Mochila
 		barrel->SetActive(true); //Barril
 		barrel2->SetActive(true); //Barril
 		barrel3->SetActive(true); //Barril
@@ -208,16 +207,16 @@ namespace FlyGame
 			if (movingEntity != nullptr)
 				cameraController->SetFirstTarget(movingEntity);
 		}
-		
+
 		if (Input::GetKeyPressed(KeyCode::KEY_2))
 		{
 			cameraController->SetMode(CameraMode::Free);
 		}
-		
+
 		if (Input::GetKeyPressed(KeyCode::KEY_3))
 		{
-			if(movingEntity!=nullptr)
-				cameraController->SetThirdTarget(movingEntity,10);
+			if (movingEntity != nullptr)
+				cameraController->SetThirdTarget(movingEntity, 5);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_0))
@@ -248,33 +247,20 @@ namespace FlyGame
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_2))
 		{
 			movingObject = MovingObject::Camera;
-			Debugger::ConsoleMessage("Moving Camera");
 			movingEntity = nullptr;
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_3))
 		{
 			movingEntity = ironGiant;
+			movingObject = MovingObject::Cube;
 		}
 
-		if (Input::GetKeyPressed(KeyCode::KEY_T))
-		{
-			pointLight->SetActive(true);
-		}
-		if (Input::GetKeyPressed(KeyCode::KEY_G))
-		{
-			pointLight->SetActive(false);
-		}
 
-		if (Input::GetKeyPressed(KeyCode::KEY_R))
-		{
-			pointLightStatic->SetActive(true);
-		}
-		if (Input::GetKeyPressed(KeyCode::KEY_F))
-		{
-			pointLightStatic->SetActive(false);
-		}
-		
+		CheckForEnabling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, GetDirectionalLight());
+		CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, spotLight);
+		CheckForEnabling(KeyCode::KEY_T, KeyCode::KEY_G, pointLight);
+		CheckForEnabling(KeyCode::KEY_R, KeyCode::KEY_F, pointLightStatic);
 
 		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, box);
 		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, barrel);
@@ -284,19 +270,16 @@ namespace FlyGame
 		CheckForEnabling(KeyCode::KEY_B, KeyCode::KEY_V, ironGiant);
 		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, teapod);
 
-
 		//cameraController->SetMode(CameraMode::Free);
-		cameraController->Update(true);
-		
+		cameraController->Update(false);
+
 		if (movingObject == MovingObject::Camera)
 		{
-			spotLight->SetPosition(cameraController->GetCamera()->GetPosition());
-			spotLight->SetDirection(-cameraController->GetCamera()->GetFront());
-			/*pointLight->SetPosition(cameraController->GetCamera()->GetPosition());
-			pointLight->SetDirection(-cameraController->GetCamera()->GetFront());*/
+			MoveObject(spotLight);
+
 		}
 
-		if (movingEntity!=nullptr)
+		if (movingEntity != nullptr)
 		{
 			MoveObject(movingEntity);
 		}
@@ -354,11 +337,11 @@ namespace FlyGame
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_J))
 		{
-			entity->Rotate(0.0f, rotSensibility, 0.0f);
+			entity->Rotate(0.0f, rotSensibility + entity->GetRotation().y, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_L))
 		{
-			entity->Rotate(0.0f, -rotSensibility, 0.0f);
+			entity->Rotate(0.0f, -rotSensibility + entity->GetRotation().y, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_U))
 		{
@@ -387,7 +370,7 @@ namespace FlyGame
 
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_W))
 		{
-			light->SetPosition(light->GetPosition() + glm::vec3(0,0, -sensibility));
+			light->SetPosition(light->GetPosition() + glm::vec3(0, 0, -sensibility));
 			objectMoved = true;
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_S))
@@ -438,6 +421,20 @@ namespace FlyGame
 		{
 			thing->SetActive(false);
 			Debugger::ConsoleMessage(thing->GetName(), false);
+		}
+	}
+	void Game::CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Lights::Light* light)
+	{
+		if (Input::GetKeyPressed(enableKey))
+		{
+			light->SetActive(true);
+			Debugger::ConsoleMessage(light->GetName(), true);
+		}
+
+		if (Input::GetKeyPressed(disableKey))
+		{
+			light->SetActive(false);
+			Debugger::ConsoleMessage(light->GetName(), false);
 		}
 	}
 

@@ -18,7 +18,7 @@ namespace FlyEngine
 
 	struct FLY_API CameraRotation
 	{
-		float yaw = -90.0f;
+		float yaw = 0.0f;
 		float pitch = 0.0f;
 	};
 
@@ -46,6 +46,8 @@ namespace FlyEngine
 
 		float lastX;
 		float lastY;
+
+		glm::vec3 previousRot = glm::vec3(0);//cambiar
 
 		ObjetiveParams* objetiveParams;
 

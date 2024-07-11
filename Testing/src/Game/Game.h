@@ -58,6 +58,7 @@ namespace FlyGame
 		void MoveObject(FlyEngine::Lights::Light* light, bool showMovement = true);
 
 		void CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Entities::Entity* thing);
+		void CheckForEnabling(KeyCode enableKey, KeyCode disableKey, Lights::Light* light);
 		void CheckForScaling(KeyCode maximizeKey, KeyCode minimizeKey, Entities::Entity* thing);
 		void SetCameraTarget(Entities::Entity* target, CameraMode mode);
 

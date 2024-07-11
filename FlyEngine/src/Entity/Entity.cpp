@@ -506,6 +506,29 @@ namespace FlyEngine
 		void Entity::Rotate(float x, float y, float z)
 		{
 			
+			glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
+			glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
+			glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
+			glm::quat rot = rotZ * rotY * rotX;
+			rotationQuaternion = rot * rotationQuaternion;
+			
+			rotationVector = glm::eulerAngles(rotationQuaternion);
+			rotationMatrix = glm::mat4_cast(rotationQuaternion);
+			shouldUpdateModelMatrix = true;
+
+			if (printModificationMessage)
+			{
+				std::string text = "Setted Rotation of ";
+				text += name;
+				text += " successfully to: ";
+
+				Debugger::ConsoleMessageID(&text[0], glm::vec3(rotationVector.x, rotationVector.y, rotationVector.z));
+			}
+		}
+
+		void Entity::RotateAround(float x, float y, float z)
+		{
+
 			/*glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
 			glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
 			glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
@@ -515,7 +538,7 @@ namespace FlyEngine
 			const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f), glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
 			const glm::mat4 transformY = glm::rotate(glm::mat4(1.0f), glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
 			const glm::mat4 transformZ = glm::rotate(glm::mat4(1.0f), glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
-			rotationVector = glm::vec3(x,y,z);
+			rotationVector = glm::vec3(x, y, z);
 			rotationMatrix = transformY * transformX * transformZ;
 			//rotationVector = glm::eulerAngles(rotationQuaternion);
 			//rotationMatrix = glm::mat4_cast(rotationQuaternion);
@@ -640,7 +663,7 @@ namespace FlyEngine
 
 		void Entity::MoveForward(float amount) 
 		{
-			glm::vec3 forward = -GetFront();
+			glm::vec3 forward = GetFront();
 			glm::vec3 currentPosition = GetPosition();
 			currentPosition += forward * amount;
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
@@ -648,7 +671,7 @@ namespace FlyEngine
 
 		void Entity::MoveBackward(float amount) 
 		{
-			glm::vec3 backward = GetFront();
+			glm::vec3 backward = -GetFront();
 			glm::vec3 currentPosition = GetPosition();
 			currentPosition += backward * amount;
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
