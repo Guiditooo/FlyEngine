@@ -41,9 +41,9 @@ namespace FlyEngine
 				2,0,1
 			};
 
-			indexCount = 6;
-			vertexCount = 2;
-			vertexSize = 6;
+			indexCount = index.size();
+			vertexCount = 3;
+			//vertexSize = 6;
 
 			//Posicion
 			va.elementSize = 3;

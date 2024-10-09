@@ -8,10 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Transform/Transform.h"
 #include "VertexAttribute/VertexAttribute.h"
 #include "Exports/Exports.h"
 #include "Buffers/Buffers.h"
-//#include "Material/Material.h"
 #include "FlyFunctions/Color/Color.h"
 
 namespace FlyEngine
@@ -29,44 +29,27 @@ namespace FlyEngine
 		{
 		protected:
 			std::vector<Utils::VertexAttribute> vertexAttributes;
+			std::vector<unsigned int> index;
+			std::vector<Entity*> childList;
+			std::vector<float> vertex;
 
 			Utils::Buffers* buffers;
 			bool active;
 
 			Materials::Material* material;
 
+			Transform* transform;
+
 			Utils::Color color;
 
-			glm::mat4 translateMatrix;
-			glm::mat4 rotationMatrix;
-			glm::mat4 scaleMatrix;
-			glm::mat4 modelMatrix;
-
-			glm::vec3 positionVector;
-			glm::vec3 rotationVector;
-			glm::quat rotationQuaternion;
-			glm::vec3 scaleVector;
-
 			bool settedAsCameraTarget = false;
-			bool shouldUpdateModelMatrix = false;
 			bool printModificationMessage;
 
 			void CreateBaseEntity(std::string name);
 
-			glm::quat EulerToQuat(glm::vec3 euler);
-			glm::mat4 EulerToMat4(glm::vec3 euler);
-			glm::vec3 Mat4ToEuler(glm::mat4 matrix);
-			glm::vec3 QuaternionToEuler(glm::quat quat);
-			glm::vec3 QuatToVec(glm::quat quat, glm::vec3 euler);
-			glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
-
 			void PrintCreationMsg();
 
-
 			std::string name;
-
-			std::vector<float> vertex;
-			std::vector<unsigned int> index;
 
 			int indexCount;
 			int vertexCount;
@@ -95,7 +78,6 @@ namespace FlyEngine
 			virtual void SetColor(Utils::COLOR newColor);
 			Utils::Color GetColor();
 
-			void UpdateModelMatrix();
 			glm::mat4 GetModelMatrix();
 
 			virtual void SetPosition(float x, float y, float z);
@@ -110,17 +92,7 @@ namespace FlyEngine
 			virtual void SetScale(glm::vec3 scale);
 			virtual void SetScale(float scale);
 
-			glm::vec3 GetPosition();
-			glm::vec3 GetRotation();
-			glm::vec3 GetScale();
-
-			void SetFront(glm::vec3 front);
-			void SetUp(glm::vec3 up);
-			void SetRight(glm::vec3 right);
-
-			glm::vec3 GetFront();
-			glm::vec3 GetUp();
-			glm::vec3 GetRight();
+			Transform* GetTransform();
 
 			void MoveForward(float amount);
 			void MoveBackward(float amount);
@@ -128,20 +100,6 @@ namespace FlyEngine
 			void MoveRight(float amount);
 			void MoveUp(float amount);
 			void MoveDown(float amount);
-
-			virtual void Translate(float x, float y, float z);
-			virtual void Translate(glm::vec3 pos);
-
-			virtual void RotateAround(float x, float y, float z);
-			virtual void Rotate(float x, float y, float z);
-			virtual void Rotate(glm::vec3 rot);
-
-			virtual void WorldRotate(float x, float y, float z);
-			virtual void WorldRotate(glm::vec3 rot);
-
-			virtual void Scale(float x, float y, float z);
-			virtual void Scale(glm::vec3 scale);
-			virtual void Scale(float scale);
 
 			Materials::Material* GetMaterial();
 			Shader* GetShader();
@@ -164,11 +122,6 @@ namespace FlyEngine
 			void UseShader();
 
 			virtual void Draw() = 0;
-
-		private: 
-			glm::mat4 RotateInX(float angles);
-			glm::mat4 RotateInY(float angles);
-			glm::mat4 RotateInZ(float angles);
 		};
 
 	}

@@ -16,6 +16,9 @@ namespace FlyEngine
             glm::vec3 ambient;
             glm::vec3 diffuse;
             glm::vec3 specular;
+            int ambientAmount;
+            int diffuseAmount;
+            int specularAmount;
             float shininess;
         public:
             MaterialSpecification(glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shin);

@@ -7,7 +7,7 @@
 
 #include "Texture/Texture.h"
 #include "MaterialSpecification/MaterialSpecification.h"
-
+#include "FlyFunctions/Color/Color.h"
 
 
 namespace FlyEngine
@@ -24,6 +24,7 @@ namespace FlyEngine
 			std::unordered_map<std::string, Texture*> textureMap;
 			std::vector<std::string> textureOrder;
 			Shader* shader;
+			Utils::Color color;
 		public:
 			Material(std::string name, Shader* shader = nullptr);
 			~Material();
@@ -35,10 +36,17 @@ namespace FlyEngine
 			void SetTextureOrder(const std::vector<std::string>& order);
 			void SetSpecs(MaterialSpecification* newSpecs);
 
+			void SetColor(Utils::Color newColor);
+			void SetColor(glm::vec3 newColor);
+			void SetColor(glm::vec4 newColor);
+			void SetColor(float r, float g, float b);
+			void SetColor(float r, float g, float b, float a);
+
 			std::vector<std::string> GetTextureOrder();
 			Texture* GetTexture(const std::string& name) const;
 			MaterialSpecification* GetSpecs();
 			std::string GetName();
+			Utils::Color GetColor();
 
 			Shader* GetShader();
 			unsigned int GetShaderID();

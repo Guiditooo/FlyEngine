@@ -21,11 +21,13 @@
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 FlyEngine::CameraController* newCamera;
-bool isFirstTime = true;
 
+template <typename T>
+void EraseList(std::list<T*>& list);
+
+bool isFirstTime = true;
 static double lastMouseX;
 static double  lastMouseY;
-
 
 namespace FlyEngine
 {
@@ -53,6 +55,10 @@ namespace FlyEngine
 
 		isFirstTime = true;
 
+		using3DEntities = true;
+		using2DEntities = true;
+		calculatingLights = true;
+
 		isRunning = false;
 		directionalLight = CreateDirectionalLight();
 		Importers::TextureImporter::Init(true);
@@ -71,6 +77,16 @@ namespace FlyEngine
 		if (renderer != nullptr)
 			delete renderer;
 		renderer = nullptr;
+
+		if (cameraController != nullptr)
+			delete cameraController;
+		cameraController = nullptr;
+
+		EraseList(modelList);
+		EraseList(entity3DList);
+		EraseList(entity2DList);
+		EraseList(lightList);
+		EraseList(textureList);
 	}
 
 	void BaseGame::SetWindowParameters(int width, int height, std::string name)
@@ -107,9 +123,12 @@ namespace FlyEngine
 
 	void BaseGame::DrawObjects()
 	{
-		CalculateLights();
-		DrawEntities();
-		DrawModels();
+		if (calculatingLights)
+			CalculateLights();
+		if (using2DEntities)
+			Draw2DEntities();
+		if (using3DEntities)
+			Draw3DEntities();
 	}
 
 	void BaseGame::DrawModels()
@@ -118,15 +137,14 @@ namespace FlyEngine
 		{
 			if (model->IsActive())
 			{
-				//renderer->DrawModel(model, glm::mat4x4(1.0f), glm::mat4x4(1.0f), glm::vec3(0.0f));
-				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetPosition());
+				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
 			}
 		}
 	}
 
-	void BaseGame::DrawEntities()
+	void BaseGame::Draw2DEntities()
 	{
-		for (Entities::Entity* entity : entityList)
+		for (Entities::Entity* entity : entity2DList)
 		{
 			if (entity->IsActive() && !entity->IsCameraTarget())
 			{
@@ -140,13 +158,36 @@ namespace FlyEngine
 		}
 	}
 
+	void BaseGame::Draw3DEntities()
+	{
+		for (Entities::Entity* entity : entity3DList)
+		{
+			if (dynamic_cast<Entities::Model*>(entity) != nullptr)
+			{
+				renderer->DrawModel(dynamic_cast<Entities::Model*>(entity), mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
+			}
+			else
+			{
+				if (entity->IsActive() && !entity->IsCameraTarget())
+				{
+					entity->UseShader();
+					SetMatrixUniforms(entity);
+
+					SetMaterialUniforms(entity);
+					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetColor().GetColorV3());
+					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+				}
+			}
+		}
+	}
+
 
 	void BaseGame::CalculateLights()
 	{
 		int pointLightIndex = 0;
 		for (Lights::Light* light : lightList)
 		{
-			if (pointLightIndex < 4)//Cambiar por una constante
+			if (pointLightIndex < MAX_POINT_LIGHTS)//Cambiar por una constante
 			{
 				SetLightUniforms(light, pointLightIndex);
 				if (light->GetLightType() == Lights::LightType::Point)
@@ -161,7 +202,7 @@ namespace FlyEngine
 		renderer->SetMatrix4Uniform(id, "view", mainCamera->GetViewMatrix());
 		renderer->SetMatrix4Uniform(id, "projection", mainCamera->GetProjMatrix());
 		renderer->SetMatrix4Uniform(id, "model", entity->GetModelMatrix());
-		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetPosition());
+		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetTransform()->GetPosition());
 	}
 
 	void BaseGame::SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID)
@@ -207,8 +248,9 @@ namespace FlyEngine
 
 	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
 	{
-		glm::vec2 windowSize = window->GetWindowSize();
 		Entities::Rectangle* rec = new Entities::Rectangle();
+		glm::vec2 windowSize = window->GetWindowSize();
+
 		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
@@ -217,7 +259,9 @@ namespace FlyEngine
 		CreateBuffers(rec->GetBuffers());
 		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
 		SetVertexAttributes(rec->GetVertexAttributes());
-		entityList.push_back(rec);
+
+		entity2DList.push_back(rec);
+
 		return rec;
 	}
 
@@ -229,8 +273,18 @@ namespace FlyEngine
 	Entities::Triangle* BaseGame::CreateTriangle(float posX, float posY, float posZ, float base, float height)
 	{
 		Entities::Triangle* tri = new Entities::Triangle();
+		glm::vec2 windowSize = window->GetWindowSize();
+
+		tri->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
+		tri->SetScale(PixelsToEngine(base, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
 		tri->SetMaterial(MaterialManager::GetDefaultMaterial());
+
+		CreateBuffers(tri->GetBuffers());
+		BindBuffers(tri->GetBuffers(), tri->GetVertexList(), tri->GetIndexList());
+		SetVertexAttributes(tri->GetVertexAttributes());
+
+		entity2DList.push_back(tri);
 
 		return tri;
 	}
@@ -247,7 +301,7 @@ namespace FlyEngine
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
 		SetVertexAttributes(cube->GetVertexAttributes());
-		entityList.push_back(cube);
+		entity3DList.push_back(cube);
 		return cube;
 	}
 
@@ -296,11 +350,66 @@ namespace FlyEngine
 		glfwSetInputMode(window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
+	void BaseGame::Toggle3DEntityEnabled(bool value)
+	{
+		using3DEntities = value;
+	}
+
+	void BaseGame::Toggle2DEntityEnabled(bool value)
+	{
+		using2DEntities = value;
+	}
+
+	void BaseGame::ToggleLightCalculations(bool value)
+	{
+		calculatingLights = value;
+	}
+
+	void BaseGame::SetEngineMode(EngineMode mode)
+	{
+		engineMode = mode;
+		switch (engineMode)
+		{
+		case EngineMode::Engine3D:
+			if (mainCamera != nullptr)
+				mainCamera->SetProjectionType(ProjectionType::Perspective);
+			if (newCamera != nullptr)
+				newCamera->SetMouseMovementOn(true);
+			using3DEntities = true;
+			using2DEntities = true;
+			break;
+		case EngineMode::Engine2D:
+			if (mainCamera != nullptr)
+				mainCamera->SetProjectionType(ProjectionType::Ortho);
+			if (newCamera != nullptr)
+				newCamera->SetMouseMovementOn(false);
+			using3DEntities = true;
+			using2DEntities = true;
+			break;
+		case EngineMode::Only3D:
+			if (mainCamera != nullptr)
+				mainCamera->SetProjectionType(ProjectionType::Perspective);
+			if(newCamera != nullptr)
+				newCamera->SetMouseMovementOn(true);
+			using3DEntities = true;
+			using2DEntities = false;
+			break;
+		case EngineMode::Only2D:
+			if (mainCamera != nullptr)
+				mainCamera->SetProjectionType(ProjectionType::Ortho);
+			if (newCamera != nullptr)
+				newCamera->SetMouseMovementOn(false);
+			using3DEntities = false;
+			using2DEntities = true;
+			break;
+		default:
+			break;
+		}
+	}
+
 	void BaseGame::InternalInit()
 	{
 		Debugger::ConsoleMessage("Starting Fly Engine.", 2, 0, 1, 0);
-		//Debugger::ConsoleMessage("Press intro to continue.", 2, 0, 1, 0);
-		//std::cin.get();
 
 		if (glfwInit() == GLFW_FALSE)
 		{
@@ -331,14 +440,11 @@ namespace FlyEngine
 
 		mainCamera = new Camera();
 
-
-
 		SetUpOpenGlFunctions();
 
 		Input::SetContextWindow(window);
 
 		renderer = new Renderer();
-
 
 		Init();
 	}
@@ -438,10 +544,10 @@ namespace FlyEngine
 
 			std::string text = "CameraController Created!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-			
+
 			newCamera = cameraController;
 
-			
+
 		}
 		return cameraController;
 	}
@@ -450,7 +556,6 @@ namespace FlyEngine
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
 		Entities::Model* model = Importers::ModelImporter::LoadModel(name, path);
-
 
 		//glm::vec3 dims = model->GetDimesions();
 		//float middleNumber = FindMiddleNumber(dims.x, dims.y, dims.z);
@@ -466,6 +571,7 @@ namespace FlyEngine
 		std::string text = "Model Loaded: (" + model->GetName() + ")!";
 		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
 		modelList.push_back(model);
+		entity3DList.push_back(model);
 		return model;
 	}
 
@@ -499,10 +605,22 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	float xOffset = xpos - lastMouseX;
-	float  yOffset = lastMouseY - ypos; 
+	float  yOffset = lastMouseY - ypos;
 
 	lastMouseX = xpos;
 	lastMouseY = ypos;
 
 	newCamera->ProcessMouseMovement(xOffset, yOffset);
+}
+
+template<typename T>
+void EraseList(std::list<T*>& list)
+{
+	for (auto element : list)
+	{
+		if (element != nullptr)
+			delete element;
+		element = nullptr;
+	}
+	list.clear();
 }

@@ -46,15 +46,15 @@ namespace FlyEngine
 			void SetScale(glm::vec3 scale) override;
 			void SetScale(float scale) override;
 
-			void Translate(float x, float y, float z) override;
-			void Translate(glm::vec3 pos) override;
+			void Translate(float x, float y, float z);
+			void Translate(glm::vec3 pos);
 
-			void Rotate(float x, float y, float z) override;
-			void Rotate(glm::vec3 rot) override;
+			void Rotate(float x, float y, float z);
+			void Rotate(glm::vec3 rot);
 
-			void Scale(float x, float y, float z) override;
-			void Scale(glm::vec3 scale) override;
-			void Scale(float scale) override;
+			void Scale(float x, float y, float z);
+			void Scale(glm::vec3 scale);
+			void Scale(float scale);
 
 			void SetColor(Utils::Color newColor) override;
 			void SetColor(glm::vec3 newColor) override;

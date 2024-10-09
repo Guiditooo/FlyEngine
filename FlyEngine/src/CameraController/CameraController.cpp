@@ -56,9 +56,9 @@ namespace FlyEngine
 	{
 		cameraMode = CameraMode::FirstPerson;
 		objetiveParams->target = target;
-		glm::vec3 targetPos = target->GetPosition();
+		glm::vec3 targetPos = target->GetTransform()->GetPosition();
 		camera->SetPosition(targetPos.x, targetPos.y, targetPos.z);
-		glm::vec3 targetRot = target->GetFront();
+		glm::vec3 targetRot = target->GetTransform()->GetFront();
 		camera->SetRotation(targetRot.x, targetRot.y, targetRot.z);
 	}
 	void CameraController::SetThirdTarget(Entities::Entity* target, float distance)
@@ -66,7 +66,7 @@ namespace FlyEngine
 		cameraMode = CameraMode::ThirdPerson;
 		objetiveParams->target = target;
 		//glm::vec3 targetPos = target->GetPosition() + camera->GetFront() * distance;
-		glm::vec3 targetPos = camera->GetPosition();
+		glm::vec3 targetPos = camera->GetTransform()->GetPosition();
 		camera->SetPosition(targetPos.x, targetPos.y+2, targetPos.z-5);
 
 	}
@@ -122,6 +122,9 @@ namespace FlyEngine
 
 	void CameraController::ProcessMouseMovement(float xOffset, float yOffset)
 	{
+		if (!isMouseMovementOn)
+			return;
+		
 		//El mouse se mueve
 		float sensitivity = 0.1f;
 
@@ -142,7 +145,7 @@ namespace FlyEngine
 		front.z = sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 		//camera->SetFront(glm::normalize(front));
 
-		camera->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+		camera->GetTransform()->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
 		/*
 		std::string text = "- ";
 		text += camera->GetName();
@@ -185,13 +188,13 @@ namespace FlyEngine
 			cameraMoved = true;
 		}
 
-		camera->viewMatrix = glm::lookAt(camera->GetPosition(), camera->GetPosition() + camera->GetFront(), camera->GetUp());
+		camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetPosition(), camera->GetTransform()->GetPosition() + camera->GetTransform()->GetFront(), camera->GetTransform()->GetUp());
 
 	}
 
 	void CameraController::FirstPersonMovement(bool& cameraMoved)
 	{
-
+		/*
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_LEFT))
 		{
 			camera->WorldRotate(0.0f, rotationSensitivity, 0.0f);
@@ -213,20 +216,25 @@ namespace FlyEngine
 			camera->WorldRotate(rotationSensitivity, 0.0f, 0.0f);
 			cameraMoved = true;
 		}
-
+		*/
 		if (objetiveParams->target != nullptr)
 		{
-			glm::vec3 objPos = objetiveParams->target->GetPosition();
+			glm::vec3 objPos = objetiveParams->target->GetTransform()->GetPosition();
 			camera->SetPosition(objPos.x, objPos.y, objPos.z);
+			glm::vec3 objRot = objetiveParams->target->GetTransform()->GetFront();
+			camera->SetRotation(objRot.x, objRot.y, objRot.z);
+		}
+		else
+		{
+			Debugger::ConsoleMessage("ERROR - CAMERA CONTROLLER HAS NOT TARGET");
 		}
 
-		camera->viewMatrix = glm::lookAt(camera->GetPosition(), camera->GetPosition() + camera->GetFront(), camera->GetUp());
-
+		camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetPosition(), camera->GetTransform()->GetPosition() + camera->GetTransform()->GetFront(), camera->GetTransform()->GetUp());
 	}
 
 	void CameraController::ThirdPersonMovement(bool& cameraMoved)
 	{
-		//
+		
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_ADD))
 		{
 			float coef = 1.01f;
@@ -249,17 +257,17 @@ namespace FlyEngine
 			float cameraY = targetPosition.y + distanceToTarget * sin(glm::radians(cameraRotation.pitch));
 			float cameraZ = targetPosition.z + distanceToTarget * sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 			*/
-			camera->viewMatrix = glm::lookAt(camera->GetPosition(), objetiveParams->target->GetPosition(), camera->GetUp());			
+			camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetPosition(), objetiveParams->target->GetTransform()->GetPosition(), camera->GetTransform()->GetUp());
 
-			glm::vec3 targetPos = objetiveParams->target->GetPosition() + camera->GetFront() * 5.0f;
+			glm::vec3 targetPos = objetiveParams->target->GetTransform()->GetPosition() + camera->GetTransform()->GetFront() * 5.0f;
 			camera->SetPosition(targetPos.x, targetPos.y, targetPos.z);
 
-			float rotY = previousRot.y - objetiveParams->target->GetRotation().y;
+			float rotY = previousRot.y - objetiveParams->target->GetTransform()->GetRotation().y;
 			cameraRotation.yaw += glm::degrees(rotY);
 
-			camera->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+			camera->GetTransform()->RotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
 			
-			previousRot = objetiveParams->target->GetRotation();
+			previousRot = objetiveParams->target->GetTransform()->GetRotation();
 
 		}
 

@@ -6,6 +6,7 @@
 typedef glm::mat4;
 typedef glm::vec3;
 
+
 namespace FlyEngine
 {
 	namespace Utils

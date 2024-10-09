@@ -14,7 +14,7 @@ namespace FlyEngine
 			specs = new MaterialSpecification();
 			specs->SetSpecs(MaterialList::WhitePlastic);
 			this->name = name;
-			
+
 			this->shader = shader == nullptr ? Managers::ShaderManager::GetDefaultShader() : shader;
 		}
 
@@ -35,10 +35,10 @@ namespace FlyEngine
 
 		void Material::ApplyTextures()
 		{
-			for (int i = 0; i < textureOrder.size(); i++) 
+			for (int i = 0; i < textureOrder.size(); i++)
 			{
 				Texture* texture = GetTexture(textureOrder[i]);
-				if (texture) 
+				if (texture)
 				{
 					texture->Bind(i);
 				}
@@ -54,9 +54,9 @@ namespace FlyEngine
 			}
 			textureMap[name] = texture;
 
-			std::cout << " Linked " << name << "(ID =" << std::to_string(texture->GetID()) << ") to [" << this->name <<"] \n";
-			
-			if (std::find(textureOrder.begin(), textureOrder.end(), name) == textureOrder.end()) 
+			std::cout << " Linked " << name << "(ID =" << std::to_string(texture->GetID()) << ") to [" << this->name << "] \n";
+
+			if (std::find(textureOrder.begin(), textureOrder.end(), name) == textureOrder.end())
 			{
 				textureOrder.push_back(name);
 			}
@@ -71,6 +71,31 @@ namespace FlyEngine
 		void Material::SetSpecs(MaterialSpecification* newSpecs)
 		{
 			specs = newSpecs;
+		}
+
+		void Material::SetColor(Utils::Color newColor)
+		{
+			color = newColor;
+		}
+
+		void Material::SetColor(glm::vec3 newColor)
+		{
+			color = Utils::Color(newColor);
+		}
+
+		void Material::SetColor(glm::vec4 newColor)
+		{
+			color = Utils::Color(newColor);
+		}
+
+		void Material::SetColor(float r, float g, float b)
+		{
+			color = Utils::Color(r, g, b);
+		}
+
+		void Material::SetColor(float r, float g, float b, float a)
+		{
+			color = Utils::Color(r, g, b, a);
 		}
 
 		std::vector<std::string> Material::GetTextureOrder()
@@ -96,6 +121,10 @@ namespace FlyEngine
 		std::string Material::GetName()
 		{
 			return name;
+		}
+		Utils::Color Material::GetColor()
+		{
+			return color;
 		}
 		Shader* Material::GetShader()
 		{

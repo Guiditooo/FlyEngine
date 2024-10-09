@@ -17,6 +17,7 @@
 #include "Triangle/Triangle.h"
 #include "Cube/Cube.h"
 #include "ShaderManager/ShaderManager.h"
+#include "EngineMode/EngineMode.h"
 
 namespace FlyEngine
 {
@@ -27,7 +28,8 @@ namespace FlyEngine
 	private:
 		Renderer* renderer;
 		std::list<Entities::Model*> modelList;
-		std::list<Entities::Entity*> entityList;
+		std::list<Entities::Entity3D*> entity3DList;
+		std::list<Entities::Entity2D*> entity2DList;
 		std::list<Texture*> textureList;
 		std::list<Lights::Light*> lightList;
 
@@ -35,8 +37,16 @@ namespace FlyEngine
 
 		Lights::DirectionalLight* directionalLight;
 
+		EngineMode engineMode;
+
+		const int MAX_POINT_LIGHTS = 4;
+
 		bool isRunning;
 		bool checkEsc;
+
+		bool using3DEntities;
+		bool using2DEntities;
+		bool calculatingLights;
 
 		void SwapBuffers();
 
@@ -50,7 +60,8 @@ namespace FlyEngine
 
 		void DrawObjects();
 		void DrawModels();
-		void DrawEntities();
+		void Draw2DEntities();
+		void Draw3DEntities();
 		void DrawTextures();
 
 		void CalculateLights();
@@ -109,6 +120,12 @@ namespace FlyEngine
 
 		void ShowCursor();
 		void HideCursor();
+
+		void Toggle3DEntityEnabled(bool value);
+		void Toggle2DEntityEnabled(bool value);
+		void ToggleLightCalculations(bool value);
+
+		void SetEngineMode(EngineMode mode);
 
 	protected:
 		std::string initialWindowName;

@@ -41,7 +41,7 @@ namespace FlyEngine
 
 			indexCount = index.size();
 			vertexCount = 4;
-			vertexSize = 6;
+			//vertexSize = 6;
 
 			//Posicion
 			va.elementSize = 3;

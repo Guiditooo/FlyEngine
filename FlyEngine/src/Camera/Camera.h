@@ -48,11 +48,11 @@ namespace FlyEngine
 		glm::mat4 GetProjMatrix();
 		glm::mat4 GetViewMatrix();
 
-		void Translate(float x, float y, float z) override;
-		void Rotate(float x, float y, float z) override;
+		void Translate(float x, float y, float z);
+		void Rotate(float x, float y, float z);
 
-		void WorldRotate(float x, float y, float z) override;
-		void WorldRotate(glm::vec3 rot) override;
+		void WorldRotate(float x, float y, float z);
+		void WorldRotate(glm::vec3 rot);
 
 		void SetPosition(float x, float y, float z) override;
 		void SetRotation(float x, float y, float z) override;

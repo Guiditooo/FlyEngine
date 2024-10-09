@@ -22,12 +22,7 @@ namespace FlyGame
 
 		cameraController = nullptr;
 
-		rec = nullptr;
-		box = nullptr;
 		piso = nullptr;
-		pared1 = nullptr;
-		pared2 = nullptr;
-		box2 = nullptr;
 		pointLight = nullptr;
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
@@ -39,73 +34,38 @@ namespace FlyGame
 		cameraController = nullptr;
 
 		movingObject = MovingObject::Cube;
+
+		SetEngineMode(EngineMode::Only2D);
 	}
 
 	Game::~Game()
 	{
-		if (rec != nullptr)
-			delete rec;
-		rec = nullptr;
-
-		if (box != nullptr)
-			delete box;
-		box = nullptr;
-
-		if (piso != nullptr)
-			delete piso;
-		piso = nullptr;
-
-		if (box2 != nullptr)
-			delete box2;
-		box2 = nullptr;
-
-		if (cameraController != nullptr)
-			delete cameraController;
-		cameraController = nullptr;
-
-
-		if (backpack != nullptr)
-			delete backpack;
-		backpack = nullptr;
 	}
 
 	void Game::Init()
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
 
-		mainCamera->SetPosition(0.0f, 1.0f, 5.0f);
-
 		cameraController = CreateCameraController(mainCamera, 0.05f, 0.2f, CameraMode::Free);
 
-
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
-		pared1 = CreateRectangle(0, 1000, -1000, 1000, 1000);
-		pared2 = CreateRectangle(1000, 1000, 0, 1000, 1000);
 
-		box = CreateCube(0, 1, 0, 100);
-		box2 = CreateCube(2, 1, 0, 100);
+		triangle = CreateTriangle(0, 1, 0, 10, 10);
 
 		piso->SetName("Piso");
-		pared1->SetName("Pared1");
-		pared2->SetName("Pared2");
-		box->SetName("Player");
-		box2->SetName("Cubo Uno");
+		triangle->SetName("Player");
 
-		backpack = CreateModel("res/Models/Backpack/backpack.obj", "Backpack");
-
-		barrel = CreateModel("res/Models/Barril/Barril.fbx", "Barril 1");
-		barrel2 = CreateModel("res/Models/Barril/Barril.fbx", "Barril 2");
-		barrel3 = CreateModel("res/Models/Barril/Barril.fbx", "Barril 3");
-
-		delorean = CreateModel("res/Models/Delorean/delorean_low.fbx", "Delorean");
-		ironGiant = CreateModel("res/Models/Iron Giant/irongiant_low.fbx", "Iron Giant");
-		teapod = CreateModel("res/Models/Teapod/teapod.fbx", "teapod");
-
-		pointLight = CreatePointLight(mainCamera->GetPosition());
+		pointLight = CreatePointLight(mainCamera->GetTransform()->GetPosition());
 		pointLightStatic = CreatePointLight();
-		spotLight = CreateSpotLight(mainCamera->GetPosition(), -mainCamera->GetFront());
+		spotLight = CreateSpotLight(mainCamera->GetTransform()->GetPosition(), -mainCamera->GetTransform()->GetFront());
 
 		pointLightStatic->SetName("Static Light");
+
+		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
+		//pointLightStatic->SetColor(COLOR::CYAN);
+
+		spotLight->SetPosition(glm::vec3(0, 2, 0));
+		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
 
 		std::string boxMaterial = "Box_Mat";
 		Managers::MaterialManager::CreateMaterial(boxMaterial);
@@ -115,174 +75,101 @@ namespace FlyGame
 		boxMat->AddTexture("specular", CreateTexture("res/Textures/Box/Box_S.png"));
 		boxMat->SetTextureOrder({ "diffuse", "specular" });
 
-		box->SetMaterial(boxMat);
-		box2->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
-
-		box->SetScale(0.65f);
-		box2->SetScale(0.2f);
-
-		box->SetPosition(-0.745f, 0.3f, -0.88f);
-		box2->SetPosition(-0.85f, 0.7f, -0.74f);
-
-		std::string barrelMaterial = "Barrel_Mat";
-		Managers::MaterialManager::CreateMaterial(barrelMaterial);
-		Materials::Material* barrelMat = Managers::MaterialManager::GetMaterial(barrelMaterial);
-		barrelMat->AddTexture("diffuse", CreateTexture("res/Models/Barril/diffuse.png"));
-		barrelMat->AddTexture("specular", CreateTexture("res/Models/Barril/roughness.png"));
-		barrelMat->SetTextureOrder({ "diffuse", "specular" });
-
-		barrel->SetMaterial(barrelMat);
-		barrel->UseBaseMaterial(true);
-		barrel2->SetMaterial(barrelMat);
-		barrel2->UseBaseMaterial(true);
-		barrel3->SetMaterial(barrelMat);
-		barrel3->UseBaseMaterial(true);
-
-		barrel->SetScale(0.15f, 0.2f, 0.18f);
-		barrel2->SetScale(0.14f, 0.14f, 0.14f);
-		barrel3->SetScale(0.14f, 0.16f, 0.14f);
-
-		barrel->SetPosition(1, 0, 0.93f);
-		barrel2->SetPosition(1, 0, 0.55f);
-		barrel3->SetPosition(0.65f, 0, 0.93f);
-
+		piso->SetScale(100, 100, 100);
 		piso->SetRotation(-90, 90, 0);
-		pared2->SetRotation(0, -90, 0);
-
-		teapod->SetColor(COLOR::GREY);
-		teapod->SetScale(0.004f);
-		teapod->SetRotation(-90, 0, 0);
-		teapod->SetPosition(-0.52f, 0.62f, -0.675f);
-
-		delorean->SetColor(COLOR::MAGENTA);
-		delorean->SetScale(0.08f);
-		delorean->SetRotation(0, -30, 0);
-		delorean->SetPosition(-0.11f, 0.27f, 0.36f);
-
-		ironGiant->SetColor(COLOR::LIGHT_GREY);
-		ironGiant->SetScale(0.004f);
-		ironGiant->SetRotation(0, -30, 0);
-		ironGiant->SetPosition(1, 0, -1);
-
-		backpack->SetScale(0.2f);
-		backpack->SetRotation(-171.969214f, 19.2966456f, -176.649076f);
-		backpack->SetPosition(1.147006f, 1.059893f, -1.274624f);
-
-		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
-		pointLightStatic->SetColor(COLOR::CYAN);
-
-		spotLight->SetPosition(glm::vec3(0,2,0));
-		spotLight->SetDirection(piso->GetPosition() - spotLight->GetPosition());
 
 		piso->SetActive(true);
-		pared1->SetActive(false);
-		pared2->SetActive(false);
-		box->SetActive(true);
-		box2->SetActive(true);
-		backpack->SetActive(true); //Mochila
-		barrel->SetActive(true); //Barril
-		barrel2->SetActive(true); //Barril
-		barrel3->SetActive(true); //Barril
-		delorean->SetActive(true); //Delorean
-		ironGiant->SetActive(true); //Gigante
-		teapod->SetActive(true); //Tetera
+		triangle->SetActive(true);
 	}
 
 	void Game::Update()
 	{
-		if (Input::GetKeyPressed(KeyCode::KEY_F10))
+		if (Input::GetKeyPressed(KeyCode::KEY_1))
 		{
 			cameraController->SetMouseMovementOn(true);
 			HideCursor();
 		}
-		if (Input::GetKeyPressed(KeyCode::KEY_F9))
+		if (Input::GetKeyPressed(KeyCode::KEY_2))
 		{
 			cameraController->SetMouseMovementOn(false);
 			ShowCursor();
 		}
 
-		if (Input::GetKeyPressed(KeyCode::KEY_1))
-		{
-			if (movingEntity != nullptr)
-				cameraController->SetFirstTarget(movingEntity);
-		}
-
-		if (Input::GetKeyPressed(KeyCode::KEY_2))
-		{
-			cameraController->SetMode(CameraMode::Free);
-		}
+		//if (Input::GetKeyPressed(KeyCode::KEY_1))
+		//{
+		//	if (movingEntity != nullptr)
+		//		cameraController->SetFirstTarget(movingEntity);
+		//}
+		//
+		//if (Input::GetKeyPressed(KeyCode::KEY_2))
+		//{
+		//	cameraController->SetMode(CameraMode::Free);
+		//}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_3))
 		{
-			if (movingEntity != nullptr)
-				cameraController->SetThirdTarget(movingEntity, 5);
+			//if (movingEntity != nullptr)
+				//cameraController->SetThirdTarget(movingEntity, 5);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_0))
 		{
-			//SetCameraTarget(ironGiant, CameraMode::FirstPerson);
+			SetEngineMode(EngineMode::Engine2D);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_9))
 		{
-			//SetCameraTarget(teapod,CameraMode::FirstPerson);
+			SetEngineMode(EngineMode::Only2D);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_8))
 		{
-			//cameraController->SetThirdTarget(movingEntity, 1500);
+			SetEngineMode(EngineMode::Engine3D);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_7))
 		{
-			//cameraController->SetThirdTarget(movingEntity, 1500);
+			SetEngineMode(EngineMode::Only3D);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
-			movingEntity = box2;
+			movingEntity = triangle;
+			movingObject = MovingObject::Player;
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_2))
 		{
-			movingObject = MovingObject::Camera;
-			movingEntity = nullptr;
+
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_3))
 		{
-			movingEntity = ironGiant;
-			movingObject = MovingObject::Cube;
-		}
 
+		}
 
 		CheckForEnabling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, GetDirectionalLight());
 		CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, spotLight);
 		CheckForEnabling(KeyCode::KEY_T, KeyCode::KEY_G, pointLight);
 		CheckForEnabling(KeyCode::KEY_R, KeyCode::KEY_F, pointLightStatic);
 
-		CheckForEnabling(KeyCode::KEY_KP_7, KeyCode::KEY_KP_4, box);
-		CheckForEnabling(KeyCode::KEY_KP_8, KeyCode::KEY_KP_5, barrel);
-		CheckForEnabling(KeyCode::KEY_KP_9, KeyCode::KEY_KP_6, backpack);
-
-		CheckForEnabling(KeyCode::KEY_M, KeyCode::KEY_N, delorean);
-		CheckForEnabling(KeyCode::KEY_B, KeyCode::KEY_V, ironGiant);
-		CheckForEnabling(KeyCode::KEY_C, KeyCode::KEY_X, teapod);
-
 		//cameraController->SetMode(CameraMode::Free);
-		cameraController->Update(false);
-
-		if (movingObject == MovingObject::Camera)
-		{
-			MoveObject(spotLight);
-
-		}
 
 		if (movingEntity != nullptr)
 		{
-			MoveObject(movingEntity);
+			if (movingObject == MovingObject::Camera)
+			{
+				MoveObject(spotLight);
+			}
+
+			else
+			{
+				MoveObject(movingEntity);
+			}
 		}
+
+		cameraController->Update(false);
 	}
 
 	void Game::Deinit()
@@ -329,27 +216,27 @@ namespace FlyGame
 
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_I))
 		{
-			entity->Rotate(rotSensibility, 0.0f, 0.0f);
+			entity->GetTransform()->Rotate(rotSensibility, 0.0f, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_K))
 		{
-			entity->Rotate(-rotSensibility, 0.0f, 0.0f);
+			entity->GetTransform()->Rotate(-rotSensibility, 0.0f, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_J))
 		{
-			entity->Rotate(0.0f, rotSensibility + entity->GetRotation().y, 0.0f);
+			entity->GetTransform()->Rotate(0.0f, rotSensibility + entity->GetTransform()->GetRotation().y, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_L))
 		{
-			entity->Rotate(0.0f, -rotSensibility + entity->GetRotation().y, 0.0f);
+			entity->GetTransform()->Rotate(0.0f, -rotSensibility + entity->GetTransform()->GetRotation().y, 0.0f);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_U))
 		{
-			entity->Rotate(0.0f, 0.0f, -rotSensibility);
+			entity->GetTransform()->Rotate(0.0f, 0.0f, -rotSensibility);
 		}
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_O))
 		{
-			entity->Rotate(0.0f, 0.0f, rotSensibility);
+			entity->GetTransform()->Rotate(0.0f, 0.0f, rotSensibility);
 		}
 
 		CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, entity);
@@ -360,7 +247,7 @@ namespace FlyGame
 			std::string text = "- ";
 			text += entity->GetName();
 			text += " Updated Position : ";
-			Debugger::ConsoleMessage(&text[0], entity->GetPosition());
+			Debugger::ConsoleMessage(&text[0], entity->GetTransform()->GetPosition());
 		}
 
 	}void Game::MoveObject(FlyEngine::Lights::Light* light, bool showMovement)
@@ -443,12 +330,12 @@ namespace FlyGame
 		if (Input::GetKeyPressed(maximizeKey))
 		{
 			float scaleSens = 1.01f;
-			thing->Scale(scaleSens);
+			thing->GetTransform()->Scale(scaleSens);
 		}
 		if (Input::GetKeyPressed(minimizeKey))
 		{
 			float scaleSens = 0.99f;
-			thing->Scale(scaleSens);
+			thing->GetTransform()->Scale(scaleSens);
 		}
 	}
 

@@ -37,9 +37,9 @@ namespace FlyEngine
         {
             for (Mesh* mesh : meshes) 
             {
-                mesh->SetPosition(positionVector);
-                mesh->SetRotation(rotationVector);
-                mesh->SetScale(scaleVector);
+                mesh->SetPosition(transform->GetPosition());
+                mesh->SetRotation(transform->GetRotation());
+                mesh->SetScale(transform->GetScale());
             }
         }
 
@@ -50,9 +50,9 @@ namespace FlyEngine
 
         void Model::AddMesh(Mesh* mesh)
         {
-            mesh->SetPosition(positionVector);
-            mesh->SetRotation(rotationVector);
-            mesh->SetScale(scaleVector);
+            mesh->SetPosition(transform->GetPosition());
+            mesh->SetRotation(transform->GetRotation());
+            mesh->SetScale(transform->GetScale());
             mesh->SetColor(color);
             std::string meshName = "Mesh";
             meshName += std::to_string(meshes.size());
@@ -136,37 +136,37 @@ namespace FlyEngine
         }
         void Model::Translate(float x, float y, float z)
         {
-            Entity::Translate(x,y,z);
+            transform->Translate(x,y,z);
             UpdateMeshesTransform();
         }
         void Model::Translate(glm::vec3 pos)
         {
-            Entity::Translate(pos);
+            transform->Translate(pos);
             UpdateMeshesTransform();
         }
         void Model::Rotate(float x, float y, float z)
         {
-            Entity::Rotate(x,y,z);
+            transform->Rotate(x,y,z);
             UpdateMeshesTransform();
         }
         void Model::Rotate(glm::vec3 rot)
         {
-            Entity::Rotate(rot);
+            transform->Rotate(rot);
             UpdateMeshesTransform();
         }
         void Model::Scale(float x, float y, float z)
         {
-            Entity::Scale(x,y,z);
+            transform->Scale(x,y,z);
             UpdateMeshesTransform();
         }
         void Model::Scale(glm::vec3 scale)
         {
-            Entity::Scale(scale);
+            transform->Scale(scale);
             UpdateMeshesTransform();
         }
         void Model::Scale(float scale)
         {
-            Entity::Scale(scale);
+            transform->Scale(scale);
             UpdateMeshesTransform();
         }
         void Model::SetColor(Utils::Color newColor)

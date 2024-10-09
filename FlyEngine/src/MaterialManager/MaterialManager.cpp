@@ -22,6 +22,9 @@ namespace FlyEngine
 
 			std::vector<std::string> textureOrder = { "diffuse", "specular" };
 			defMat->SetTextureOrder(textureOrder);
+			
+			defMat->SetColor(Utils::Color(Utils::COLOR::MAGENTA));
+
 			SetMaterial(DEFAULT_MAT_NAME, defMat);
 		}
 
@@ -35,7 +38,7 @@ namespace FlyEngine
 				materialsMap[materialName] = new Materials::Material(materialName, ShaderManager::GetDefaultShader());
 			std::string text = "Material Created: [" + materialName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-			return ;
+			return;
 		}
 
 		Materials::Material* MaterialManager::GetMaterial(std::string name)
@@ -52,7 +55,7 @@ namespace FlyEngine
 		{
 			materialsMap[matName] = mat;
 
-			std::string text = "Edited Created: [" + matName + "]!";
+			std::string text = "Edited Material: [" + matName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 0, 1);
 		}
 

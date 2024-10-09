@@ -132,6 +132,18 @@
     <Filter Include="Managers\ShaderManager">
       <UniqueIdentifier>{8c0a322f-dc96-4db1-baf9-1777ea4ef11b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{983ccc8a-8a23-4ad8-ab21-6547f04712c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform">
+      <UniqueIdentifier>{6f5aeab7-119a-4733-af21-bd2e29adaab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frustum">
+      <UniqueIdentifier>{dd6affc8-3970-4126-beec-a70510e1381e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plane">
+      <UniqueIdentifier>{a3458155-2d2a-4913-b063-914cafb5806a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -237,6 +249,18 @@
     </ClCompile>
     <ClCompile Include="src\ShaderManager\ShaderManager.cpp">
       <Filter>Managers\ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sprite\Sprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform\Transform.cpp">
+      <Filter>Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frustum\Frustum.cpp">
+      <Filter>Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plane\Plane.cpp">
+      <Filter>Plane</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +384,21 @@
     </ClInclude>
     <ClInclude Include="src\ShaderManager\ShaderManager.h">
       <Filter>Managers\ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sprite\Sprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EngineMode\EngineMode.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform\Transform.h">
+      <Filter>Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frustum\Frustum.h">
+      <Filter>Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plane\Plane.h">
+      <Filter>Plane</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

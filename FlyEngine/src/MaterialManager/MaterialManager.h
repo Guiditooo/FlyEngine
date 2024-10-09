@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "Material/Material.h"
+#include "ShaderManager/ShaderManager.h"
 
 namespace FlyEngine
 {
@@ -15,13 +16,14 @@ namespace FlyEngine
 
 	namespace Managers
 	{
+		
 		class FLY_API MaterialManager
 		{
 		private:
 			static std::unordered_map<std::string, Materials::Material*> materialsMap;
 		public:
 			static void InitializeManager();
-			static void CreateMaterial(std::string materialName, std::string shaderName = Materials::DEFAULT_MAT_NAME);
+			static void CreateMaterial(std::string materialName, std::string shaderName = ShaderManager::DEFAULT_SHADER_NAME);
 			static Materials::Material* GetMaterial(std::string name);
 			static void SetMaterial(std::string matName, Materials::Material* mat);
 			static Materials::Material* GetDefaultMaterial();

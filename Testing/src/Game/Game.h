@@ -10,6 +10,7 @@ namespace FlyGame
 
 	enum class MovingObject
 	{
+		Player,
 		Cube,
 		Camera,
 		Light,
@@ -21,31 +22,14 @@ namespace FlyGame
 	private:
 		CameraController* cameraController;
 		
-		Entities::Rectangle* rec;
 		Entities::Rectangle* piso;
-		Entities::Rectangle* pared1;
-		Entities::Rectangle* pared2;
-		
-		Entities::Cube* box;
-		Entities::Cube* box2;
+		Entities::Triangle* triangle;
 
 		Texture* texture;
 
 		Lights::PointLight* pointLight;
 		Lights::PointLight* pointLightStatic;
 		Lights::SpotLight* spotLight;
-
-		Entities::Model* backpack;
-
-		Entities::Model* barrel;
-		Entities::Model* barrel2;
-		Entities::Model* barrel3;
-
-		Entities::Model* delorean;
-
-		Entities::Model* ironGiant;
-
-		Entities::Model* teapod;
 
 		int aux = 0;
 
