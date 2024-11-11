@@ -150,7 +150,7 @@ namespace FlyEngine
 				std::string type;
 
 				std::string matName = model->GetName() + "_mat";
-				Managers::MaterialManager::CreateMaterial(matName, Managers::ShaderManager::MODEL_SHADER_NAME);
+				Managers::MaterialManager::CreateMaterial(matName, Managers::ShaderManager::GetDefaultModelShader());
 				Materials::Material* mat = Managers::MaterialManager::GetMaterial(matName);
 
 				bool changed = false;
@@ -227,7 +227,7 @@ namespace FlyEngine
 				}
 			}
 
-			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultMaterial());
+			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
 
 
 			// return a mesh object created from the extracted mesh data

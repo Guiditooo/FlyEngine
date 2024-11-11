@@ -19,15 +19,15 @@
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
-void MouseCallback(GLFWwindow* window, double xpos, double ypos);
-FlyEngine::CameraController* newCamera;
+
+//static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+//FlyEngine::CameraController* newCamera;
+//bool isFirstTime = true;
+//static double lastMouseX;
+//static double  lastMouseY;
 
 template <typename T>
-void EraseList(std::list<T*>& list);
-
-bool isFirstTime = true;
-static double lastMouseX;
-static double  lastMouseY;
+static void EraseList(std::list<T*>& list);
 
 namespace FlyEngine
 {
@@ -46,14 +46,12 @@ namespace FlyEngine
 
 		renderer = nullptr;
 
-		cameraController = nullptr;
-
 		initialWindowName = "FlyEngine";
 		initialWindowWidth = 0;
 		initialWindowHeight = 0;
 		checkEsc = true;
 
-		isFirstTime = true;
+		//isFirstTime = true;
 
 		using3DEntities = true;
 		using2DEntities = true;
@@ -78,9 +76,7 @@ namespace FlyEngine
 			delete renderer;
 		renderer = nullptr;
 
-		if (cameraController != nullptr)
-			delete cameraController;
-		cameraController = nullptr;
+		CameraController::DestroyInstance();
 
 		EraseList(modelList);
 		EraseList(entity3DList);
@@ -245,7 +241,6 @@ namespace FlyEngine
 
 	}
 
-
 	Entities::Rectangle* BaseGame::CreateRectangle(float posX, float posY, float posZ, float width, float height)
 	{
 		Entities::Rectangle* rec = new Entities::Rectangle();
@@ -254,7 +249,7 @@ namespace FlyEngine
 		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
-		rec->SetMaterial(MaterialManager::GetDefaultMaterial());
+		rec->SetMaterial(MaterialManager::GetDefaultBasicMaterial());
 
 		CreateBuffers(rec->GetBuffers());
 		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
@@ -278,7 +273,7 @@ namespace FlyEngine
 		tri->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		tri->SetScale(PixelsToEngine(base, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
-		tri->SetMaterial(MaterialManager::GetDefaultMaterial());
+		tri->SetMaterial(MaterialManager::GetDefaultBasicMaterial());
 
 		CreateBuffers(tri->GetBuffers());
 		BindBuffers(tri->GetBuffers(), tri->GetVertexList(), tri->GetIndexList());
@@ -296,7 +291,7 @@ namespace FlyEngine
 		cube->SetPosition(posX, posY, posZ);
 		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
 
-		cube->SetMaterial(MaterialManager::GetDefaultMaterial());
+		cube->SetMaterial(MaterialManager::GetDefaultModelMaterial());
 
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
@@ -367,38 +362,40 @@ namespace FlyEngine
 
 	void BaseGame::SetEngineMode(EngineMode mode)
 	{
+		CameraController* CC = FlyEngine::CameraController::GetInstance();
+
 		engineMode = mode;
 		switch (engineMode)
 		{
 		case EngineMode::Engine3D:
 			if (mainCamera != nullptr)
 				mainCamera->SetProjectionType(ProjectionType::Perspective);
-			if (newCamera != nullptr)
-				newCamera->SetMouseMovementOn(true);
+			if (CC != nullptr)
+				CC->SetMouseMovementOn(true);
 			using3DEntities = true;
 			using2DEntities = true;
 			break;
 		case EngineMode::Engine2D:
 			if (mainCamera != nullptr)
 				mainCamera->SetProjectionType(ProjectionType::Ortho);
-			if (newCamera != nullptr)
-				newCamera->SetMouseMovementOn(false);
+			if (CC != nullptr)
+				CC->SetMouseMovementOn(false);
 			using3DEntities = true;
 			using2DEntities = true;
 			break;
 		case EngineMode::Only3D:
 			if (mainCamera != nullptr)
 				mainCamera->SetProjectionType(ProjectionType::Perspective);
-			if(newCamera != nullptr)
-				newCamera->SetMouseMovementOn(true);
+			if (CC != nullptr)
+				CC->SetMouseMovementOn(true);
 			using3DEntities = true;
 			using2DEntities = false;
 			break;
 		case EngineMode::Only2D:
 			if (mainCamera != nullptr)
 				mainCamera->SetProjectionType(ProjectionType::Ortho);
-			if (newCamera != nullptr)
-				newCamera->SetMouseMovementOn(false);
+			if (CC != nullptr)
+				CC->SetMouseMovementOn(false);
 			using3DEntities = false;
 			using2DEntities = true;
 			break;
@@ -436,8 +433,6 @@ namespace FlyEngine
 			return;
 		}
 
-		glfwSetCursorPosCallback(window->GetWindow(), MouseCallback);
-
 		mainCamera = new Camera();
 
 		SetUpOpenGlFunctions();
@@ -445,6 +440,10 @@ namespace FlyEngine
 		Input::SetContextWindow(window);
 
 		renderer = new Renderer();
+
+		cameraController = CameraController::Initialize(mainCamera, window);
+
+		glfwSetCursorPosCallback(window->GetWindow(), CameraController::MouseCallback);
 
 		Init();
 	}
@@ -536,20 +535,20 @@ namespace FlyEngine
 
 	CameraController* BaseGame::CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target, float followDistance)
 	{
-		if (cameraController == nullptr)
+		CameraController* CC = FlyEngine::CameraController::GetInstance();
+		
+		if (CC == nullptr)
 		{
-			cameraController = new CameraController(controllingCamera, window);
-			cameraController->SetMode(cameraMode);
-			cameraController->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
-
-			std::string text = "CameraController Created!";
-			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-
-			newCamera = cameraController;
-
-
+			CC->Initialize(controllingCamera, window); 
 		}
-		return cameraController;
+		
+		CC->SetMode(cameraMode);
+		CC->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
+
+		std::string text = "CameraController Created!";
+		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+
+		return CC;
 	}
 
 
@@ -594,27 +593,8 @@ namespace FlyEngine
 
 }
 
-void MouseCallback(GLFWwindow* window, double xpos, double ypos)
-{
-
-	if (isFirstTime)
-	{
-		lastMouseX = xpos;
-		lastMouseY = ypos;
-		isFirstTime = false;
-	}
-
-	float xOffset = xpos - lastMouseX;
-	float  yOffset = lastMouseY - ypos;
-
-	lastMouseX = xpos;
-	lastMouseY = ypos;
-
-	newCamera->ProcessMouseMovement(xOffset, yOffset);
-}
-
 template<typename T>
-void EraseList(std::list<T*>& list)
+static void EraseList(std::list<T*>& list)
 {
 	for (auto element : list)
 	{

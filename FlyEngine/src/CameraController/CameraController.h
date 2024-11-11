@@ -1,6 +1,8 @@
 #ifndef CAMERACONTROLLER_H
 #define CAMERACONTROLLER_H
 
+#include <functional>
+
 #include "Camera/Camera.h"
 
 #include "Input/Input.h"
@@ -37,29 +39,38 @@ namespace FlyEngine
 	class FLY_API CameraController
 	{
 	private:
-		Camera* camera;
-		CameraRotation cameraRotation;
-		float rotationSensitivity ;
-		float translateSensitivity;
+		static Camera* camera;
+		static CameraRotation cameraRotation;
+		static float rotationSensitivity ;
+		static float translateSensitivity;
 
-		CameraMode cameraMode;
+		static CameraMode cameraMode;
 
-		float lastX;
-		float lastY;
+		static float lastX;
+		static float lastY;
+
+		static ObjetiveParams* objetiveParams;
+
+		static bool isMouseMovementOn;
 
 		glm::vec3 previousRot = glm::vec3(0);//cambiar
-
-		ObjetiveParams* objetiveParams;
-
-		bool isMouseMovementOn;
 
 		void FreeMovement(bool &cameraMoved);
 		void FirstPersonMovement(bool &cameraMoved);
 		void ThirdPersonMovement(bool &cameraMoved);
 
-	public:
-		CameraController(Camera* camera, Window* window);
+		CameraController();
 		~CameraController();
+
+		static CameraController* instance;
+
+	public:
+		CameraController(const CameraController&) = delete;
+		CameraController& operator=(const CameraController&) = delete;
+
+		static  CameraController* Initialize(Camera* newCamera, Window* window);
+		static CameraController* GetInstance();
+		static void DestroyInstance();
 		
 		void SetCameraSpecs(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane);
 		void SetCamera(Camera* newCamera);
@@ -77,8 +88,11 @@ namespace FlyEngine
 
 		Camera* GetCamera();
 
+		static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+
 		void Update(bool showMessage);   
 		void ProcessMouseMovement(float xOffset, float yOffset);
+
 	};
 }
 #endif // 

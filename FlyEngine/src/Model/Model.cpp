@@ -53,7 +53,7 @@ namespace FlyEngine
             mesh->SetPosition(transform->GetPosition());
             mesh->SetRotation(transform->GetRotation());
             mesh->SetScale(transform->GetScale());
-            mesh->SetColor(color);
+            //mesh->SetColor(color);
             std::string meshName = "Mesh";
             meshName += std::to_string(meshes.size());
             mesh->SetName(meshName);
@@ -169,7 +169,7 @@ namespace FlyEngine
             transform->Scale(scale);
             UpdateMeshesTransform();
         }
-        void Model::SetColor(Utils::Color newColor)
+        /*void Model::SetColor(Utils::Color newColor)
         {
             Entity::SetColor(newColor);
             for (Mesh* mesh : meshes)
@@ -200,7 +200,7 @@ namespace FlyEngine
             {
                 mesh->SetColor(color);
             }
-        }
+        }*/
         void Model::UseBaseMaterial(bool useBaseMat)
         {
             useBaseMaterial = useBaseMat;

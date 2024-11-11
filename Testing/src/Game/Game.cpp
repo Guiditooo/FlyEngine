@@ -35,7 +35,7 @@ namespace FlyGame
 
 		movingObject = MovingObject::Cube;
 
-		SetEngineMode(EngineMode::Only2D);
+		SetEngineMode(EngineMode::Engine3D);
 	}
 
 	Game::~Game()
@@ -46,11 +46,15 @@ namespace FlyGame
 	{
 		srand(static_cast<unsigned int>(time(nullptr)));
 
-		cameraController = CreateCameraController(mainCamera, 0.05f, 0.2f, CameraMode::Free);
+		//cameraController = CreateCameraController(mainCamera, 0.05f, 0.2f, CameraMode::Free);
 
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
 		triangle = CreateTriangle(0, 1, 0, 10, 10);
+		//triangle->SetColor(COLOR::RED);
+
+		cube = CreateCube(0, 0, 0, 10);
+		cube->SetColor(COLOR::BLUE);
 
 		piso->SetName("Piso");
 		triangle->SetName("Player");
@@ -68,19 +72,24 @@ namespace FlyGame
 		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
 
 		std::string boxMaterial = "Box_Mat";
-		Managers::MaterialManager::CreateMaterial(boxMaterial);
+		Managers::MaterialManager::CreateMaterial(boxMaterial, Managers::ShaderManager::GetDefaultModelShader());
+
+		Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", CreateTexture("res/Textures/Box/Box.png"));
+		Managers::MaterialManager::AddTexture(boxMaterial, "specular", CreateTexture("res/Textures/Box/Box_S.png"));
+		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular" });
+
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
-		boxMat->AddTexture("diffuse", CreateTexture("res/Textures/Box/Box.png"));
-		boxMat->AddTexture("specular", CreateTexture("res/Textures/Box/Box_S.png"));
-		boxMat->SetTextureOrder({ "diffuse", "specular" });
-
+		cube->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
 		piso->SetScale(100, 100, 100);
 		piso->SetRotation(-90, 90, 0);
 
 		piso->SetActive(true);
 		triangle->SetActive(true);
+
+		cube->SetActive(false);
+
 	}
 
 	void Game::Update()
@@ -170,6 +179,7 @@ namespace FlyGame
 		}
 
 		cameraController->Update(false);
+
 	}
 
 	void Game::Deinit()

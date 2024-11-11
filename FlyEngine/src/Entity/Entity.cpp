@@ -6,6 +6,7 @@
 #include "Renderer/Renderer.h"
 #include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
+#include "MaterialManager/MaterialManager.h"
 
 namespace FlyEngine
 {
@@ -39,13 +40,11 @@ namespace FlyEngine
 		{
 			this->name = name;
 
-			color = glm::vec3(1.0f);
-
 			indexCount = 0;
 			vertexCount = 0;
 			vertexSize = 0;
 
-			material = nullptr;
+			material = Managers::MaterialManager::GetDefaultMissingMaterial();
 			buffers = new Utils::Buffers();
 			active = true;
 
@@ -100,27 +99,27 @@ namespace FlyEngine
 
 		void Entity::SetColor(FlyEngine::Color newColor)
 		{
-			color = newColor;
+			material->SetColor(newColor);
 		}
 
 		void Entity::SetColor(glm::vec3 newColor)
 		{
-			color = Color(newColor);
+			material->SetColor(Color(newColor));
 		}
 
 		void Entity::SetColor(float r, float g, float b)
 		{
-			color = Color(r, g, b);
+			material->SetColor(Color(r, g, b));
 		}
 
 		void Entity::SetColor(FlyEngine::COLOR newColor)
 		{
-			color = Color(newColor);
+			material->SetColor(Color(newColor));
 		}
 
 		Utils::Color Entity::GetColor()
 		{
-			return color;
+			return material->GetColor();
 		}
 
 		glm::mat4 Entity::GetModelMatrix()

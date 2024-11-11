@@ -109,10 +109,10 @@
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Shaders\defaultFragment.shader" />
-    <None Include="res\Shaders\defaultVertex.shader" />
-    <None Include="res\Shaders\modelFragment.shader" />
-    <None Include="res\Shaders\modelVertex.shader" />
+    <None Include="res\Shaders\defaultBasicFragment.shader" />
+    <None Include="res\Shaders\defaultBasicVertex.shader" />
+    <None Include="res\Shaders\defaultModelFragment.shader" />
+    <None Include="res\Shaders\defaultModelVertex.shader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

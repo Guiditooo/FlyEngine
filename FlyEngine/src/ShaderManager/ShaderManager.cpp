@@ -1,16 +1,18 @@
 #include "ShaderManager.h"
 
-const char* DEFAULT_VERTEX_PATH = "res/Shaders/defaultVertex.shader";
-const char* DEFAULT_FRAGMENT_PATH = "res/Shaders/defaultFragment.shader";
+const char* DEFAULT_MODEL_VERTEX_PATH = "res/Shaders/defaultModelVertex.shader";
+const char* DEFAULT_MODEL_FRAGMENT_PATH = "res/Shaders/defaultModelFragment.shader";
 
+const char* DEFAULT_BASIC_VERTEX_PATH = "res/Shaders/defaultBasicVertex.shader";
+const char* DEFAULT_BASIC_FRAGMENT_PATH = "res/Shaders/defaultBasicFragment.shader";
 
+const char* BASIC_SHADER_NAME = "BasicShader";
+const char* MODEL_SHADER_NAME = "ModelShader";
 
 namespace FlyEngine
 {
 	namespace Managers
 	{		
-		std::string ShaderManager::DEFAULT_SHADER_NAME = "DefaultShader";
-		std::string ShaderManager::MODEL_SHADER_NAME = "ModelShader";
 
 		std::unordered_map<std::string, Shader*> ShaderManager::shaderMap;
 
@@ -30,14 +32,20 @@ namespace FlyEngine
 			return nullptr;
 		}
 
-		Shader* ShaderManager::GetDefaultShader()
+		Shader* ShaderManager::GetDefaultBasicShader()
 		{
-			return GetShader(DEFAULT_SHADER_NAME);
+			return GetShader(BASIC_SHADER_NAME);
+		}
+
+		Shader* ShaderManager::GetDefaultModelShader()
+		{
+			return GetShader(MODEL_SHADER_NAME);
 		}
 
 		void ShaderManager::InitializeManager()
 		{
-			CreateShader(DEFAULT_SHADER_NAME, DEFAULT_FRAGMENT_PATH, DEFAULT_VERTEX_PATH);
+			CreateShader(BASIC_SHADER_NAME, DEFAULT_BASIC_FRAGMENT_PATH, DEFAULT_BASIC_VERTEX_PATH);
+			CreateShader(MODEL_SHADER_NAME, DEFAULT_MODEL_FRAGMENT_PATH, DEFAULT_MODEL_VERTEX_PATH);
 		}
 
 	}

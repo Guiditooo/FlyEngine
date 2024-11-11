@@ -25,6 +25,8 @@ namespace FlyGame
 		Entities::Rectangle* piso;
 		Entities::Triangle* triangle;
 
+		Entities::Cube* cube;
+
 		Texture* texture;
 
 		Lights::PointLight* pointLight;

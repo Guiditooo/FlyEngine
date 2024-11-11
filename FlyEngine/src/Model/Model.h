@@ -56,10 +56,10 @@ namespace FlyEngine
 			void Scale(glm::vec3 scale);
 			void Scale(float scale);
 
-			void SetColor(Utils::Color newColor) override;
-			void SetColor(glm::vec3 newColor) override;
-			void SetColor(float r, float g, float b) override;
-			void SetColor(Utils::COLOR newColor) override;
+			//void SetColor(Utils::Color newColor) override;
+			//void SetColor(glm::vec3 newColor) override;
+			//void SetColor(float r, float g, float b) override;
+			//void SetColor(Utils::COLOR newColor) override;
 
 			void UseBaseMaterial(bool useBaseMat);
 			bool ShouldUseBaseMaterial();

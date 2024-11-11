@@ -15,12 +15,15 @@ namespace FlyEngine
 		{
 		private:
 			static std::unordered_map<std::string, Shader*> shaderMap;
+			
 		public:
-			static std::string DEFAULT_SHADER_NAME;
-			static std::string MODEL_SHADER_NAME;
+			//static const char* const BASIC_SHADER_NAME;
+			//static const char* const MODEL_SHADER_NAME;
+
 			static Shader* CreateShader(std::string name, const char* fPath, const char* vPath, const char* gPath = nullptr);
 			static Shader* GetShader(std::string shaderName);
-			static Shader* GetDefaultShader();
+			static Shader* GetDefaultBasicShader();
+			static Shader* GetDefaultModelShader();
 			
 			static void InitializeManager();
 		};

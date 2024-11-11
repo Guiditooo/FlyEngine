@@ -31,9 +31,6 @@ namespace FlyEngine
 
 		ShaderManager::InitializeManager();
 		MaterialManager::InitializeManager();
-
-		ShaderManager::CreateShader(ShaderManager::MODEL_SHADER_NAME, MODEL_FRAGMENT_PATH, MODEL_VERTEX_PATH);
-
 	}
 
 	Renderer::~Renderer()
@@ -58,10 +55,7 @@ namespace FlyEngine
 			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix());
 			SetVec3Uniform(id, "viewPos", camPos);
 			
-			if (toDraw->ShouldUseBaseMaterial())
-				DrawMesh(meshes[i], toDraw->GetName(), toDraw->GetMaterial());
-			else
-				DrawMesh(meshes[i], toDraw->GetName());
+			DrawMesh(meshes[i], toDraw->GetName());
 		}
 	}
 
@@ -280,7 +274,7 @@ namespace FlyEngine
 		SetVec3Uniform(shaderID, "dirLight.lightColor", light->GetColor().GetColorV3());
 	}
 
-	void Renderer::DrawMesh(Entities::Mesh* mesh, std::string modelName, Materials::Material* mat)
+	void Renderer::DrawMesh(Entities::Mesh* mesh, std::string modelName)
 	{
 
 		std::vector<std::string> order = mesh->GetMaterial()->GetTextureOrder();
@@ -295,15 +289,19 @@ namespace FlyEngine
 			uniformVariable += order[i];
 
 			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-			Texture* tx = mat == nullptr ? mesh->GetMaterial()->GetTexture(order[i]) : mat->GetTexture(order[i]);
+			Texture* tx = mesh->GetMaterial()->GetTexture(order[i]);
 
 			tx->Bind(i);
 			SetIntUniform(mesh->GetShaderID(), &uniformVariable[0], i);
 		}
-		if (mat==nullptr && mesh->GetMaterial() == MaterialManager::GetDefaultMaterial())
+
+		//CAMBIAR -> El material no puede ser nulo desde la creacion de la mesh. Asignar el No-Material
+		/* (mat == nullptr && mesh->GetMaterial() == MaterialManager::GetDefaultModelMaterial())
 		{
 			SetVec3Uniform(mesh->GetShaderID(), "baseColor", mesh->GetColor().GetColorV3());
 		}
+		*/
+		SetVec3Uniform(mesh->GetShaderID(), "baseColor", mesh->GetColor().GetColorV3());
 
 		SetFloatUniform(mesh->GetShaderID(), "material.shininess", 64/*mesh->GetMaterial()->GetSpecs()->GetShininess()*/);
 

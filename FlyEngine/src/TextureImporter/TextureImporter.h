@@ -1,13 +1,17 @@
 #ifndef TEXTURE_IMPORTER_H
 #define TEXTURE_IMPORTER_H
 
+#include <iostream>
+
 #include "Exports/Exports.h"
-#include "Texture/Texture.h"
 
 namespace FlyEngine
 {
+	class Texture;
+	
 	namespace Importers
 	{
+
 		class FLY_API TextureImporter
 		{
 		private:

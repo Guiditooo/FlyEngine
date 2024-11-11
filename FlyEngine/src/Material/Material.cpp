@@ -15,12 +15,12 @@ namespace FlyEngine
 			specs->SetSpecs(MaterialList::WhitePlastic);
 			this->name = name;
 
-			this->shader = shader == nullptr ? Managers::ShaderManager::GetDefaultShader() : shader;
+			this->shader = shader;
 		}
 
 		Material::~Material()
 		{
-			if (specs != nullptr)
+			if (specs != nullptr) 
 			{
 				delete specs;
 				specs = nullptr;
@@ -45,13 +45,20 @@ namespace FlyEngine
 			}
 		}
 
-		void Material::AddTexture(const std::string& name, Texture* texture)
+		bool Material::AddTexture(const std::string& name, Texture* texture)
 		{
-			if (textureMap.find(name) != textureMap.end())
+			/*if (textureMap.find(name) != textureMap.end())
 			{
 				std::cout << " Texture " << name << " already exists in [" << this->name << "] \n";
-				return;
+				return false;
 			}
+			if (texture == nullptr)
+			{
+				std::cout << "Texture" << name << "not found!\n";
+				return false;
+			}
+			*/
+
 			textureMap[name] = texture;
 
 			std::cout << " Linked " << name << "(ID =" << std::to_string(texture->GetID()) << ") to [" << this->name << "] \n";
@@ -61,6 +68,7 @@ namespace FlyEngine
 				textureOrder.push_back(name);
 			}
 			texture->SetType(name);
+			return true;
 		}
 
 		void Material::SetTextureOrder(const std::vector<std::string>& order)
@@ -96,6 +104,11 @@ namespace FlyEngine
 		void Material::SetColor(float r, float g, float b, float a)
 		{
 			color = Utils::Color(r, g, b, a);
+		}
+
+		const std::unordered_map<std::string, Texture*>& Material::GetTextureMap() const
+		{
+			return textureMap;
 		}
 
 		std::vector<std::string> Material::GetTextureOrder()

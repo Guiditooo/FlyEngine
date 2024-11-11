@@ -11,7 +11,9 @@ namespace FlyEngine
 {
 	namespace Materials
 	{
-		const std::string DEFAULT_MAT_NAME = "Default_Material";
+		const std::string DEFAULT_MODEL_MAT_NAME = "Default_Model_Material";
+		const std::string DEFAULT_BASIC_MAT_NAME = "Default_Basic_Material";
+		const std::string DEFAULT_MISSING_MAT_NAME = "Missing_Material";
 	}
 
 	namespace Managers
@@ -21,12 +23,20 @@ namespace FlyEngine
 		{
 		private:
 			static std::unordered_map<std::string, Materials::Material*> materialsMap;
+			static void CreateBasicMaterial();
+			static void CreateModelMaterial();
+			static void CreateMissingMaterial();
 		public:
 			static void InitializeManager();
-			static void CreateMaterial(std::string materialName, std::string shaderName = ShaderManager::DEFAULT_SHADER_NAME);
+			static void CreateMaterial(std::string materialName, Shader* shader);
 			static Materials::Material* GetMaterial(std::string name);
 			static void SetMaterial(std::string matName, Materials::Material* mat);
-			static Materials::Material* GetDefaultMaterial();
+			static Materials::Material* GetDefaultModelMaterial();
+			static Materials::Material* GetDefaultBasicMaterial();
+			static Materials::Material* GetDefaultMissingMaterial();
+
+			static bool AddTexture(std::string materialName, const std::string& name, Texture* texture);
+			static void SetTextureOrder(const std::string& materialName, const std::vector<std::string>& order);
 		};
 	}
 }

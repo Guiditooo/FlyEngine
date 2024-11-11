@@ -31,7 +31,7 @@ namespace FlyEngine
 
 			void ApplyTextures();
 
-			void AddTexture(const std::string& name, Texture* texture);
+			bool AddTexture(const std::string& name, Texture* texture);
 
 			void SetTextureOrder(const std::vector<std::string>& order);
 			void SetSpecs(MaterialSpecification* newSpecs);
@@ -41,6 +41,8 @@ namespace FlyEngine
 			void SetColor(glm::vec4 newColor);
 			void SetColor(float r, float g, float b);
 			void SetColor(float r, float g, float b, float a);
+
+			const std::unordered_map<std::string, Texture*>& GetTextureMap() const;
 
 			std::vector<std::string> GetTextureOrder();
 			Texture* GetTexture(const std::string& name) const;

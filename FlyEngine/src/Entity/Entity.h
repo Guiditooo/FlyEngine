@@ -40,7 +40,7 @@ namespace FlyEngine
 
 			Transform* transform;
 
-			Utils::Color color;
+			//Utils::Color color;
 
 			bool settedAsCameraTarget = false;
 			bool printModificationMessage;

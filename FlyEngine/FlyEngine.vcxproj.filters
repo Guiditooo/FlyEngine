@@ -402,16 +402,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Shaders\defaultFragment.shader">
+    <None Include="res\Shaders\defaultBasicFragment.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
-    <None Include="res\Shaders\defaultVertex.shader">
+    <None Include="res\Shaders\defaultBasicVertex.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
-    <None Include="res\Shaders\modelFragment.shader">
+    <None Include="res\Shaders\defaultModelFragment.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
-    <None Include="res\Shaders\modelVertex.shader">
+    <None Include="res\Shaders\defaultModelVertex.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
   </ItemGroup>

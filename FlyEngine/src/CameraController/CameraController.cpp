@@ -3,23 +3,34 @@
 #include "CameraController.h"
 #include "FlyFunctions/Debugger/Debugger.h"
 
+//FlyEngine::CameraController* newCamera;
+bool isFirstTime = true;
+static double lastMouseX;
+static double  lastMouseY;
+
+
 namespace FlyEngine
 {
+	CameraController* CameraController::instance = nullptr;
+
+	Camera* FlyEngine::CameraController::camera = nullptr;
+	CameraRotation FlyEngine::CameraController::cameraRotation = {};
+	float FlyEngine::CameraController::rotationSensitivity = 0.1f;
+	float FlyEngine::CameraController::translateSensitivity = 0.1f;
+
+	CameraMode FlyEngine::CameraController::cameraMode = CameraMode::Free;
+	
+	float FlyEngine::CameraController::lastX = 0.0f;
+	float FlyEngine::CameraController::lastY = 0.0f;
+	
+	ObjetiveParams* FlyEngine::CameraController::objetiveParams = nullptr;
+	bool FlyEngine::CameraController::isMouseMovementOn = false;
 
 	Utils::Input innerSystemInput;
 
-	CameraController::CameraController(Camera* camera, Window* window)
+	CameraController::CameraController()
 	{
-		this->camera = camera;
-
-		rotationSensitivity = 0.3f;
-		translateSensitivity = 0.05f;
-
-		cameraRotation = CameraRotation();
-
-		cameraMode = CameraMode::Free;
-
-		objetiveParams = new ObjetiveParams(nullptr, 0.0f);
+		
 	}
 
 	CameraController::~CameraController()
@@ -76,6 +87,27 @@ namespace FlyEngine
 		return objetiveParams->target;
 	}
 
+	CameraController* CameraController::Initialize(Camera* newCamera, Window* window)
+	{
+		camera = newCamera;
+
+		rotationSensitivity = 0.3f;
+		translateSensitivity = 0.05f;
+
+		cameraRotation = CameraRotation();
+
+		cameraMode = CameraMode::Free;
+
+		objetiveParams = new ObjetiveParams(nullptr, 0.0f);
+
+		isMouseMovementOn = false;
+
+		lastX = 0;
+		lastY = 0;
+
+		return GetInstance();
+	}
+
 	void CameraController::SetDistanceToTarget(float distanceToTarget)
 	{
 		objetiveParams->distanceFromObjetive = distanceToTarget;
@@ -105,18 +137,11 @@ namespace FlyEngine
 			break;
 		}
 
-		if (showMessage && cameraMoved)
+		if (showMessage)
 		{
-			/*
-			std::string text = "- Camera Updated Position: (";
-			text += std::to_string(camera->GetPosition().x);
-			text += ",";
-			text += std::to_string(camera->GetPosition().y);
-			text += ",";
-			text += std::to_string(camera->GetPosition().z);
-			text += ")";
-			Debugger::ConsoleMessage(&text[0], 1, 0, 1, 0);
-			*/
+			Debugger::ConsoleMessage("- Camera Updated Front :",camera->GetTransform()->GetFront());
+			if(cameraMoved)
+				Debugger::ConsoleMessage("- Camera Updated Position :", camera->GetTransform()->GetPosition());
 		}
 	}
 
@@ -280,6 +305,43 @@ namespace FlyEngine
 	bool CameraController::IsMouseMovementOn()
 	{
 		return isMouseMovementOn;
+	}
+
+	CameraController* CameraController::GetInstance()
+	{
+		if (instance == nullptr) 
+		{
+			instance = new CameraController(); // Se crea la instancia si no existe
+		}
+		return instance;
+	}
+
+	void CameraController::DestroyInstance()
+	{
+		if (instance != nullptr) 
+		{
+			delete instance;
+			instance = nullptr;
+		}
+	}
+
+
+	void CameraController::MouseCallback(GLFWwindow* window, double xpos, double ypos)
+	{
+		if (isFirstTime)
+		{
+			lastMouseX = xpos;
+			lastMouseY = ypos;
+			isFirstTime = false;
+		}
+
+		float xOffset = xpos - lastMouseX;
+		float  yOffset = lastMouseY - ypos;
+
+		lastMouseX = xpos;
+		lastMouseY = ypos;
+
+		FlyEngine::CameraController::GetInstance()->ProcessMouseMovement(xOffset, yOffset);
 	}
 
 }

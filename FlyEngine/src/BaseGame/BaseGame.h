@@ -33,11 +33,11 @@ namespace FlyEngine
 		std::list<Texture*> textureList;
 		std::list<Lights::Light*> lightList;
 
-		CameraController* cameraController;
-
 		Lights::DirectionalLight* directionalLight;
 
 		EngineMode engineMode;
+
+		CameraController* cameraController;
 
 		const int MAX_POINT_LIGHTS = 4;
 
@@ -67,7 +67,7 @@ namespace FlyEngine
 		void CalculateLights();
 
 		void SetMatrixUniforms(Entities::Entity* entity);
-		void SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID = Managers::ShaderManager::GetDefaultShader()->GetShaderID());
+		void SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID = Managers::ShaderManager::GetDefaultModelShader()->GetShaderID());
 		void SetMaterialUniforms(Entities::Entity* entity);
 
 		float PixelsToEngine(int objectWidthInPixels, float windowDimension);
@@ -97,7 +97,7 @@ namespace FlyEngine
 
 		Texture* CreateTexture(const char* path);
 
-		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);
+		CameraController* CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target = nullptr, float followDistance = 0.0f);//Replaces the old one
 
 		Entities::Model* CreateModel(std::string const& path, std::string name = "Model");
 
