@@ -1,7 +1,6 @@
 #include "MaterialManager.h"
 
-#include "TextureImporter/TextureImporter.h"
-#include "ShaderManager/ShaderManager.h"
+#include "TextureManager/TextureManager.h"
 
 #include "FlyFunctions/Debugger/Debugger.h"
 
@@ -29,7 +28,6 @@ namespace FlyEngine
 
 			std::string text = "Material Created: [" + materialName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-			return;
 		}
 
 		Materials::Material* MaterialManager::GetMaterial(std::string name)
@@ -63,9 +61,9 @@ namespace FlyEngine
 			return GetMaterial(DEFAULT_MISSING_MAT_NAME);
 		}
 
-		bool MaterialManager::AddTexture(std::string materialName, const std::string& textureName, Texture* texture)
+		bool MaterialManager::AddTexture(std::string materialName, std::string textureName, int textureID)
 		{
-			if (texture == nullptr)
+			if (textureID == -1)
 			{
 				std::cout << "Texture" << textureName << "not found!\n";
 				return false;
@@ -83,7 +81,7 @@ namespace FlyEngine
 					return false;
 				}
 				
-				mat->AddTexture(textureName, texture);
+				mat->AddTexture(textureName, textureID);
 
 				return true;
 			}
@@ -92,7 +90,7 @@ namespace FlyEngine
 				std::cout << "Material " << materialName << " does not Exist!";
 			}
 
-
+			return false;
 		}
 
 		void MaterialManager::SetTextureOrder(const std::string& materialName, const std::vector<std::string>& order)
@@ -105,8 +103,8 @@ namespace FlyEngine
 		{
 			CreateMaterial(DEFAULT_BASIC_MAT_NAME, ShaderManager::GetDefaultBasicShader());
 			Materials::Material* defMat = GetMaterial(DEFAULT_BASIC_MAT_NAME);
-			defMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
-			defMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
+			defMat->AddTexture("diffuse", TextureManager::GetDefaultTextureID());
+			defMat->AddTexture("specular", TextureManager::GetDefaultTextureID());
 
 			std::vector<std::string> textureOrder = { "diffuse", "specular" };
 			defMat->SetTextureOrder(textureOrder);
@@ -120,8 +118,8 @@ namespace FlyEngine
 		{
 			CreateMaterial(DEFAULT_MODEL_MAT_NAME, ShaderManager::GetDefaultModelShader());
 			Materials::Material* defMat = GetMaterial(DEFAULT_MODEL_MAT_NAME);
-			defMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
-			defMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
+			defMat->AddTexture("diffuse", TextureManager::GetDefaultTextureID());
+			defMat->AddTexture("specular", TextureManager::GetDefaultTextureID());
 
 			std::vector<std::string> textureOrder = { "diffuse", "specular" };
 			defMat->SetTextureOrder(textureOrder);
@@ -135,8 +133,8 @@ namespace FlyEngine
 		{
 			CreateMaterial(DEFAULT_MISSING_MAT_NAME, ShaderManager::GetDefaultBasicShader());
 			Materials::Material* defMat = GetMaterial(DEFAULT_MISSING_MAT_NAME);
-			defMat->AddTexture("diffuse", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
-			defMat->AddTexture("specular", Importers::TextureImporter::LoadTexture("res/Textures/White.png", true));
+			defMat->AddTexture("diffuse", TextureManager::GetDefaultTextureID());
+			defMat->AddTexture("specular", TextureManager::GetDefaultTextureID());
 
 			std::vector<std::string> textureOrder = { "diffuse", "specular" };
 			defMat->SetTextureOrder(textureOrder);

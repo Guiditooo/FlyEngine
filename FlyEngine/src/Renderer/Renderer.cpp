@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "TextureManager/TextureManager.h"
 #include "ShaderManager/ShaderManager.h"
 #include "MaterialManager/MaterialManager.h"
 
@@ -22,13 +23,11 @@ namespace FlyEngine
 
 	using namespace Managers;
 
-	const char* MODEL_VERTEX_PATH = "res/Shaders/modelVertex.shader";
-	const char* MODEL_FRAGMENT_PATH = "res/Shaders/modelFragment.shader";
-
 	Renderer::Renderer()
 	{
 		bgColor = new Color(COLOR::FLYBLACK);
 
+		TextureManager::InitializeManager();
 		ShaderManager::InitializeManager();
 		MaterialManager::InitializeManager();
 	}
@@ -206,17 +205,17 @@ namespace FlyEngine
 
 	void Renderer::SetSpotLight(Lights::SpotLight* light, unsigned int shaderID)
 	{
-		SetBoolUniform( shaderID, "spotLight.isActive", light->IsActive());
-		SetVec3Uniform( shaderID, "spotLight.ambient", light->GetAmbient());
-		SetVec3Uniform( shaderID, "spotLight.specular", light->GetSpecular());
-		SetVec3Uniform (shaderID, "spotLight.diffuse", light->GetDiffuse());
-		SetVec3Uniform( shaderID, "spotLight.position", light->GetPosition());
-		SetVec3Uniform( shaderID, "spotLight.direction", light->GetDirection());
-		SetVec3Uniform( shaderID, "spotLight.lightColor", light->GetColor().GetColorV3());
-		SetFloatUniform(shaderID, "spotLight.constant", light->GetConstant());
-		SetFloatUniform(shaderID, "spotLight.linear", light->GetLinear());
-		SetFloatUniform(shaderID, "spotLight.quadratic", light->GetQuadratic());
-		SetFloatUniform(shaderID, "spotLight.cutOff", light->GetCutOff());
+		SetBoolUniform( shaderID, "spotLight.isActive",    light->IsActive());
+		SetVec3Uniform( shaderID, "spotLight.ambient",     light->GetAmbient());
+		SetVec3Uniform( shaderID, "spotLight.specular",    light->GetSpecular());
+		SetVec3Uniform( shaderID, "spotLight.diffuse",     light->GetDiffuse());
+		SetVec3Uniform( shaderID, "spotLight.position",    light->GetPosition());
+		SetVec3Uniform( shaderID, "spotLight.direction",   light->GetDirection());
+		SetVec3Uniform( shaderID, "spotLight.lightColor",  light->GetColor().GetColorV3());
+		SetFloatUniform(shaderID, "spotLight.constant",    light->GetConstant());
+		SetFloatUniform(shaderID, "spotLight.linear",	   light->GetLinear());
+		SetFloatUniform(shaderID, "spotLight.quadratic",   light->GetQuadratic());
+		SetFloatUniform(shaderID, "spotLight.cutOff",	   light->GetCutOff());
 		SetFloatUniform(shaderID, "spotLight.outerCutOff", light->GetOuterCutOff());
 	}
 
@@ -277,9 +276,12 @@ namespace FlyEngine
 	void Renderer::DrawMesh(Entities::Mesh* mesh, std::string modelName)
 	{
 
-		std::vector<std::string> order = mesh->GetMaterial()->GetTextureOrder();
+		Materials::Material* meshMat = mesh->GetMaterial();
+
+		std::vector<std::string> order = meshMat->GetTextureOrder();
 
 		std::string debugName = mesh->GetName();
+
 
 		for (unsigned int i = 0; i < order.size(); i++)
 		{
@@ -289,9 +291,10 @@ namespace FlyEngine
 			uniformVariable += order[i];
 
 			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-			Texture* tx = mesh->GetMaterial()->GetTexture(order[i]);
+			int txID = mesh->GetMaterial()->GetTexture(order[i]);
 
-			tx->Bind(i);
+			TextureManager::BindTexture(txID, i);
+
 			SetIntUniform(mesh->GetShaderID(), &uniformVariable[0], i);
 		}
 
@@ -301,7 +304,8 @@ namespace FlyEngine
 			SetVec3Uniform(mesh->GetShaderID(), "baseColor", mesh->GetColor().GetColorV3());
 		}
 		*/
-		SetVec3Uniform(mesh->GetShaderID(), "baseColor", mesh->GetColor().GetColorV3());
+
+		SetVec3Uniform(mesh->GetShaderID(), "baseColor", meshMat->GetColorV3());
 
 		SetFloatUniform(mesh->GetShaderID(), "material.shininess", 64/*mesh->GetMaterial()->GetSpecs()->GetShininess()*/);
 

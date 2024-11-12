@@ -21,7 +21,8 @@ namespace FlyEngine
 		private:
 			std::string name;
 			MaterialSpecification* specs;
-			std::unordered_map<std::string, Texture*> textureMap;
+			std::unordered_map<std::string, int> textureMap;
+			//std::unordered_map<std::string, Texture*> textureMap;
 			std::vector<std::string> textureOrder;
 			Shader* shader;
 			Utils::Color color;
@@ -31,7 +32,8 @@ namespace FlyEngine
 
 			void ApplyTextures();
 
-			bool AddTexture(const std::string& name, Texture* texture);
+			bool AddTexture(const std::string& name, int textureID);
+			//bool AddTexture(const std::string& name, Texture* texture);
 
 			void SetTextureOrder(const std::vector<std::string>& order);
 			void SetSpecs(MaterialSpecification* newSpecs);
@@ -42,13 +44,14 @@ namespace FlyEngine
 			void SetColor(float r, float g, float b);
 			void SetColor(float r, float g, float b, float a);
 
-			const std::unordered_map<std::string, Texture*>& GetTextureMap() const;
+			const std::unordered_map<std::string, int>& GetTextureMap() const;
 
 			std::vector<std::string> GetTextureOrder();
-			Texture* GetTexture(const std::string& name) const;
+			int GetTexture(const std::string& name) const;
 			MaterialSpecification* GetSpecs();
 			std::string GetName();
 			Utils::Color GetColor();
+			glm::vec3 GetColorV3();
 
 			Shader* GetShader();
 			unsigned int GetShaderID();

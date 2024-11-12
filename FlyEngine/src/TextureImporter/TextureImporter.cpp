@@ -7,7 +7,7 @@
 #include <string>
 #include <algorithm>
 
-#include "Texture/Texture.h"
+#include "TextureManager/TextureManager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -61,7 +61,7 @@ namespace FlyEngine
             return new Texture(textureID, width, height, path);
 		}
 
-        Texture* TextureImporter::SearchTexture(const std::string& directory, const std::string& filename)
+        Texture* TextureImporter::SearchTexture(const std::string& directory, const std::string& filename, bool sendMessage)
         {
             for (const auto& entry : fs::directory_iterator(directory)) 
             {
@@ -76,7 +76,7 @@ namespace FlyEngine
                 }
             }
             std::cerr << "Texture not found: " << directory << "/" << filename << std::endl;
-            return new Texture(0, 0, 0, "");
+            return Managers::TextureManager::GetDefaultTexture();
         }
 
         unsigned int TextureImporter::TextureFromFile(const char* path, std::string& directory, bool gamma)

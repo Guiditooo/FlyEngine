@@ -148,7 +148,7 @@ namespace FlyEngine
 				SetMatrixUniforms(entity);
 
 				SetMaterialUniforms(entity);
-				renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetColor().GetColorV3());
+				renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
 				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
@@ -170,7 +170,7 @@ namespace FlyEngine
 					SetMatrixUniforms(entity);
 
 					SetMaterialUniforms(entity);
-					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetColor().GetColorV3());
+					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
 					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 				}
 			}

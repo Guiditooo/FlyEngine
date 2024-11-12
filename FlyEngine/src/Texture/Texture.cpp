@@ -14,12 +14,12 @@ FlyEngine::Texture::~Texture()
 	glDeleteTextures(1, &id);
 }
 
+/*
 void FlyEngine::Texture::Bind(unsigned int slot) const
 {
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, id);
+	
 }
-
+*/
 void FlyEngine::Texture::UnBind() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);

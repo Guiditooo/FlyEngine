@@ -35,7 +35,7 @@ namespace FlyEngine
 			static Materials::Material* GetDefaultBasicMaterial();
 			static Materials::Material* GetDefaultMissingMaterial();
 
-			static bool AddTexture(std::string materialName, const std::string& name, Texture* texture);
+			static bool AddTexture(std::string materialName, std::string name, int texture);
 			static void SetTextureOrder(const std::string& materialName, const std::vector<std::string>& order);
 		};
 	}

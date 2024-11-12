@@ -158,9 +158,9 @@ namespace FlyEngine
 				if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 				{
 					type = "diffuse";
-					if (mat->GetTexture(type) == nullptr)
+					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
+						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
 						changed = true;
 					}
 					else
@@ -173,9 +173,9 @@ namespace FlyEngine
 				if (material->GetTextureCount(aiTextureType_SPECULAR) > 0)
 				{
 					type = "specular";
-					if (mat->GetTexture(type) == nullptr)
+					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
+						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
 						changed = true;
 					}
 					else
@@ -188,9 +188,9 @@ namespace FlyEngine
 				if (material->GetTextureCount(aiTextureType_HEIGHT) > 0)
 				{
 					type = "normal";
-					if (mat->GetTexture(type) == nullptr)
+					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
+						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
 						changed = true;
 					}
 					else
@@ -203,9 +203,9 @@ namespace FlyEngine
 				if (material->GetTextureCount(aiTextureType_AMBIENT) > 0)
 				{
 					type = "height";
-					if (mat->GetTexture(type) == nullptr)
+					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0]));
+						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
 						changed = true;
 					}
 					else

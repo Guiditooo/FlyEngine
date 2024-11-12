@@ -21,7 +21,7 @@ namespace FlyEngine
 		Texture(unsigned int id, int textureWidth, int textureHeight, const std::string& texturePath);
 		~Texture();
 
-		void Bind(unsigned int slot = 0) const;
+		//void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
 
 		void SetType(std::string type);

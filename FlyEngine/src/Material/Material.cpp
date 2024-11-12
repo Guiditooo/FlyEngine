@@ -1,6 +1,7 @@
 #include "Material.h"
 
 #include "ShaderManager/ShaderManager.h"
+#include "TextureManager/TextureManager.h"
 
 #include "Shader/Shader.h"
 
@@ -25,27 +26,22 @@ namespace FlyEngine
 				delete specs;
 				specs = nullptr;
 			}
-
-			for (auto& pair : textureMap)
-			{
-				std::cout << "\nUnloaded " << pair.first << " with ID=" << std::to_string(pair.second->GetID());
-				delete pair.second;
-			}
 		}
 
 		void Material::ApplyTextures()
 		{
 			for (int i = 0; i < textureOrder.size(); i++)
 			{
-				Texture* texture = GetTexture(textureOrder[i]);
-				if (texture)
+				int textureID = GetTexture(textureOrder[i]);
+				
+				if (textureID != -1)
 				{
-					texture->Bind(i);
+					Managers::TextureManager::BindTexture(textureID, i);
 				}
 			}
 		}
 
-		bool Material::AddTexture(const std::string& name, Texture* texture)
+		bool Material::AddTexture(const std::string& name, int textureID)
 		{
 			/*if (textureMap.find(name) != textureMap.end())
 			{
@@ -59,15 +55,17 @@ namespace FlyEngine
 			}
 			*/
 
-			textureMap[name] = texture;
+			textureMap[name] = textureID;
 
-			std::cout << " Linked " << name << "(ID =" << std::to_string(texture->GetID()) << ") to [" << this->name << "] \n";
+			std::cout << " Linked " << name << "(ID =" << std::to_string(textureID) << ") to [" << this->name << "] \n";
 
 			if (std::find(textureOrder.begin(), textureOrder.end(), name) == textureOrder.end())
 			{
 				textureOrder.push_back(name);
 			}
-			texture->SetType(name);
+			
+			Managers::TextureManager::SetTextureType(textureID, name);
+			
 			return true;
 		}
 
@@ -106,7 +104,7 @@ namespace FlyEngine
 			color = Utils::Color(r, g, b, a);
 		}
 
-		const std::unordered_map<std::string, Texture*>& Material::GetTextureMap() const
+		const std::unordered_map<std::string, int>& Material::GetTextureMap() const
 		{
 			return textureMap;
 		}
@@ -116,14 +114,14 @@ namespace FlyEngine
 			return textureOrder;
 		}
 
-		Texture* Material::GetTexture(const std::string& name) const
+		int Material::GetTexture(const std::string& name) const
 		{
 			auto it = textureMap.find(name);
 			if (it != textureMap.end())
 			{
 				return it->second;
 			}
-			return nullptr;
+			return -1;
 		}
 
 		MaterialSpecification* Material::GetSpecs()
@@ -138,6 +136,10 @@ namespace FlyEngine
 		Utils::Color Material::GetColor()
 		{
 			return color;
+		}
+		glm::vec3 Material::GetColorV3()
+		{
+			return color.GetColorV3();
 		}
 		Shader* Material::GetShader()
 		{

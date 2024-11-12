@@ -1,22 +1,21 @@
-#include <time.h>
+//#include <time.h>
 #include <string>
 
 #include "Game.h"
 
 #include "MaterialManager/MaterialManager.h"
-#include "ShaderManager/ShaderManager.h"
+#include "TextureManager/TextureManager.h"
 
 #include "FlyFunctions/Debugger/Debugger.h"
-#include "TextureImporter/TextureImporter.h"
-#include "MaterialSpecification/MaterialSpecification.h"
+//#include "MaterialSpecification/MaterialSpecification.h"
 
 namespace FlyGame
 {
-	using namespace std;
+	//using namespace std;
 
 	bool movingPlayer = true;
 
-	Game::Game(int width, int height, string name)
+	Game::Game(int width, int height, std::string name)
 	{
 		SetWindowParameters(width, height, name);
 
@@ -72,10 +71,17 @@ namespace FlyGame
 		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
 
 		std::string boxMaterial = "Box_Mat";
-		Managers::MaterialManager::CreateMaterial(boxMaterial, Managers::ShaderManager::GetDefaultModelShader());
+		
+		//Managers::TextureManager::CreateTexture("Box_D", "res/Textures/Box/Box.png"); //TODO HACER FACADE DESDE EL BASEGAME
+		//Managers::TextureManager::CreateTexture("Box_S", "res/Textures/Box/Box_S.png");
 
-		Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", CreateTexture("res/Textures/Box/Box.png"));
-		Managers::MaterialManager::AddTexture(boxMaterial, "specular", CreateTexture("res/Textures/Box/Box_S.png"));
+		Managers::TextureManager::InitializeManager();
+
+		int txID = /*Managers::TextureManager::GetTexture("Box_D");*/4;
+
+		Managers::MaterialManager::CreateMaterial(boxMaterial, Managers::ShaderManager::GetDefaultModelShader());
+		//Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", txID);
+		//Managers::MaterialManager::AddTexture(boxMaterial, "specular", Managers::TextureManager::GetTexture("Box_S"));
 		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular" });
 
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);

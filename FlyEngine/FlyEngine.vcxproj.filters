@@ -144,6 +144,9 @@
     <Filter Include="Plane">
       <UniqueIdentifier>{a3458155-2d2a-4913-b063-914cafb5806a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers\TextureManager">
+      <UniqueIdentifier>{4c526e91-776d-4fe4-a9bd-11904c31dd56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -261,6 +264,9 @@
     </ClCompile>
     <ClCompile Include="src\Plane\Plane.cpp">
       <Filter>Plane</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureManager\TextureManager.cpp">
+      <Filter>Managers\TextureManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -399,6 +405,9 @@
     </ClInclude>
     <ClInclude Include="src\Plane\Plane.h">
       <Filter>Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureManager\TextureManager.h">
+      <Filter>Managers\TextureManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
