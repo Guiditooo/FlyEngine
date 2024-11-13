@@ -40,7 +40,7 @@ namespace FlyEngine
 
 			Transform* transform;
 
-			//Utils::Color color;
+			Utils::Color color;
 
 			bool settedAsCameraTarget = false;
 			bool printModificationMessage;
@@ -77,6 +77,7 @@ namespace FlyEngine
 			virtual void SetColor(float r, float g, float b);
 			virtual void SetColor(Utils::COLOR newColor);
 			Utils::Color GetColor();
+			glm::vec3 GetColorV3();
 
 			glm::mat4 GetModelMatrix();
 

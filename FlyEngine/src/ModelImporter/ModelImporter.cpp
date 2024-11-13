@@ -72,7 +72,7 @@ namespace FlyEngine
 		{
 			std::vector<Entities::Vertex> vertices;
 			std::vector<unsigned int> indices;
-			std::vector<Texture> textures;
+			//std::vector<Texture> textures;
 
 			bool alreadyCreatedTexture = false;
 
@@ -227,8 +227,8 @@ namespace FlyEngine
 				}
 			}
 
-			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
-
+			//return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
+			return nullptr;
 
 			// return a mesh object created from the extracted mesh data
 		}

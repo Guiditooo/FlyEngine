@@ -53,7 +53,7 @@ namespace FlyEngine
 
 		static bool isMouseMovementOn;
 
-		glm::vec3 previousRot = glm::vec3(0);//cambiar
+		static glm::vec3 previousRot;
 
 		void FreeMovement(bool &cameraMoved);
 		void FirstPersonMovement(bool &cameraMoved);

@@ -99,27 +99,32 @@ namespace FlyEngine
 
 		void Entity::SetColor(FlyEngine::Color newColor)
 		{
-			material->SetColor(newColor);
+			color = newColor;
 		}
 
 		void Entity::SetColor(glm::vec3 newColor)
 		{
-			material->SetColor(Color(newColor));
+			color = Color(newColor);
 		}
 
 		void Entity::SetColor(float r, float g, float b)
 		{
-			material->SetColor(Color(r, g, b));
+			color = Color(r, g, b);
 		}
 
 		void Entity::SetColor(FlyEngine::COLOR newColor)
 		{
-			material->SetColor(Color(newColor));
+			color = newColor;
 		}
 
 		Utils::Color Entity::GetColor()
 		{
 			return material->GetColor();
+		}
+
+		glm::vec3 Entity::GetColorV3()
+		{
+			return color.GetColorV3();
 		}
 
 		glm::mat4 Entity::GetModelMatrix()

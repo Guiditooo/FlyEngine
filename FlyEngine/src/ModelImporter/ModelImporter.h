@@ -20,6 +20,7 @@ namespace FlyEngine
 			static void ProcessNode(aiNode* node, const aiScene* scene, Entities::Model* model);
 			static Entities::Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model);
 			static std::vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Entities::Model* model);
+			
 		
 		};
 

@@ -65,6 +65,7 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform DirLight dirLight;
 uniform vec3 baseColor;
+uniform vec3 entityColor;
 uniform vec3 viewPos;
 uniform Material material;
 
@@ -101,8 +102,10 @@ void main()
      if (spotLight.isActive)
         result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
     
-    result *= baseColor;
+    result *= baseColor; //Color de la textura
     
+    result *= entityColor;
+
     //Result
     FragColor = vec4(result, 1.0);
     

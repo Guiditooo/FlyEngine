@@ -3,8 +3,8 @@
 #include "TextureImporter/TextureImporter.h"
 #include "FlyFunctions/Debugger/Debugger.h"
 
-const char* DEFAULT_TEXTURE_PATH = "res/Textures/White.png";
-const char* DEFAULT_TEXTURE_NAME = "blankTexture";
+const char* DEFAULT_TEXTURE_PATH = "res/Textures";
+const char* DEFAULT_TEXTURE_NAME = "BlankTexture";
  
 namespace FlyEngine
 {
@@ -69,6 +69,7 @@ namespace FlyEngine
 				if (pair.second->GetID() == textureID)
 				{
 					pair.second->SetType(type);
+					key = pair.second->GetID();
 					break;
 				}
 			}
@@ -81,6 +82,11 @@ namespace FlyEngine
 		{
 			glActiveTexture(GL_TEXTURE0 + slot);
 			glBindTexture(GL_TEXTURE_2D, textureID);
+		}
+
+		void TextureManager::UnBindTexture()
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
 	}

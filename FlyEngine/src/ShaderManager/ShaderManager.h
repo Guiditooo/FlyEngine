@@ -22,7 +22,7 @@ namespace FlyEngine
 
 			static Shader* CreateShader(std::string name, const char* fPath, const char* vPath, const char* gPath = nullptr);
 			static Shader* GetShader(std::string shaderName);
-			static Shader* GetDefaultBasicShader();
+			static Shader* GetDefaultBasicShader(); //CAMBIAR A ID
 			static Shader* GetDefaultModelShader();
 			
 			static void InitializeManager();

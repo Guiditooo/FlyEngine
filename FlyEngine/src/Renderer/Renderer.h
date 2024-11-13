@@ -40,7 +40,7 @@ namespace FlyEngine
 	private:
 		Color* bgColor;
 
-		void DrawMesh(Entities::Mesh* mesh, std::string modelName);
+		void DrawMesh(Entities::Mesh* mesh, Materials::Material* mat);
 
 	public:
 		Renderer();

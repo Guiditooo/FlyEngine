@@ -37,6 +37,7 @@ namespace FlyEngine
 
 			void SetTextureOrder(const std::vector<std::string>& order);
 			void SetSpecs(MaterialSpecification* newSpecs);
+			void SetSpecs(MaterialList material);
 
 			void SetColor(Utils::Color newColor);
 			void SetColor(glm::vec3 newColor);

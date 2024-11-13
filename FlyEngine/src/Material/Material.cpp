@@ -79,6 +79,11 @@ namespace FlyEngine
 			specs = newSpecs;
 		}
 
+		void Material::SetSpecs(MaterialList material)
+		{
+			specs->SetSpecs(material);
+		}
+
 		void Material::SetColor(Utils::Color newColor)
 		{
 			color = newColor;

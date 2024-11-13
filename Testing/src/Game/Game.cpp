@@ -39,6 +39,7 @@ namespace FlyGame
 
 	Game::~Game()
 	{
+
 	}
 
 	void Game::Init()
@@ -50,10 +51,9 @@ namespace FlyGame
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
 		triangle = CreateTriangle(0, 1, 0, 10, 10);
-		//triangle->SetColor(COLOR::RED);
 
-		cube = CreateCube(0, 0, 0, 10);
-		cube->SetColor(COLOR::BLUE);
+		cube = CreateCube(0, 1, 0, 50);
+		cube->SetName("BOX");
 
 		piso->SetName("Piso");
 		triangle->SetName("Player");
@@ -65,36 +65,44 @@ namespace FlyGame
 		pointLightStatic->SetName("Static Light");
 
 		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
-		//pointLightStatic->SetColor(COLOR::CYAN);
+		pointLightStatic->SetColor(COLOR::CYAN);
 
 		spotLight->SetPosition(glm::vec3(0, 2, 0));
 		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
 
 		std::string boxMaterial = "Box_Mat";
 		
-		//Managers::TextureManager::CreateTexture("Box_D", "res/Textures/Box/Box.png"); //TODO HACER FACADE DESDE EL BASEGAME
-		//Managers::TextureManager::CreateTexture("Box_S", "res/Textures/Box/Box_S.png");
-
-		Managers::TextureManager::InitializeManager();
-
-		int txID = /*Managers::TextureManager::GetTexture("Box_D");*/4;
+		Managers::TextureManager::CreateTexture("Box", "res/Textures/Box"); //TODO HACER FACADE DESDE EL BASEGAME
+		Managers::TextureManager::CreateTexture("Box_S", "res/Textures/Box");
 
 		Managers::MaterialManager::CreateMaterial(boxMaterial, Managers::ShaderManager::GetDefaultModelShader());
-		//Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", txID);
-		//Managers::MaterialManager::AddTexture(boxMaterial, "specular", Managers::TextureManager::GetTexture("Box_S"));
+		Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", Managers::TextureManager::GetTexture("Box"));
+		Managers::MaterialManager::AddTexture(boxMaterial, "specular", Managers::TextureManager::GetTexture("Box_S"));
 		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular" });
 
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
-		cube->SetMaterial(boxMat);
 		piso->SetMaterial(boxMat);
 		piso->SetScale(100, 100, 100);
 		piso->SetRotation(-90, 90, 0);
 
-		piso->SetActive(true);
-		triangle->SetActive(true);
+		Managers::MaterialManager::CreateMaterial("Carito", Managers::ShaderManager::GetDefaultModelShader());
+		Managers::MaterialManager::AddTexture("Carito", "diffuse", Managers::TextureManager::GetDefaultTextureID());
+		Managers::MaterialManager::AddTexture("Carito", "specular", Managers::TextureManager::GetDefaultTextureID());
+		Managers::MaterialManager::AddTexture("Carito", "normal", Managers::TextureManager::GetDefaultTextureID());
+		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular", "normal"});
 
-		cube->SetActive(false);
+		Materials::Material* caritoMat = Managers::MaterialManager::GetMaterial("Carito");
+
+		caritoMat->SetSpecs(Materials::MaterialList::Ruby);
+
+		cube->SetMaterial(caritoMat);
+
+		//cube->SetColor(COLOR::MAGENTA);
+
+		piso->SetActive(true);
+		triangle->SetActive(false);
+		cube->SetActive(true);
 
 	}
 

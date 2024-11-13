@@ -2,9 +2,11 @@
 #define DEBUGGER_H
 
 #include <Exports/Exports.h>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 
-typedef glm::mat4;
-typedef glm::vec3;
+//typedef glm::mat4;
+//typedef glm::vec3;
 
 
 namespace FlyEngine

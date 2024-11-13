@@ -9,7 +9,7 @@ void main()
 {
 	srand(time(NULL));
 	
-	Game* game = new Game(800, 600, "Testing Environment");
+	Game* game = new Game(1000, 800, "Testing Environment");
 	game->RunGame();
 	
 	if (game != nullptr)

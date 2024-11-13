@@ -34,7 +34,7 @@ namespace FlyEngine
 
 	Renderer::~Renderer()
 	{
-		
+
 	}
 	void Renderer::DrawObject(Entities::Entity* toDraw)
 	{
@@ -46,15 +46,30 @@ namespace FlyEngine
 		std::vector<Entities::Mesh*> meshes = toDraw->GetMeshes();
 		for (int i = 0; i < meshes.size(); i++)
 		{
-			meshes[i]->UseShader();
-			unsigned int id = meshes[i]->GetShaderID();
+			unsigned int id;
+			Materials::Material* renderingMat = nullptr;
+
+			if (meshes[i]->GetMaterial() == nullptr)
+			{
+				toDraw->UseShader();
+				id = toDraw->GetShaderID();
+				renderingMat = toDraw->GetMaterial();
+			}
+			else
+			{
+				meshes[i]->UseShader();
+				id = meshes[i]->GetShaderID();
+				renderingMat = meshes[i]->GetMaterial();
+			}
 
 			SetMatrix4Uniform(id, "view", viewMat);
 			SetMatrix4Uniform(id, "projection", projMat);
 			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix());
 			SetVec3Uniform(id, "viewPos", camPos);
-			
-			DrawMesh(meshes[i], toDraw->GetName());
+
+			SetVec3Uniform(id, "entityColor", toDraw->GetColorV3());
+
+			DrawMesh(meshes[i], renderingMat);
 		}
 	}
 
@@ -205,17 +220,17 @@ namespace FlyEngine
 
 	void Renderer::SetSpotLight(Lights::SpotLight* light, unsigned int shaderID)
 	{
-		SetBoolUniform( shaderID, "spotLight.isActive",    light->IsActive());
-		SetVec3Uniform( shaderID, "spotLight.ambient",     light->GetAmbient());
-		SetVec3Uniform( shaderID, "spotLight.specular",    light->GetSpecular());
-		SetVec3Uniform( shaderID, "spotLight.diffuse",     light->GetDiffuse());
-		SetVec3Uniform( shaderID, "spotLight.position",    light->GetPosition());
-		SetVec3Uniform( shaderID, "spotLight.direction",   light->GetDirection());
-		SetVec3Uniform( shaderID, "spotLight.lightColor",  light->GetColor().GetColorV3());
-		SetFloatUniform(shaderID, "spotLight.constant",    light->GetConstant());
-		SetFloatUniform(shaderID, "spotLight.linear",	   light->GetLinear());
-		SetFloatUniform(shaderID, "spotLight.quadratic",   light->GetQuadratic());
-		SetFloatUniform(shaderID, "spotLight.cutOff",	   light->GetCutOff());
+		SetBoolUniform(shaderID, "spotLight.isActive", light->IsActive());
+		SetVec3Uniform(shaderID, "spotLight.ambient", light->GetAmbient());
+		SetVec3Uniform(shaderID, "spotLight.specular", light->GetSpecular());
+		SetVec3Uniform(shaderID, "spotLight.diffuse", light->GetDiffuse());
+		SetVec3Uniform(shaderID, "spotLight.position", light->GetPosition());
+		SetVec3Uniform(shaderID, "spotLight.direction", light->GetDirection());
+		SetVec3Uniform(shaderID, "spotLight.lightColor", light->GetColor().GetColorV3());
+		SetFloatUniform(shaderID, "spotLight.constant", light->GetConstant());
+		SetFloatUniform(shaderID, "spotLight.linear", light->GetLinear());
+		SetFloatUniform(shaderID, "spotLight.quadratic", light->GetQuadratic());
+		SetFloatUniform(shaderID, "spotLight.cutOff", light->GetCutOff());
 		SetFloatUniform(shaderID, "spotLight.outerCutOff", light->GetOuterCutOff());
 	}
 
@@ -273,15 +288,9 @@ namespace FlyEngine
 		SetVec3Uniform(shaderID, "dirLight.lightColor", light->GetColor().GetColorV3());
 	}
 
-	void Renderer::DrawMesh(Entities::Mesh* mesh, std::string modelName)
+	void Renderer::DrawMesh(Entities::Mesh* mesh, Materials::Material* mat)
 	{
-
-		Materials::Material* meshMat = mesh->GetMaterial();
-
-		std::vector<std::string> order = meshMat->GetTextureOrder();
-
-		std::string debugName = mesh->GetName();
-
+		std::vector<std::string> order = mat->GetTextureOrder();
 
 		for (unsigned int i = 0; i < order.size(); i++)
 		{
@@ -298,16 +307,9 @@ namespace FlyEngine
 			SetIntUniform(mesh->GetShaderID(), &uniformVariable[0], i);
 		}
 
-		//CAMBIAR -> El material no puede ser nulo desde la creacion de la mesh. Asignar el No-Material
-		/* (mat == nullptr && mesh->GetMaterial() == MaterialManager::GetDefaultModelMaterial())
-		{
-			SetVec3Uniform(mesh->GetShaderID(), "baseColor", mesh->GetColor().GetColorV3());
-		}
-		*/
+		SetVec3Uniform(mesh->GetShaderID(), "baseColor", mat->GetColorV3());
 
-		SetVec3Uniform(mesh->GetShaderID(), "baseColor", meshMat->GetColorV3());
-
-		SetFloatUniform(mesh->GetShaderID(), "material.shininess", 64/*mesh->GetMaterial()->GetSpecs()->GetShininess()*/);
+		SetFloatUniform(mesh->GetShaderID(), "material.shininess", mat->GetSpecs()->GetShininess());
 
 		// draw mesh
 		DrawRequest(*(mesh->GetBuffers()), mesh->GetIndexes().size());

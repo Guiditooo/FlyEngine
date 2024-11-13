@@ -1,8 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <assimp/scene.h>
-
 #include "Entity3D/Entity3D.h"
 #include "Mesh/Mesh.h"
 

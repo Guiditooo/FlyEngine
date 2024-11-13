@@ -64,6 +64,9 @@ namespace FlyEngine
 
 	BaseGame::~BaseGame()
 	{
+
+		CameraController::DestroyInstance();
+
 		if (mainCamera != nullptr)
 			delete mainCamera;
 		mainCamera = nullptr;
@@ -75,8 +78,6 @@ namespace FlyEngine
 		if (renderer != nullptr)
 			delete renderer;
 		renderer = nullptr;
-
-		CameraController::DestroyInstance();
 
 		EraseList(modelList);
 		EraseList(entity3DList);
@@ -148,7 +149,10 @@ namespace FlyEngine
 				SetMatrixUniforms(entity);
 
 				SetMaterialUniforms(entity);
+
 				renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
+				renderer->SetVec3Uniform(entity->GetShaderID(), "entityColor", entity->GetColorV3());
+
 				renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 			}
 		}
@@ -158,20 +162,26 @@ namespace FlyEngine
 	{
 		for (Entities::Entity* entity : entity3DList)
 		{
-			if (dynamic_cast<Entities::Model*>(entity) != nullptr)
+			if (entity->IsActive())
 			{
-				renderer->DrawModel(dynamic_cast<Entities::Model*>(entity), mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
-			}
-			else
-			{
-				if (entity->IsActive() && !entity->IsCameraTarget())
+				if (dynamic_cast<Entities::Model*>(entity) != nullptr)
 				{
-					entity->UseShader();
-					SetMatrixUniforms(entity);
+					renderer->DrawModel(dynamic_cast<Entities::Model*>(entity), mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
+				}
+				else
+				{
+					if (!entity->IsCameraTarget())
+					{
+						entity->UseShader();
+						SetMatrixUniforms(entity);
 
-					SetMaterialUniforms(entity);
-					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
-					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+						SetMaterialUniforms(entity);
+
+						renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
+						renderer->SetVec3Uniform(entity->GetShaderID(), "entityColor", entity->GetColorV3());
+						
+						renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+					}
 				}
 			}
 		}
@@ -234,7 +244,6 @@ namespace FlyEngine
 	{
 		return (objectWidthInPixels * 1.0f) / windowDimension;
 	}
-
 
 	void BaseGame::GetMouseMovement()
 	{
@@ -456,7 +465,7 @@ namespace FlyEngine
 		{
 			if (Input::GetKeyPressed(KeyCode::KEY_ESCAPE))
 			{
-				glfwSetWindowShouldClose((window->GetWindow()), true);
+				isRunning = false;
 			}
 		}
 		Update();
@@ -471,6 +480,8 @@ namespace FlyEngine
 	void BaseGame::InternalDeinit()
 	{
 		Deinit();
+
+		glfwSetWindowShouldClose((window->GetWindow()), true);
 
 		glfwTerminate();
 

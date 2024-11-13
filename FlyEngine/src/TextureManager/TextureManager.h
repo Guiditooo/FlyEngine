@@ -8,10 +8,8 @@
 
 namespace FlyEngine
 {
-
 	namespace Managers
 	{
-
 		class FLY_API TextureManager
 		{
 		private:
@@ -30,6 +28,7 @@ namespace FlyEngine
 			static void SetTextureType(int textureID, std::string type);
 
 			static void BindTexture(int textureID, unsigned int slot = 0);
+			static void UnBindTexture();
 		};
 	}
 }

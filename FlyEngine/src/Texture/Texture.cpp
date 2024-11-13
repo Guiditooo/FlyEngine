@@ -1,17 +1,18 @@
 #include "Texture.h"
 
 
-FlyEngine::Texture::Texture(unsigned int textureID, int textureWidth, int textureHeight, const std::string& texturePath)
+FlyEngine::Texture::Texture(int textureID, int textureWidth, int textureHeight, const std::string& texturePath)
 {
 	id = textureID;
 	path = texturePath;
 	width = textureWidth;
 	height = textureHeight;
+	isActive = true;
 }
 
 FlyEngine::Texture::~Texture()
 {
-	glDeleteTextures(1, &id);
+	glDeleteTextures(1, (GLuint*)id);
 }
 
 /*
@@ -19,18 +20,18 @@ void FlyEngine::Texture::Bind(unsigned int slot) const
 {
 	
 }
-*/
 void FlyEngine::Texture::UnBind() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+*/
 
 void FlyEngine::Texture::SetType(std::string type)
 {
 	this->type = type;
 }
 
-unsigned int FlyEngine::Texture::GetID() const
+int FlyEngine::Texture::GetID() const
 {
 	return id;
 }

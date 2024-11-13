@@ -13,32 +13,26 @@ namespace FlyEngine
 {
 	CameraController* CameraController::instance = nullptr;
 
-	Camera* FlyEngine::CameraController::camera = nullptr;
-	CameraRotation FlyEngine::CameraController::cameraRotation = {};
-	float FlyEngine::CameraController::rotationSensitivity = 0.1f;
-	float FlyEngine::CameraController::translateSensitivity = 0.1f;
+	Camera* CameraController::camera = nullptr;
+	CameraRotation CameraController::cameraRotation = {};
+	float CameraController::rotationSensitivity = 0.1f;
+	float CameraController::translateSensitivity = 0.1f;
 
-	CameraMode FlyEngine::CameraController::cameraMode = CameraMode::Free;
+	CameraMode CameraController::cameraMode = CameraMode::Free;
 	
-	float FlyEngine::CameraController::lastX = 0.0f;
-	float FlyEngine::CameraController::lastY = 0.0f;
+	float CameraController::lastX = 0.0f;
+	float CameraController::lastY = 0.0f;
 	
-	ObjetiveParams* FlyEngine::CameraController::objetiveParams = nullptr;
-	bool FlyEngine::CameraController::isMouseMovementOn = false;
+	ObjetiveParams* CameraController::objetiveParams = nullptr;
+	bool CameraController::isMouseMovementOn = false;
+
+	glm::vec3 CameraController::previousRot = glm::vec3(0);
 
 	Utils::Input innerSystemInput;
 
-	CameraController::CameraController()
-	{
-		
-	}
+	CameraController::CameraController() {}
 
-	CameraController::~CameraController()
-	{
-		if (camera != nullptr)
-			delete camera;
-		camera = nullptr;
-	}
+	CameraController::~CameraController() {}
 
 	void CameraController::SetCameraSpecs(ProjectionType projType, float fov, float aspectRatio, float nearPlane, float farPlane)
 	{
@@ -93,6 +87,8 @@ namespace FlyEngine
 
 		rotationSensitivity = 0.3f;
 		translateSensitivity = 0.05f;
+		
+		previousRot = glm::vec3(0);
 
 		cameraRotation = CameraRotation();
 
@@ -104,6 +100,7 @@ namespace FlyEngine
 
 		lastX = 0;
 		lastY = 0;
+
 
 		return GetInstance();
 	}
@@ -318,11 +315,13 @@ namespace FlyEngine
 
 	void CameraController::DestroyInstance()
 	{
-		if (instance != nullptr) 
-		{
+		if (objetiveParams != nullptr)
+			delete objetiveParams;
+		objetiveParams = nullptr;
+
+		if (instance != nullptr) 	
 			delete instance;
-			instance = nullptr;
-		}
+		instance = nullptr;
 	}
 
 
