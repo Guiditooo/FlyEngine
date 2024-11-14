@@ -30,8 +30,9 @@ namespace FlyEngine
 		protected:
 			std::vector<Utils::VertexAttribute> vertexAttributes;
 			std::vector<unsigned int> index;
-			std::vector<Entity*> childList;
+			std::vector<Entity*> childs;
 			std::vector<float> vertex;
+			Entity* parent;
 
 			Utils::Buffers* buffers;
 			bool active;
@@ -93,7 +94,13 @@ namespace FlyEngine
 			virtual void SetScale(glm::vec3 scale);
 			virtual void SetScale(float scale);
 
+			void SetChild(Entity* newChild);
+			void SetParent(Entity* newParent);
+
 			Transform* GetTransform();
+
+			Entity* GetParent();
+			std::vector<Entity*> GetChilds();
 
 			void MoveForward(float amount);
 			void MoveBackward(float amount);

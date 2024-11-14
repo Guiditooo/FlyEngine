@@ -216,12 +216,30 @@ namespace FlyEngine
 			SetScale(scale, scale, scale);
 		}
 
+		void Entity::SetChild(Entity* newChild)
+		{
+			childs.push_back(newChild);
+		}
+
+		void Entity::SetParent(Entity* newParent)
+		{
+			parent = newParent;
+		}
+
 		Transform* Entity::GetTransform()
 		{
 			return transform;
 		}
 
-		
+		Entity* Entity::GetParent()
+		{
+			return parent;
+		}
+
+		std::vector<Entity*> Entity::GetChilds()
+		{
+			return childs;
+		}		
 
 		void Entity::SetMaterial(Materials::Material* newMaterial)
 		{
