@@ -16,6 +16,7 @@ namespace FlyEngine
 		{
 		public:
 			static Entities::Model* LoadModel(std::string modelName, std::string const& path, bool gamma = false);
+			static Entities::Model* LoadBSPScene(std::string modelName, std::string const& path, bool gamma = false);
 		private:
 			static void ProcessNode(aiNode* node, const aiScene* scene, Entities::Model* model);
 			static Entities::Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model);

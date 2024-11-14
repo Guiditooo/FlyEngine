@@ -8,13 +8,13 @@
 
 #include "MaterialManager/MaterialManager.h"
 #include "ShaderManager/ShaderManager.h"
+#include "BSPManager/BSPManager.h"
 
 #include "TextureImporter/TextureImporter.h"
 #include "Texture/Texture.h"
 #include "Mesh/Mesh.h"
 #include "Model/Model.h"
 #include "Vertex/Vertex.h"
-//#include "Materi"
 
 namespace FlyEngine
 {
@@ -24,10 +24,7 @@ namespace FlyEngine
 		{
 			Entities::Model* model = new Entities::Model(modelName);
 
-			// read file via ASSIMP
 			Assimp::Importer importer;
-
-			//const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 			const aiScene* scene = importer.ReadFile(path,
 				aiProcess_Triangulate |
@@ -38,19 +35,21 @@ namespace FlyEngine
 				aiProcess_GenSmoothNormals |
 				aiProcess_LimitBoneWeights);
 
-			// check for errors
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 			{
 				std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
 				return nullptr;
 			}
 
-			// retrieve the directory path of the filepath
 			model->SetDirectory(path.substr(0, path.find_last_of('/')) + "/");
 
-			// process ASSIMP's root node recursively
 			ProcessNode(scene->mRootNode, scene, model);
 			return model;
+		}
+
+		Entities::Model* ModelImporter::LoadBSPScene(std::string modelName, std::string const& path, bool gamma)
+		{
+			return nullptr;
 		}
 		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Model* model)
 		{
@@ -228,7 +227,7 @@ namespace FlyEngine
 			}
 
 			//return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
-			return nullptr;
+			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
 
 			// return a mesh object created from the extracted mesh data
 		}
