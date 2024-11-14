@@ -27,6 +27,13 @@ namespace FlyGame
 
 		Entities::Cube* cube;
 
+		Entities::Model* scene1;
+		Entities::Model* scene2;
+		Entities::Model* scene3;
+		Entities::Model* robot;
+		//Entities::Model* scene;
+		//Entities::Model* scene;
+
 		Texture* texture;
 
 		Lights::PointLight* pointLight;

@@ -48,11 +48,24 @@ namespace FlyGame
 
 		//cameraController = CreateCameraController(mainCamera, 0.05f, 0.2f, CameraMode::Free);
 
+		//scene1 = CreateModel("res/Models/Scene/Guido_scene.fbx", "BSP_Scene1");
+		//scene2 = CreateModel("res/Models/Scene/PruebaGuido.fbx", "BSP_Scene2");
+		scene3 = CreateModel("res/Models/Scene/planes_scene.fbx", "BSP_Scene3");
+		
+		//scene2->SetScale(0.01);
+
+		robot = CreateModel("res/Models/Iron_Giant/irongiant_low.fbx", "Robot1");
+
+		robot->SetScale(0.01);
+		robot->SetColor(COLOR::GREY);
+
+		//scene->SetScale(100);
+
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
 		triangle = CreateTriangle(0, 1, 0, 10, 10);
 
-		cube = CreateCube(0, 1, 0, 50);
+		cube = CreateCube(0, 1, 0, 500);
 		cube->SetName("BOX");
 
 		piso->SetName("Piso");
@@ -65,7 +78,7 @@ namespace FlyGame
 		pointLightStatic->SetName("Static Light");
 
 		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
-		pointLightStatic->SetColor(COLOR::CYAN);
+		//pointLightStatic->SetColor(COLOR::CYAN);
 
 		spotLight->SetPosition(glm::vec3(0, 2, 0));
 		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
@@ -100,7 +113,7 @@ namespace FlyGame
 
 		//cube->SetColor(COLOR::MAGENTA);
 
-		piso->SetActive(true);
+		piso->SetActive(false);
 		triangle->SetActive(false);
 		cube->SetActive(true);
 
@@ -192,7 +205,7 @@ namespace FlyGame
 			}
 		}
 
-		cameraController->Update(false);
+		cameraController->Update(true);
 
 	}
 
