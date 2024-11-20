@@ -37,7 +37,6 @@ namespace FlyEngine
 		glm::mat4 projMatrix; //cambiar
 		glm::mat4 viewMatrix;
 
-		void Draw() override;
 		void Update();
 
 		void SetProjectionType(ProjectionType projType);

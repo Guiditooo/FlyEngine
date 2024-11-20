@@ -9,10 +9,10 @@
 namespace FlyEngine
 {
 
-	class SceneGraph
+	class Scene
 	{
 	private:
-		std::vector<std::unique_ptr<SceneNode>> nodes; // Nodos raíz del grafo de la escena
+		Entities::Entity* root;
 	
 	public:
 		void AddRootNode(std::unique_ptr<SceneNode> node);

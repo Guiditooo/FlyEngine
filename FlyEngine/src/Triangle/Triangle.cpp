@@ -91,17 +91,6 @@ namespace FlyEngine
 			}
 		}
 
-		void Triangle::Draw()
-		{
-			//Deprecated
-			/*
-			material->Apply();
-			Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
-			Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-			Renderer::DrawRequest(VAO, indexCount);
-			*/
-		}
-
 	}
 
 }

@@ -39,7 +39,6 @@ namespace FlyEngine
 			std::vector<Vertex> GetVertices();
 			std::vector<unsigned int> GetIndexes();
 
-			void Draw() override;
 		};
 
 	}

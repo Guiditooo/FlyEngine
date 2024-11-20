@@ -22,15 +22,14 @@ namespace FlyEngine
 		public:
 			Model(std::string modelName = "GenericModelName", bool gamma = false);
 
-			void Draw(unsigned int shaderID);
-			void Draw() override;
-
 			void SetDirectory(std::string directory);
 			void AddMesh(Mesh* mesh);
 
 			glm::vec3 GetDimesions();
 			std::vector<Mesh*> GetMeshes();
 			std::string GetDirectory();
+
+			void SetMaterial(Materials::Material* newMaterial, bool setRecursively);
 
 			void SetPosition(float x, float y, float z) override;
 			void SetPosition(float x) override;
@@ -62,6 +61,7 @@ namespace FlyEngine
 			void UseBaseMaterial(bool useBaseMat);
 			bool ShouldUseBaseMaterial();
 
+			std::vector<Mesh*> GetSubMeshes() override;
 		};
 	}
 }

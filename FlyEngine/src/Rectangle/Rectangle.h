@@ -14,7 +14,6 @@ namespace FlyEngine
 		public:
 			Rectangle();
 			~Rectangle();
-			void Draw() override;
 		};
 
 	}

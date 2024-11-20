@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
+    <ClCompile Include="src\BoundingBox\BoundingBox.cpp" />
     <ClCompile Include="src\BSPManager\BSPManager.cpp" />
     <ClCompile Include="src\CameraController\CameraController.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
@@ -49,6 +50,9 @@
     <ClCompile Include="src\Plane\Plane.cpp" />
     <ClCompile Include="src\Rectangle\Rectangle.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\SceneGraph\SceneGraph.cpp" />
+    <ClCompile Include="src\SceneNode\SceneNode.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\ShaderManager\ShaderManager.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
     <ClCompile Include="src\Shape\Shape.cpp" />
@@ -64,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseGame\BaseGame.h" />
+    <ClInclude Include="src\BoundingBox\BoundingBox.h" />
     <ClInclude Include="src\BSPManager\BSPManager.h" />
     <ClInclude Include="src\Buffers\Buffers.h" />
     <ClInclude Include="src\CameraController\CameraController.h" />
@@ -98,6 +103,9 @@
     <ClInclude Include="src\Plane\Plane.h" />
     <ClInclude Include="src\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\SceneGraph\SceneGraph.h" />
+    <ClInclude Include="src\SceneNode\SceneNode.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\ShaderManager\ShaderManager.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\Shape\Shape.h" />

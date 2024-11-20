@@ -7,7 +7,7 @@
 #include "Exports/Exports.h"
 
 #include "Renderer/Renderer.h"
-#include "Window/Window.h"
+//#include "Window/Window.h"
 #include "Camera/Camera.h"
 
 #include "Material/Material.h"
@@ -62,6 +62,7 @@ namespace FlyEngine
 		void DrawModels();
 		void Draw2DEntities();
 		void Draw3DEntities();
+		//void DrawSceneGraph(SceneGraph* sceneGraph);
 		void DrawTextures();
 
 		void CalculateLights();

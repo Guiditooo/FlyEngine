@@ -19,7 +19,6 @@
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
-
 //static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 //FlyEngine::CameraController* newCamera;
 //bool isFirstTime = true;
@@ -125,7 +124,10 @@ namespace FlyEngine
 		if (using2DEntities)
 			Draw2DEntities();
 		if (using3DEntities)
+		{
 			Draw3DEntities();
+			DrawModels();
+		}
 	}
 
 	void BaseGame::DrawModels()
@@ -164,29 +166,21 @@ namespace FlyEngine
 		{
 			if (entity->IsActive())
 			{
-				if (dynamic_cast<Entities::Model*>(entity) != nullptr)
+				if (!entity->IsCameraTarget())
 				{
-					renderer->DrawModel(dynamic_cast<Entities::Model*>(entity), mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
-				}
-				else
-				{
-					if (!entity->IsCameraTarget())
-					{
-						entity->UseShader();
-						SetMatrixUniforms(entity);
+					entity->UseShader();
+					SetMatrixUniforms(entity);
 
-						SetMaterialUniforms(entity);
+					SetMaterialUniforms(entity);
 
-						renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
-						renderer->SetVec3Uniform(entity->GetShaderID(), "entityColor", entity->GetColorV3());
-						
-						renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
-					}
+					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
+					renderer->SetVec3Uniform(entity->GetShaderID(), "entityColor", entity->GetColorV3());
+
+					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
 				}
 			}
 		}
 	}
-
 
 	void BaseGame::CalculateLights()
 	{
@@ -258,7 +252,7 @@ namespace FlyEngine
 		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
-		rec->SetMaterial(MaterialManager::GetDefaultBasicMaterial());
+		rec->SetMaterial(MaterialManager::GetDefaultBasicMaterial(),false);
 
 		CreateBuffers(rec->GetBuffers());
 		BindBuffers(rec->GetBuffers(), rec->GetVertexList(), rec->GetIndexList());
@@ -282,7 +276,7 @@ namespace FlyEngine
 		tri->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
 		tri->SetScale(PixelsToEngine(base, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
-		tri->SetMaterial(MaterialManager::GetDefaultBasicMaterial());
+		tri->SetMaterial(MaterialManager::GetDefaultBasicMaterial(),false);
 
 		CreateBuffers(tri->GetBuffers());
 		BindBuffers(tri->GetBuffers(), tri->GetVertexList(), tri->GetIndexList());
@@ -300,7 +294,7 @@ namespace FlyEngine
 		cube->SetPosition(posX, posY, posZ);
 		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
 
-		cube->SetMaterial(MaterialManager::GetDefaultModelMaterial());
+		cube->SetMaterial(MaterialManager::GetDefaultModelMaterial(), false);
 
 		CreateBuffers(cube->GetBuffers());
 		BindBuffers(cube->GetBuffers(), cube->GetVertexList(), cube->GetIndexList());
@@ -547,12 +541,12 @@ namespace FlyEngine
 	CameraController* BaseGame::CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target, float followDistance)
 	{
 		CameraController* CC = FlyEngine::CameraController::GetInstance();
-		
+
 		if (CC == nullptr)
 		{
-			CC->Initialize(controllingCamera, window); 
+			CC->Initialize(controllingCamera, window);
 		}
-		
+
 		CC->SetMode(cameraMode);
 		CC->SetObjetiveParameters(new ObjetiveParams(target, followDistance));
 
@@ -565,24 +559,16 @@ namespace FlyEngine
 
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
-		Entities::Model* model = Importers::ModelImporter::LoadModel(name, path);
+		std::vector<Entities::Model*> modelVector = Importers::ModelImporter::LoadModel(name, path);
 
-		//glm::vec3 dims = model->GetDimesions();
-		//float middleNumber = FindMiddleNumber(dims.x, dims.y, dims.z);
-		//float windowSize = window->GetWindowSize().x;
-		//float newScale = PixelsToEngine(middleNumber, windowSize);
-
-		//model->SetScale(newScale, newScale, newScale);
-
-		//CreateBuffers(model->GetBuffers());
-		//BindBuffers(model->GetBuffers(), model->GetVertexList(), rec->GetIndexList());
-		//SetVertexAttributes(rec->GetVertexAttributes());
-
-		std::string text = "Model Loaded: (" + model->GetName() + ")!";
+		std::string text = "Model Loaded: (" + name + ")!";
 		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-		modelList.push_back(model);
-		entity3DList.push_back(model);
-		return model;
+		for (auto model : modelVector)
+		{
+			modelList.push_back(model);
+		}
+	
+		return modelVector[0];
 	}
 
 	float BaseGame::FindMiddleNumber(float a, float b, float c)

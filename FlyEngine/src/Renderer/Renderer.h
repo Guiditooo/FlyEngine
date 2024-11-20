@@ -23,6 +23,10 @@ namespace FlyEngine
 {
 	using namespace Utils;
 
+	//class SceneGraph;
+	//class SceneNode;
+	class Scene;
+
 	namespace Entities
 	{
 		class Entity;
@@ -47,7 +51,11 @@ namespace FlyEngine
 		~Renderer();
 
 		void DrawObject(Entities::Entity* toDraw);//Pasar a component, porque quizas quiero UI
-		void DrawModel(Entities::Model* toDraw, glm::mat4x4 viewMat, glm::mat4x4 projMat, glm::vec3 camPos);
+		void DrawModel(Entities::Model* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos);
+		void DrawScene(Scene* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos);
+		//void DrawSceneGraph(SceneGraph* sceneGraph);
+		//void DrawNode(SceneNode* node, const glm::mat4& parentTransform);
+
 		void UseTextures(GLenum textureType, GLuint textureID);
 
 		void SetBackgroundColor(Color* newBgColor);

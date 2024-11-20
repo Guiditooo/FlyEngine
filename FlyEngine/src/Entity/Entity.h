@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include <iostream>
+#include <functional>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -14,6 +15,8 @@
 #include "Buffers/Buffers.h"
 #include "FlyFunctions/Color/Color.h"
 
+#include "BoundingBox/BoundingBox.h"
+
 namespace FlyEngine
 {
 	namespace Materials
@@ -25,14 +28,18 @@ namespace FlyEngine
 
 	namespace Entities
 	{
+		class Mesh;
+
 		class FLY_API Entity
 		{
 		protected:
 			std::vector<Utils::VertexAttribute> vertexAttributes;
 			std::vector<unsigned int> index;
-			std::vector<Entity*> childs;
 			std::vector<float> vertex;
+			std::vector<Entity*> children;
 			Entity* parent;
+
+			Utils::BoundingBox boundingBox;
 
 			Utils::Buffers* buffers;
 			bool active;
@@ -57,10 +64,10 @@ namespace FlyEngine
 			int vertexSize;
 
 		public:
-			Entity(std::string name);
-			Entity(std::string name, glm::vec3 pos);
-			Entity(std::string name, glm::vec3 pos, glm::quat rot);
-			Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale);
+			Entity(std::string name, Entity* parent = nullptr );
+			Entity(std::string name, glm::vec3 pos, Entity* parent = nullptr);
+			Entity(std::string name, glm::vec3 pos, glm::quat rot, Entity* parent = nullptr);
+			Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale, Entity* parent = nullptr);
 			~Entity();
 
 			void SetActive(bool isActive);
@@ -71,7 +78,7 @@ namespace FlyEngine
 
 			void SetName(std::string newName);
 
-			void SetMaterial(Materials::Material* newMaterial);
+			void SetMaterial(Materials::Material* newMaterial, bool setRecursively);
 
 			virtual void SetColor(Utils::Color newColor);
 			virtual void SetColor(glm::vec3 newColor);
@@ -94,10 +101,24 @@ namespace FlyEngine
 			virtual void SetScale(glm::vec3 scale);
 			virtual void SetScale(float scale);
 
-			void SetChild(Entity* newChild);
+			void SetBoundingBox(Utils::BoundingBox bounds);
+			void SetBoundingBox(glm::vec3 min, glm::vec3 max);
+			void SetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+
+			Utils::BoundingBox GetBoundingBox();
+
+			virtual std::vector<Mesh*> GetSubMeshes();
+
+			void AddChild(Entity* newChild);
 			void SetParent(Entity* newParent);
 
+			void RemoveChild(Entity* child);
+			void RemoveParent();
+
+			void Traverse(const std::function<void(Entity*)>& action);
+
 			Transform* GetTransform();
+			glm::mat4 GetWorldTransform();
 
 			Entity* GetParent();
 			std::vector<Entity*> GetChilds();
@@ -129,7 +150,6 @@ namespace FlyEngine
 
 			void UseShader();
 
-			virtual void Draw() = 0;
 		};
 
 	}

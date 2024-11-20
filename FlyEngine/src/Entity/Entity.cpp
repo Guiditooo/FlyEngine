@@ -8,32 +8,38 @@
 #include "FlyFunctions/Debugger/Debugger.h"
 #include "MaterialManager/MaterialManager.h"
 
+#include "Mesh/Mesh.h"
+
 namespace FlyEngine
 {
 	namespace Entities
 	{
 
-		Entity::Entity(std::string name)
+		Entity::Entity(std::string name, Entity* parent)
 		{
 			CreateBaseEntity(name);
+			SetParent(parent);
 		}
-		Entity::Entity(std::string name, glm::vec3 pos)
+		Entity::Entity(std::string name, glm::vec3 pos, Entity* parent)
 		{
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
+			SetParent(parent);
 		}
-		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot)
+		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, Entity* parent)
 		{
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
 			SetRotation(rot);
+			SetParent(parent);
 		}
-		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale)
+		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale, Entity* parent)
 		{
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
 			SetRotation(rot);
 			SetScale(scale.x, scale.y, scale.z);
+			SetParent(parent);
 		}
 
 		void Entity::CreateBaseEntity(std::string name)
@@ -59,13 +65,12 @@ namespace FlyEngine
 
 		void Entity::SetActive(bool isActive)
 		{
-			std::string text = name;
-
 			active = isActive;
 
-			text += active ? " is Active!" : " is not Active!";
-
-			Debugger::ConsoleMessage(&text[0]);
+			for (auto element : children)
+			{
+				element->SetActive(isActive);
+			}
 		}
 
 		bool Entity::IsActive()
@@ -132,10 +137,15 @@ namespace FlyEngine
 			return transform->GetModelMatrix();
 		}
 
+		std::vector<Mesh*> Entity::GetSubMeshes()
+		{
+			return std::vector<Mesh*>();
+		}
+
 		void Entity::SetPosition(float x, float y, float z)
 		{
 			transform->SetPosition(x, y, z);
-			
+
 			if (printModificationMessage)
 			{
 				std::string text = "Setted Position of ";
@@ -144,7 +154,7 @@ namespace FlyEngine
 
 				Debugger::ConsoleMessageID(&text[0], glm::vec3(x, y, z));
 			}
-			
+
 		}
 
 		void Entity::SetPosition(float x)
@@ -194,7 +204,7 @@ namespace FlyEngine
 
 		void Entity::SetScale(float x, float y, float z)
 		{
-			transform->SetScale(x,y,z);
+			transform->SetScale(x, y, z);
 
 			if (printModificationMessage)
 			{
@@ -216,19 +226,134 @@ namespace FlyEngine
 			SetScale(scale, scale, scale);
 		}
 
-		void Entity::SetChild(Entity* newChild)
+		void Entity::SetBoundingBox(Utils::BoundingBox bounds)
 		{
-			childs.push_back(newChild);
+			boundingBox = bounds;
+
+			if (parent != nullptr)
+			{
+				Utils::BoundingBox pbb = parent->GetBoundingBox();
+
+				pbb.min.x = bounds.min.x < pbb.min.x ? bounds.min.x : pbb.min.x;
+				pbb.min.y = bounds.min.y < pbb.min.y ? bounds.min.y : pbb.min.y;
+				pbb.min.z = bounds.min.z < pbb.min.z ? bounds.min.z : pbb.min.z;
+
+				pbb.max.x = bounds.max.x > pbb.max.x ? bounds.max.x : pbb.max.x;
+				pbb.max.y = bounds.max.y > pbb.max.y ? bounds.max.y : pbb.max.y;
+				pbb.max.z = bounds.max.z > pbb.max.z ? bounds.max.z : pbb.max.z;
+
+				parent->SetBoundingBox(pbb);
+			}
+		}
+
+		void Entity::SetBoundingBox(glm::vec3 min, glm::vec3 max)
+		{
+			boundingBox.min = min;
+			boundingBox.max = max;
+
+			if (parent != nullptr)
+			{
+				Utils::BoundingBox pbb = parent->GetBoundingBox();
+
+				pbb.min.x = min.x < pbb.min.x ? min.x : pbb.min.x;
+				pbb.min.y = min.y < pbb.min.y ? min.y : pbb.min.y;
+				pbb.min.z = min.z < pbb.min.z ? min.z : pbb.min.z;
+
+				pbb.max.x = max.x > pbb.max.x ? max.x : pbb.max.x;
+				pbb.max.y = max.y > pbb.max.y ? max.y : pbb.max.y;
+				pbb.max.z = max.z > pbb.max.z ? max.z : pbb.max.z;
+
+				parent->SetBoundingBox(pbb);
+			}
+		}
+
+		void Entity::SetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+		{
+			boundingBox.min.x = minX;
+			boundingBox.min.y = minY;
+			boundingBox.min.z = minZ;
+			boundingBox.max.x = maxX;
+			boundingBox.max.y = maxY;
+			boundingBox.max.z = maxZ;
+
+			if (parent != nullptr)
+			{
+				Utils::BoundingBox pbb = parent->GetBoundingBox();
+
+				pbb.min.x = minX < pbb.min.x ? minX : pbb.min.x;
+				pbb.min.y = minY < pbb.min.y ? minY : pbb.min.y;
+				pbb.min.z = minZ < pbb.min.z ? minZ : pbb.min.z;
+
+				pbb.max.x = maxX > pbb.max.x ? maxX : pbb.max.x;
+				pbb.max.y = maxY > pbb.max.y ? maxY : pbb.max.y;
+				pbb.max.z = maxZ > pbb.max.z ? maxZ : pbb.max.z;
+
+				parent->SetBoundingBox(pbb);
+			}
+		}
+
+		Utils::BoundingBox Entity::GetBoundingBox()
+		{
+			return boundingBox;
+		}
+
+		void Entity::AddChild(Entity* newChild)
+		{
+			children.push_back(newChild);
+			if (newChild->GetParent() != this)
+			{
+				newChild->SetParent(this);
+			}
 		}
 
 		void Entity::SetParent(Entity* newParent)
 		{
 			parent = newParent;
+			if (newParent)
+				newParent->AddChild(this);
+		}
+
+		void Entity::RemoveChild(Entity* child)
+		{
+			auto it = std::find(children.begin(), children.end(), child);
+			if (it != children.end())
+			{
+				children.erase(it);
+				child->RemoveParent();
+			}
+		}
+
+		void Entity::RemoveParent()
+		{
+			parent = nullptr;
+		}
+
+		void Entity::Traverse(const std::function<void(Entity*)>& action)
+		{
+			action(this);
+
+			//ACA NO FALTA ALGO?
+
+			for (Entity* child : children)
+			{
+				child->Traverse(action);
+			}
 		}
 
 		Transform* Entity::GetTransform()
 		{
 			return transform;
+		}
+
+		glm::mat4 Entity::GetWorldTransform()
+		{
+			// Si la entidad tiene un padre, multiplica su transformación local con la global del padre
+			if (parent != nullptr)
+			{
+				return parent->GetWorldTransform() * transform->GetModelMatrix();
+			}
+			// Si no tiene un padre, su transformación global es igual a su transformación local
+			return transform->GetModelMatrix();
 		}
 
 		Entity* Entity::GetParent()
@@ -238,14 +363,27 @@ namespace FlyEngine
 
 		std::vector<Entity*> Entity::GetChilds()
 		{
-			return childs;
-		}		
+			return children;
+		}
 
-		void Entity::SetMaterial(Materials::Material* newMaterial)
+		void Entity::SetMaterial(Materials::Material* newMaterial, bool setRecursively)
 		{
 			material = newMaterial;
-			std::string text = "Material ["+ newMaterial->GetName() + "] added to " + name + "!";
-			Debugger::ConsoleMessage(&text[0],1,0,0,1);
+
+			std::vector<Entities::Mesh*> subMeshes = GetSubMeshes();
+
+			for (auto subMesh : subMeshes)
+			{
+				subMesh->SetMaterial(newMaterial, false);
+			}
+
+			if (setRecursively)
+			{
+				for (auto element : children)
+				{
+					element->SetMaterial(newMaterial, setRecursively);
+				}
+			}
 		}
 
 		Materials::Material* Entity::GetMaterial()
@@ -273,10 +411,6 @@ namespace FlyEngine
 			return indexCount;
 		}
 
-		void Entity::Draw()
-		{
-		}
-
 		std::vector<VertexAttribute> Entity::GetVertexAttributes()
 		{
 			return vertexAttributes;
@@ -292,7 +426,7 @@ namespace FlyEngine
 			return index;
 		}
 
-		void Entity::MoveForward(float amount) 
+		void Entity::MoveForward(float amount)
 		{
 			glm::vec3 forward = transform->GetFront();
 			glm::vec3 currentPosition = transform->GetPosition();
@@ -300,7 +434,7 @@ namespace FlyEngine
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
-		void Entity::MoveBackward(float amount) 
+		void Entity::MoveBackward(float amount)
 		{
 			glm::vec3 backward = -transform->GetFront();
 			glm::vec3 currentPosition = transform->GetPosition();
@@ -308,7 +442,7 @@ namespace FlyEngine
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
-		void Entity::MoveLeft(float amount) 
+		void Entity::MoveLeft(float amount)
 		{
 			glm::vec3 left = -transform->GetRight();
 			glm::vec3 currentPosition = transform->GetPosition();
@@ -316,7 +450,7 @@ namespace FlyEngine
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
-		void Entity::MoveRight(float amount) 
+		void Entity::MoveRight(float amount)
 		{
 			glm::vec3 right = transform->GetRight();
 			glm::vec3 currentPosition = transform->GetPosition();
@@ -324,7 +458,7 @@ namespace FlyEngine
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
-		void Entity::MoveUp(float amount) 
+		void Entity::MoveUp(float amount)
 		{
 			glm::vec3 up = transform->GetUp();
 			glm::vec3 currentPosition = transform->GetPosition();
@@ -332,7 +466,7 @@ namespace FlyEngine
 			SetPosition(currentPosition.x, currentPosition.y, currentPosition.z);
 		}
 
-		void Entity::MoveDown(float amount) 
+		void Entity::MoveDown(float amount)
 		{
 			glm::vec3 down = -transform->GetUp();
 			glm::vec3 currentPosition = transform->GetPosition();

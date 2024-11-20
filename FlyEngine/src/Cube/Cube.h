@@ -14,7 +14,6 @@ namespace FlyEngine
 		public:
 			Cube();
 			~Cube();
-			void Draw() override;
 		};
 
 	}

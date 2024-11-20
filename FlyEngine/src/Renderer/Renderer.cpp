@@ -18,6 +18,10 @@
 #include "Material/Material.h"
 #include "MaterialSpecification/MaterialSpecification.h"
 
+//#include "SceneGraph/SceneGraph.h"
+
+#include "Scene/Scene.h"
+
 namespace FlyEngine
 {
 
@@ -40,10 +44,57 @@ namespace FlyEngine
 	{
 
 	}
+	/*
+	void Renderer::DrawSceneGraph(SceneGraph* sceneGraph)
+	{
+		for (auto& node : sceneGraph->GetNodes())
+		{
+			DrawNode(node, glm::mat4(1.0f)); // Pasamos una matriz identidad como transformación inicial
+		}
+	}
 
-	void Renderer::DrawModel(Entities::Model* toDraw, glm::mat4x4 viewMat, glm::mat4x4 projMat, glm::vec3 camPos)
+	void BaseGame::DrawNode(SceneNode* node, const glm::mat4& parentTransform)
+	{
+		// Acumulamos la transformación del nodo con la de su padre
+		glm::mat4 currentTransform = parentTransform * node->GetLocalTransform();
+
+		if (node->GetEntity()->IsActive())
+		{
+			if (auto model = dynamic_cast<Entities::Model*>(node->GetEntity()))
+			{
+				// Setear las matrices de vista y proyección y demás propiedades
+				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition(), currentTransform);
+			}
+			else
+			{
+				// Caso de otros tipos de entidades
+				auto entity = node->GetEntity();
+				if (!entity->IsCameraTarget())
+				{
+					entity->UseShader();
+					SetMatrixUniforms(entity, currentTransform);  // Mandamos la transformación acumulada
+
+					SetMaterialUniforms(entity);
+
+					renderer->SetVec3Uniform(entity->GetShaderID(), "baseColor", entity->GetMaterial()->GetColorV3());
+					renderer->SetVec3Uniform(entity->GetShaderID(), "entityColor", entity->GetColorV3());
+					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+				}
+			}
+		}
+
+		// Llamada recursiva para cada hijo del nodo actual
+		for (auto& child : node->GetChildren())
+		{
+			DrawNode(child, currentTransform);
+		}
+	}
+	*/
+
+	void Renderer::DrawModel(Entities::Model* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos)
 	{
 		std::vector<Entities::Mesh*> meshes = toDraw->GetMeshes();
+
 		for (int i = 0; i < meshes.size(); i++)
 		{
 			unsigned int id;
@@ -64,13 +115,27 @@ namespace FlyEngine
 
 			SetMatrix4Uniform(id, "view", viewMat);
 			SetMatrix4Uniform(id, "projection", projMat);
-			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix());
+			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix()); // Usar la transformación acumulada
 			SetVec3Uniform(id, "viewPos", camPos);
 
 			SetVec3Uniform(id, "entityColor", toDraw->GetColorV3());
 
 			DrawMesh(meshes[i], renderingMat);
 		}
+	}
+
+	void Renderer::DrawScene(Scene* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos)
+	{
+		toDraw->Traverse([&](Entities::Entity* entity)
+			{
+				Entities::Model* model = dynamic_cast<Entities::Model*>(entity);
+				if (model == nullptr)
+					return;
+				if (model->IsActive())
+				{
+					DrawModel(model, viewMat, projMat, camPos);
+				}
+			});
 	}
 
 	void Renderer::SetBackgroundColor(Color* newBgColor)

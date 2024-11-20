@@ -142,10 +142,5 @@ namespace FlyEngine
 			}
 		}
 
-		void Cube::Draw()
-		{
-			//Deprecated
-		}
-
 	}
 }

@@ -21,16 +21,15 @@ namespace FlyEngine
 
 			VertexAttribute va;
 
-
 			material = nullptr;
 
 			vertex =
 			{
-				//¨Position         //Color           //UV		  //Normal
-				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f, //ARRIBA IZQ
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,  0.0f, 1.0f, //ARRIBA DER
-				-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, //ABAJO IZQ
-				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,  0.0f, 1.0f  //ABAJO DER
+			//	Position            Color             UV		  Normal
+				-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //ARRIBA IZQ
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, //ARRIBA DER
+				-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, //ABAJO IZQ
+				 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f  //ABAJO DER
 			};
 
 			index =
@@ -93,22 +92,6 @@ namespace FlyEngine
 			}
 		}
 
-		/*int Rectangle::GetRectangleCount()
-		{
-			return rectangleCount;
-		}*/
-
-		void Rectangle::Draw()
-		{
-			//Deprecated - Lo hago en el BaseGame
-			/*
-			//std::cout << " Estoy dibujando un cuadrao \n";
-			material->Apply();
-			Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
-			Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-			Renderer::DrawRequest(VAO, indexCount);
-			*/
-		}
 
 	}
 

@@ -15,7 +15,6 @@ namespace FlyEngine
 		public:
 			Triangle();
 			~Triangle();
-			void Draw() override;
 		};
 
 	}

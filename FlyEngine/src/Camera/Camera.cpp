@@ -58,12 +58,6 @@ namespace FlyEngine
 		SetCamera(projType, fov, aspectRatio, nearPlane, farPlane);
 	}
 
-	void Camera::Draw()
-	{
-		//Se dibuja la camara? No
-		//Asi que esto va a cambiar cuando transforme el engine
-		//en component-model
-	}
 
 	void Camera::Update()
 	{

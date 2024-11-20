@@ -20,9 +20,13 @@ namespace FlyEngine
 {
 	namespace Importers
 	{
-		Entities::Model* ModelImporter::LoadModel(std::string modelName, std::string const& path, bool gamma)
+		std::vector<Entities::Model*> ModelImporter::LoadModel(std::string modelName, std::string const& path, bool gamma)
 		{
+			std::vector<Entities::Model*> modelVector;
+
 			Entities::Model* model = new Entities::Model(modelName);
+
+			modelVector.push_back(model);
 
 			Assimp::Importer importer;
 
@@ -33,37 +37,54 @@ namespace FlyEngine
 				aiProcess_FlipUVs |
 				aiProcess_CalcTangentSpace |
 				aiProcess_GenSmoothNormals |
-				aiProcess_LimitBoneWeights);
+				aiProcess_LimitBoneWeights |
+				aiProcess_GenBoundingBoxes |
+				aiProcess_GlobalScale);
 
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 			{
 				std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-				return nullptr;
+				return modelVector;
 			}
 
 			model->SetDirectory(path.substr(0, path.find_last_of('/')) + "/");
 
-			ProcessNode(scene->mRootNode, scene, model);
-			return model;
+			ProcessNode(scene->mRootNode, scene, model, modelVector);
+			return modelVector;
 		}
 
 		Entities::Model* ModelImporter::LoadBSPScene(std::string modelName, std::string const& path, bool gamma)
 		{
 			return nullptr;
 		}
-		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Model* model)
+		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector)
 		{
-			for (unsigned int i = 0; i < node->mNumMeshes; i++)
+			Entities::Model* currentEntity = new Entities::Model(node->mName.C_Str());
+			
+			modelVector.push_back(currentEntity);
+
+			if (parentEntity) 
 			{
-				// the node object only contains indices to index the actual objects in the scene. 
-				// the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-				aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-				model->AddMesh(ProcessMesh(mesh, scene, model));
+				currentEntity->SetParent(parentEntity);
 			}
-			// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
-			for (unsigned int i = 0; i < node->mNumChildren; i++)
+
+			for (unsigned int i = 0; i < node->mNumMeshes; i++) 
 			{
-				ProcessNode(node->mChildren[i], scene, model);
+				aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+				currentEntity->SetBoundingBox(
+					mesh->mAABB.mMin.x,
+					mesh->mAABB.mMin.y,
+					mesh->mAABB.mMin.z,
+					mesh->mAABB.mMax.x,
+					mesh->mAABB.mMax.y,
+					mesh->mAABB.mMax.z
+				);
+				currentEntity->AddMesh(ProcessMesh(mesh, scene, currentEntity));
+			}
+
+			for (unsigned int i = 0; i < node->mNumChildren; i++) 
+			{
+				ProcessNode(node->mChildren[i], scene, currentEntity, modelVector);
 			}
 		}
 
@@ -79,7 +100,8 @@ namespace FlyEngine
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
 				Entities::Vertex vertex;
-				glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+				glm::vec3 vector; 
+
 				// positions
 				vector.x = mesh->mVertices[i].x;
 				vector.y = mesh->mVertices[i].y;
@@ -97,8 +119,7 @@ namespace FlyEngine
 				if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 				{
 					glm::vec2 vec;
-					// a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-					// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+
 					vec.x = mesh->mTextureCoords[0][i].x;
 					vec.y = mesh->mTextureCoords[0][i].y;
 					vertex.TexCoords = vec;
@@ -124,22 +145,16 @@ namespace FlyEngine
 
 				vertices.push_back(vertex);
 			}
-			// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+			
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 			{
 				aiFace face = mesh->mFaces[i];
-				// retrieve all indices of the face and store them in the indices vector
+
 				for (unsigned int j = 0; j < face.mNumIndices; j++)
 					indices.push_back(face.mIndices[j]);
 			}
 			// process materials
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-			// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-			// Same applies to other texture as the following list summarizes:
-			// diffuse: texture_diffuseN
-			// specular: texture_specularN
-			// normal: texture_normalN
 
 
 			if (mesh->mMaterialIndex > 0) //Si el modelo reconoce que hay materiales
@@ -226,10 +241,8 @@ namespace FlyEngine
 				}
 			}
 
-			//return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
 			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
 
-			// return a mesh object created from the extracted mesh data
 		}
 
 		std::vector<Texture> ModelImporter::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Entities::Model* model)

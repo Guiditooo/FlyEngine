@@ -2,6 +2,7 @@
 
 namespace FlyEngine
 {
+	/*
 	SceneNode::SceneNode(Entities::Entity* entity) : parent(nullptr), entity(entity), localTransform(glm::mat4(1.0f)) {}
 
 	void SceneNode::SetParent(SceneNode* parent)
@@ -58,4 +59,5 @@ namespace FlyEngine
 			child->Traverse(func, globalTransform);
 		}
 	}
+	*/
 }

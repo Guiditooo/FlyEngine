@@ -150,6 +150,18 @@
     <Filter Include="Managers\BSP">
       <UniqueIdentifier>{4b590c24-1333-4189-bd55-86ae2fa9a6b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SceneGraph">
+      <UniqueIdentifier>{7d474ea9-8afe-441e-b805-ce3d1af7a311}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneNode">
+      <UniqueIdentifier>{81e055a2-6986-448c-92e7-d5ca55579c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{b52a6a71-70d5-4642-b160-77d53e634354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoundingBox">
+      <UniqueIdentifier>{6cb162da-c860-4685-a08f-3671a42379c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -273,6 +285,18 @@
     </ClCompile>
     <ClCompile Include="src\BSPManager\BSPManager.cpp">
       <Filter>Managers\BSP</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneGraph\SceneGraph.cpp">
+      <Filter>SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneNode\SceneNode.cpp">
+      <Filter>SceneNode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BoundingBox\BoundingBox.cpp">
+      <Filter>BoundingBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +441,18 @@
     </ClInclude>
     <ClInclude Include="src\BSPManager\BSPManager.h">
       <Filter>Managers\BSP</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneGraph\SceneGraph.h">
+      <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneNode\SceneNode.h">
+      <Filter>SceneNode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BoundingBox\BoundingBox.h">
+      <Filter>BoundingBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

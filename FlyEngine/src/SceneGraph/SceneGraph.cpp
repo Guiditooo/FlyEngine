@@ -2,6 +2,7 @@
 
 namespace FlyEngine
 {
+	/*
 	void SceneGraph::AddRootNode(std::unique_ptr<SceneNode> rootNode)
 	{
 		nodes.push_back(std::move(rootNode));
@@ -23,5 +24,5 @@ namespace FlyEngine
 		for (auto& rootNode : nodes) {
 			rootNode->Traverse(func, glm::mat4(1.0f));  // Inicia con la matriz identidad
 		}
-	}
+	}*/
 }

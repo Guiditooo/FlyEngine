@@ -18,21 +18,6 @@ namespace FlyEngine
             useBaseMaterial = false;
         }
 
-        void Model::Draw(unsigned int shaderID)
-        {
-        }
-
-        void Model::Draw()
-        {
-            //Deprecated
-            /*
-            material->Apply();
-            Renderer::SetMatrixUniform(material->GetShaderID(), "modelMatrix", model);
-            Renderer::SetVec3Uniform(material->GetShaderID(), "colorMultiplier", color.GetColorV3());
-            Renderer::DrawRequest(VAO, indexCount);
-            */
-        }
-
         void Model::UpdateMeshesTransform()
         {
             for (Mesh* mesh : meshes) 
@@ -88,6 +73,18 @@ namespace FlyEngine
         std::string Model::GetDirectory()
         {
             return directory;
+        }
+        void Model::SetMaterial(Materials::Material* newMaterial, bool setRecursively)
+        {
+            material = newMaterial;
+
+            if (setRecursively)
+            {
+                for (auto element : children)
+                {
+                    element->SetMaterial(newMaterial, setRecursively);
+                }
+            }
         }
         void Model::SetPosition(float x, float y, float z)
         {
@@ -208,6 +205,10 @@ namespace FlyEngine
         bool Model::ShouldUseBaseMaterial()
         {
             return useBaseMaterial;
+        }
+        std::vector<Mesh*> Model::GetSubMeshes()
+        {
+            return meshes;
         }
     }
 }

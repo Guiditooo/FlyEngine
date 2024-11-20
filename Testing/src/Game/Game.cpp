@@ -95,7 +95,7 @@ namespace FlyGame
 
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
-		piso->SetMaterial(boxMat);
+		//piso->SetMaterial(boxMat);
 		piso->SetScale(100, 100, 100);
 		piso->SetRotation(-90, 90, 0);
 
@@ -109,13 +109,19 @@ namespace FlyGame
 
 		caritoMat->SetSpecs(Materials::MaterialList::Ruby);
 
-		cube->SetMaterial(caritoMat);
+		//cube->SetMaterial(caritoMat);
+		cube->SetMaterial(boxMat, true);
 
 		//cube->SetColor(COLOR::MAGENTA);
 
+		robot->SetMaterial(boxMat, true);
+
+		//robot->SetActive(true);
+
+		scene3->SetActive(false);
 		piso->SetActive(false);
 		triangle->SetActive(false);
-		cube->SetActive(true);
+		cube->SetActive(false);
 
 	}
 
@@ -205,7 +211,7 @@ namespace FlyGame
 			}
 		}
 
-		cameraController->Update(true);
+		cameraController->Update(false);
 
 	}
 
