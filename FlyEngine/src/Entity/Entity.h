@@ -36,13 +36,13 @@ namespace FlyEngine
 			std::vector<Utils::VertexAttribute> vertexAttributes;
 			std::vector<unsigned int> index;
 			std::vector<float> vertex;
-			std::vector<Entity*> children;
-			Entity* parent;
 
 			Utils::BoundingBox boundingBox;
 
 			Utils::Buffers* buffers;
+
 			bool active;
+			bool activeInHierarchy;
 
 			Materials::Material* material;
 
@@ -63,6 +63,8 @@ namespace FlyEngine
 			int vertexCount;
 			int vertexSize;
 
+			//void SetTransform();
+
 		public:
 			Entity(std::string name, Entity* parent = nullptr );
 			Entity(std::string name, glm::vec3 pos, Entity* parent = nullptr);
@@ -72,6 +74,8 @@ namespace FlyEngine
 
 			void SetActive(bool isActive);
 			bool IsActive();
+
+			bool IsActiveInHierarchy();
 
 			void SetAsCameraTarget(bool value);
 			bool IsCameraTarget();
@@ -115,13 +119,13 @@ namespace FlyEngine
 			void RemoveChild(Entity* child);
 			void RemoveParent();
 
+			Entity* GetParent();
+			std::vector<Entity*> GetChilds();
+
 			void Traverse(const std::function<void(Entity*)>& action);
 
 			Transform* GetTransform();
 			glm::mat4 GetWorldTransform();
-
-			Entity* GetParent();
-			std::vector<Entity*> GetChilds();
 
 			void MoveForward(float amount);
 			void MoveBackward(float amount);

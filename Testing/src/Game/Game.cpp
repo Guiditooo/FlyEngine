@@ -138,6 +138,16 @@ namespace FlyGame
 			ShowCursor();
 		}
 
+		if (Input::GetKeyPressed(KeyCode::KEY_P))
+		{
+			robot->Translate(100, 0, 0);
+		}
+		if (Input::GetKeyPressed(KeyCode::KEY_O))
+		{
+			robot->Translate(-100, 0, 0);
+		}
+
+		//Debugger::ConsoleMessage("RobotPos:", robot->GetTransform()->GetPosition());
 		//if (Input::GetKeyPressed(KeyCode::KEY_1))
 		//{
 		//	if (movingEntity != nullptr)

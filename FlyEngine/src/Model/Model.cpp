@@ -22,7 +22,7 @@ namespace FlyEngine
         {
             for (Mesh* mesh : meshes) 
             {
-                mesh->SetPosition(transform->GetPosition());
+                mesh->SetPosition(transform->GetPosition()); //Darle cosas de mundo
                 mesh->SetRotation(transform->GetRotation());
                 mesh->SetScale(transform->GetScale());
             }
@@ -73,18 +73,6 @@ namespace FlyEngine
         std::string Model::GetDirectory()
         {
             return directory;
-        }
-        void Model::SetMaterial(Materials::Material* newMaterial, bool setRecursively)
-        {
-            material = newMaterial;
-
-            if (setRecursively)
-            {
-                for (auto element : children)
-                {
-                    element->SetMaterial(newMaterial, setRecursively);
-                }
-            }
         }
         void Model::SetPosition(float x, float y, float z)
         {

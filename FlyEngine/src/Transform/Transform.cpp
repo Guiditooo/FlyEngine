@@ -2,18 +2,21 @@
 
 #include <glm/gtx/euler_angles.hpp>
 
-//www.c-jump.com/bcc/common/Talk3/Math/GLM/GLM.html#W01_0030_matrix_transformation
+#include "Entity/Entity.h"
 
 const float deg2rad = (glm::pi<float>() * 2.0f) / 360.0f;
 const float pi = 3.14159265359f;
 
 namespace FlyEngine
 {
-	Transform::Transform()
+	Transform::Transform(Entities::Entity* entity)
 	{
+		this->entity = entity;
+
 		shouldUpdateModelMatrix = false;
 
 		modelMatrix = glm::mat4(1.0f);
+		worldMatrix = glm::mat4(1.0f);
 
 		translateMatrix = glm::mat4(1.0f);
 		rotationMatrix = glm::mat4(1.0f);
@@ -34,6 +37,7 @@ namespace FlyEngine
 	{
 		positionVector = glm::vec3(x, y, z);
 		translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
+
 		shouldUpdateModelMatrix = true;
 	}
 
@@ -157,8 +161,15 @@ namespace FlyEngine
 	glm::mat4 Transform::GetModelMatrix()
 	{
 		if (shouldUpdateModelMatrix)
+		{
 			UpdateModelMatrix();
+		}
 		return modelMatrix;
+	}
+
+	glm::mat4 Transform::GetWorldMatrix()
+	{
+		return worldMatrix;
 	}
 
 	void Transform::Translate(float x, float y, float z)
@@ -246,7 +257,73 @@ namespace FlyEngine
 	void Transform::UpdateModelMatrix()
 	{
 		modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
+
+		for (auto child : children)
+		{
+			child->UpdateWorldMatrix(this);
+		}
+
 		shouldUpdateModelMatrix = false;
+	}
+
+	void Transform::UpdateWorldMatrix(Transform* parent)
+	{
+		worldMatrix *= parent->GetWorldMatrix();
+	}
+
+	Transform* Transform::GetParent()
+	{
+		return parent;
+	}
+
+	std::vector<Transform*> Transform::GetChilds()
+	{
+		return std::vector<Transform*>();
+	}
+
+	void Transform::AddChild(Transform* newChild)
+	{
+		children.push_back(newChild);
+		if (newChild->GetParent() != this)
+		{
+			newChild->SetParent(this);
+			newChild->UpdateWorldMatrix(this);
+		}
+	}
+
+	void Transform::SetParent(Transform* newParent)
+	{
+		parent = newParent;
+		if (newParent)
+		{
+			newParent->AddChild(this);
+			UpdateWorldMatrix(newParent);
+		}
+		else
+		{
+			worldMatrix = modelMatrix;
+		}
+	}
+
+	void Transform::RemoveChild(Transform* child)
+	{
+		auto it = std::find(children.begin(), children.end(), child);
+		if (it != children.end())
+		{
+			children.erase(it);
+			child->RemoveParent();
+		}
+	}
+
+	void Transform::RemoveParent()
+	{
+		parent = nullptr;
+		modelMatrix = worldMatrix;
+	}
+
+	void Transform::SetEntity(Entities::Entity* entity)
+	{
+		this->entity = entity;
 	}
 
 	glm::quat Transform::EulerToQuat(glm::vec3 euler)

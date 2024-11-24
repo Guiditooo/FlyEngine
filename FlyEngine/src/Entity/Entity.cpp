@@ -17,29 +17,37 @@ namespace FlyEngine
 
 		Entity::Entity(std::string name, Entity* parent)
 		{
+			transform = new Transform();
 			CreateBaseEntity(name);
-			SetParent(parent);
+			if(parent)
+				SetParent(parent);
 		}
 		Entity::Entity(std::string name, glm::vec3 pos, Entity* parent)
 		{
+			transform = new Transform();
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
-			SetParent(parent);
+			if(parent)
+				SetParent(parent);
 		}
 		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, Entity* parent)
 		{
+			transform = new Transform();
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
 			SetRotation(rot);
-			SetParent(parent);
+			if(parent)
+				SetParent(parent);
 		}
 		Entity::Entity(std::string name, glm::vec3 pos, glm::quat rot, glm::vec3 scale, Entity* parent)
 		{
+			transform = new Transform();
 			CreateBaseEntity(name);
 			SetPosition(pos.x, pos.y, pos.z);
 			SetRotation(rot);
 			SetScale(scale.x, scale.y, scale.z);
-			SetParent(parent);
+			if(parent)
+				SetParent(parent);
 		}
 
 		void Entity::CreateBaseEntity(std::string name)
@@ -56,7 +64,9 @@ namespace FlyEngine
 
 			printModificationMessage = false;
 
-			transform = new Transform();
+			Entity* thisEntity = this;
+
+			transform->SetEntity(thisEntity);
 		}
 
 		Entity::~Entity()
@@ -66,15 +76,18 @@ namespace FlyEngine
 		void Entity::SetActive(bool isActive)
 		{
 			active = isActive;
-
-			for (auto element : children)
-			{
-				element->SetActive(isActive);
-			}
 		}
 
 		bool Entity::IsActive()
 		{
+			return active;
+		}
+
+		bool Entity::IsActiveInHierarchy()
+		{
+			if (transform->GetParent() != nullptr)
+				return transform->GetParent()->entity->IsActiveInHierarchy();
+			
 			return active;
 		}
 
@@ -230,9 +243,9 @@ namespace FlyEngine
 		{
 			boundingBox = bounds;
 
-			if (parent != nullptr)
+			if (transform->GetParent() != nullptr)
 			{
-				Utils::BoundingBox pbb = parent->GetBoundingBox();
+				Utils::BoundingBox pbb = transform->GetParent()->entity->GetBoundingBox();
 
 				pbb.min.x = bounds.min.x < pbb.min.x ? bounds.min.x : pbb.min.x;
 				pbb.min.y = bounds.min.y < pbb.min.y ? bounds.min.y : pbb.min.y;
@@ -242,7 +255,7 @@ namespace FlyEngine
 				pbb.max.y = bounds.max.y > pbb.max.y ? bounds.max.y : pbb.max.y;
 				pbb.max.z = bounds.max.z > pbb.max.z ? bounds.max.z : pbb.max.z;
 
-				parent->SetBoundingBox(pbb);
+				transform->GetParent()->entity->SetBoundingBox(pbb);
 			}
 		}
 
@@ -251,9 +264,9 @@ namespace FlyEngine
 			boundingBox.min = min;
 			boundingBox.max = max;
 
-			if (parent != nullptr)
+			if (transform->GetParent() != nullptr)
 			{
-				Utils::BoundingBox pbb = parent->GetBoundingBox();
+				Utils::BoundingBox pbb = transform->GetParent()->entity->GetBoundingBox();
 
 				pbb.min.x = min.x < pbb.min.x ? min.x : pbb.min.x;
 				pbb.min.y = min.y < pbb.min.y ? min.y : pbb.min.y;
@@ -263,7 +276,7 @@ namespace FlyEngine
 				pbb.max.y = max.y > pbb.max.y ? max.y : pbb.max.y;
 				pbb.max.z = max.z > pbb.max.z ? max.z : pbb.max.z;
 
-				parent->SetBoundingBox(pbb);
+				transform->GetParent()->entity->SetBoundingBox(pbb);
 			}
 		}
 
@@ -276,9 +289,9 @@ namespace FlyEngine
 			boundingBox.max.y = maxY;
 			boundingBox.max.z = maxZ;
 
-			if (parent != nullptr)
+			if (transform->GetParent() != nullptr)
 			{
-				Utils::BoundingBox pbb = parent->GetBoundingBox();
+				Utils::BoundingBox pbb = transform->GetParent()->entity->GetBoundingBox();
 
 				pbb.min.x = minX < pbb.min.x ? minX : pbb.min.x;
 				pbb.min.y = minY < pbb.min.y ? minY : pbb.min.y;
@@ -288,7 +301,7 @@ namespace FlyEngine
 				pbb.max.y = maxY > pbb.max.y ? maxY : pbb.max.y;
 				pbb.max.z = maxZ > pbb.max.z ? maxZ : pbb.max.z;
 
-				parent->SetBoundingBox(pbb);
+				transform->GetParent()->entity->SetBoundingBox(pbb);
 			}
 		}
 
@@ -299,33 +312,22 @@ namespace FlyEngine
 
 		void Entity::AddChild(Entity* newChild)
 		{
-			children.push_back(newChild);
-			if (newChild->GetParent() != this)
-			{
-				newChild->SetParent(this);
-			}
+			transform->AddChild(newChild->GetTransform());
 		}
 
 		void Entity::SetParent(Entity* newParent)
 		{
-			parent = newParent;
-			if (newParent)
-				newParent->AddChild(this);
+			transform->SetParent(newParent->GetTransform());
 		}
 
 		void Entity::RemoveChild(Entity* child)
 		{
-			auto it = std::find(children.begin(), children.end(), child);
-			if (it != children.end())
-			{
-				children.erase(it);
-				child->RemoveParent();
-			}
+			transform->RemoveChild(child->GetTransform());
 		}
 
 		void Entity::RemoveParent()
 		{
-			parent = nullptr;
+			transform->RemoveParent();
 		}
 
 		void Entity::Traverse(const std::function<void(Entity*)>& action)
@@ -333,11 +335,12 @@ namespace FlyEngine
 			action(this);
 
 			//ACA NO FALTA ALGO?
-
+			/*
 			for (Entity* child : children)
 			{
 				child->Traverse(action);
 			}
+			*/
 		}
 
 		Transform* Entity::GetTransform()
@@ -348,9 +351,9 @@ namespace FlyEngine
 		glm::mat4 Entity::GetWorldTransform()
 		{
 			// Si la entidad tiene un padre, multiplica su transformación local con la global del padre
-			if (parent != nullptr)
+			if (GetParent() != nullptr)
 			{
-				return parent->GetWorldTransform() * transform->GetModelMatrix();
+				return GetParent()->GetWorldTransform() * transform->GetModelMatrix();
 			}
 			// Si no tiene un padre, su transformación global es igual a su transformación local
 			return transform->GetModelMatrix();
@@ -358,12 +361,17 @@ namespace FlyEngine
 
 		Entity* Entity::GetParent()
 		{
-			return parent;
+			return transform->GetParent()->entity;
 		}
 
 		std::vector<Entity*> Entity::GetChilds()
 		{
-			return children;
+			std::vector<Entity*> ret;
+			for (auto child : transform->GetChilds())
+			{
+				ret.push_back(child->entity);
+			}
+			return ret;
 		}
 
 		void Entity::SetMaterial(Materials::Material* newMaterial, bool setRecursively)
@@ -379,9 +387,9 @@ namespace FlyEngine
 
 			if (setRecursively)
 			{
-				for (auto element : children)
+				for (auto element : transform->GetChilds())
 				{
-					element->SetMaterial(newMaterial, setRecursively);
+					element->entity->SetMaterial(newMaterial, setRecursively);
 				}
 			}
 		}

@@ -29,8 +29,6 @@ namespace FlyEngine
 			std::vector<Mesh*> GetMeshes();
 			std::string GetDirectory();
 
-			void SetMaterial(Materials::Material* newMaterial, bool setRecursively);
-
 			void SetPosition(float x, float y, float z) override;
 			void SetPosition(float x) override;
 			void SetPosition(glm::vec3 pos) override;

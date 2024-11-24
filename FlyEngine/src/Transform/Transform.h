@@ -1,6 +1,8 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,11 +11,42 @@
 
 namespace FlyEngine
 {
+
+	namespace Entities
+	{
+		class Entity;
+	}
+
 	class FLY_API Transform
 	{
-	public:
+	private:
+		glm::mat4 translateMatrix;
+		glm::mat4 rotationMatrix;
+		glm::mat4 scaleMatrix;
+		glm::mat4 modelMatrix;
+		glm::mat4 worldMatrix;
 
-		Transform();
+		glm::vec3 positionVector;
+		glm::vec3 rotationVector;
+		glm::quat rotationQuaternion;
+		glm::vec3 scaleVector;
+
+		bool shouldUpdateModelMatrix;
+
+		std::vector<Transform*> children;
+		Transform* parent;
+
+		glm::quat EulerToQuat(glm::vec3 euler);
+		glm::mat4 EulerToMat4(glm::vec3 euler);
+		glm::vec3 Mat4ToEuler(glm::mat4 matrix);
+		glm::vec3 QuaternionToEuler(glm::quat quat);
+		glm::vec3 QuatToVec(glm::quat quat, glm::vec3 vec);
+		glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
+
+	public:
+		Entities::Entity* entity;
+
+		Transform(Entities::Entity* entity = nullptr);
 		~Transform();
 
 		void SetPosition(float x, float y, float z);
@@ -41,6 +74,7 @@ namespace FlyEngine
 		glm::vec3 GetRight();
 
 		glm::mat4 GetModelMatrix();
+		glm::mat4 GetWorldMatrix();
 
 		virtual void Translate(float x, float y, float z);
 		virtual void Translate(glm::vec3 pos);
@@ -57,26 +91,19 @@ namespace FlyEngine
 		virtual void Scale(float scale);
 
 		void UpdateModelMatrix();
+		void UpdateWorldMatrix(Transform* parent);
 
-	private:
-		glm::mat4 translateMatrix;
-		glm::mat4 rotationMatrix;
-		glm::mat4 scaleMatrix;
-		glm::mat4 modelMatrix;
+		Transform* GetParent();
+		std::vector<Transform*> GetChilds();
 
-		glm::vec3 positionVector;
-		glm::vec3 rotationVector;
-		glm::quat rotationQuaternion;
-		glm::vec3 scaleVector;
+		void AddChild(Transform* newChild);
+		void SetParent(Transform* newParent);
 
-		bool shouldUpdateModelMatrix;
+		void RemoveChild(Transform* child);
+		void RemoveParent();
+	
+		void SetEntity(Entities::Entity* entity);
 
-		glm::quat EulerToQuat(glm::vec3 euler);
-		glm::mat4 EulerToMat4(glm::vec3 euler);
-		glm::vec3 Mat4ToEuler(glm::mat4 matrix);
-		glm::vec3 QuaternionToEuler(glm::quat quat);
-		glm::vec3 QuatToVec(glm::quat quat, glm::vec3 vec);
-		glm::quat QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards);
 	};
 }
 

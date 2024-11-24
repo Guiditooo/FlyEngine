@@ -20,7 +20,6 @@ namespace FlyEngine
 
 		bool BSPManager::IsPlaneAble(Plane* plane)
 		{
-			// Se fija que la normal del plano en cuestion sea ortogonal 
 			glm::vec3 normal = plane->GetNormal(); 
 
 			double veryLowNumber = 1e-6;
