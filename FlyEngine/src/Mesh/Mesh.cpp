@@ -10,11 +10,12 @@ namespace FlyEngine
 {
 	namespace Entities
 	{
-        Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Materials::Material* material, std::string meshName) : Entity(meshName)
+        Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string meshName)
 		{
             this->vertices = vertices;
             this->indices = indices;
-            this->material = material;
+
+            buffers = new Utils::Buffers();
 
             SetupMesh();
 		}
