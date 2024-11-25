@@ -162,6 +162,24 @@
     <Filter Include="BoundingBox">
       <UniqueIdentifier>{6cb162da-c860-4685-a08f-3671a42379c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TransformElement">
+      <UniqueIdentifier>{5a1fb3e0-302c-4c60-9727-95146e654ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform Elements">
+      <UniqueIdentifier>{fc665c0f-24f8-42bf-990f-f25cb0818a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform Elements\Position">
+      <UniqueIdentifier>{259dbd60-bde6-4bc1-82c6-616d268b68db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform Elements\Rotation">
+      <UniqueIdentifier>{ed27d68b-41fd-42ab-b057-df12b201461a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform Elements\Scale">
+      <UniqueIdentifier>{b2f75dde-c46f-4cb0-a12d-111f6670d7ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TransformComponent">
+      <UniqueIdentifier>{97b4bdf9-e955-4361-97d1-a2ab68c427bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -297,6 +315,21 @@
     </ClCompile>
     <ClCompile Include="src\BoundingBox\BoundingBox.cpp">
       <Filter>BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformElement\TransformElement.cpp">
+      <Filter>TransformElement</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformPosition\TransformPosition.cpp">
+      <Filter>Transform Elements\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformRotation\TransformRotation.cpp">
+      <Filter>Transform Elements\Rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformScale\TransformScale.cpp">
+      <Filter>Transform Elements\Scale</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformComponent\TransformComponent.cpp">
+      <Filter>TransformComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -453,6 +486,21 @@
     </ClInclude>
     <ClInclude Include="src\BoundingBox\BoundingBox.h">
       <Filter>BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformElement\TransformElement.h">
+      <Filter>TransformElement</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformPosition\TransformPosition.h">
+      <Filter>Transform Elements\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformRotation\TransformRotation.h">
+      <Filter>Transform Elements\Rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformScale\TransformScale.h">
+      <Filter>Transform Elements\Scale</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformComponent\TransformComponent.h">
+      <Filter>TransformComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
