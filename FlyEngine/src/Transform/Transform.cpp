@@ -9,266 +9,228 @@ const float pi = 3.14159265359f;
 
 namespace FlyEngine
 {
+	void Transform::UpdateMatrices()
+	{
+		UpdateLocalMatrix();
+		UpdateWorldMatrix();
+	}
+
+	void Transform::FreeLocalMatrix()
+	{
+		localTransform->matrix = worldTransform->matrix;
+	}
+
 	Transform::Transform(Entities::Entity* entity)
 	{
 		this->entity = entity;
+		
+		localTransform->Reset();
+		worldTransform->Reset();
 
-		shouldUpdateModelMatrix = false;
-
-		modelMatrix = glm::mat4(1.0f);
-		worldMatrix = glm::mat4(1.0f);
-
-		translateMatrix = glm::mat4(1.0f);
-		rotationMatrix = glm::mat4(1.0f);
-		scaleMatrix = glm::mat4(1.0f);
-
-		positionVector = glm::vec3(0, 0, 0);
-		rotationVector = glm::vec3(0, 0, 0);
-		scaleVector = glm::vec3(1, 1, 1);
-
-		rotationQuaternion = EulerToQuat(rotationVector);
+		parent = nullptr;
+		children = std::vector<Transform*>();
 	}
 
 	Transform::~Transform()
 	{
 	}
 
-	void Transform::SetPosition(float x, float y, float z)
+	void Transform::SetWorldPosition(float x, float y, float z)
 	{
-		positionVector = glm::vec3(x, y, z);
-		translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
+		glm::vec3 worldPos = glm::vec3(x, y, z);
 
-		shouldUpdateModelMatrix = true;
-	}
-
-	void Transform::SetPosition(float x)
-	{
-		SetPosition(x, x, x);
-	}
-
-	void Transform::SetPosition(glm::vec3 pos)
-	{
-		SetPosition(pos.x, pos.y, pos.z);
-	}
-
-	void Transform::SetRotation(float x, float y, float z)
-	{
-		rotationVector = glm::vec3(x, y, z);
-		rotationQuaternion = glm::quat(glm::vec3(glm::radians(x), glm::radians(y), glm::radians(z)));
-		rotationMatrix = glm::mat4_cast(rotationQuaternion);
-		shouldUpdateModelMatrix = true;
-	}
-
-	void Transform::SetRotation(glm::vec3 rot)
-	{
-		SetRotation(rot.x, rot.y, rot.z);
-	}
-
-	void Transform::SetRotation(glm::quat rot)
-	{
-		rotationQuaternion = rot;
-		rotationVector = glm::eulerAngles(rot);
-		rotationMatrix = glm::mat4_cast(rotationQuaternion);
-		shouldUpdateModelMatrix = true;
-	}
-
-	void Transform::SetScale(float x, float y, float z)
-	{
-		scaleVector = glm::vec3(x, y, z);
-		scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
-		shouldUpdateModelMatrix = true;
-	}
-
-	void Transform::SetScale(glm::vec3 scale)
-	{
-		SetScale(scale.x, scale.y, scale.z);
-	}
-
-	void Transform::SetScale(float scale)
-	{
-		SetScale(scale, scale, scale);
-	}
-
-	void Transform::SetFront(glm::vec3 front)
-	{
-		/*
-			modelMatrix[2] = glm::vec4(glm::normalize(front), modelMatrix[3].w);
-
-			float pitch = glm::degrees(asin(-modelMatrix[2].y));
-			float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
-			float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
-
-			rotationVector = glm::vec3(pitch, yaw, roll);
-
-			SetRotation(rotationVector);
-			*/
-	}
-
-	void Transform::SetUp(glm::vec3 up)
-	{
-		modelMatrix[1] = glm::vec4(glm::normalize(up), modelMatrix[3].w);
-
-		float pitch = glm::degrees(asin(-modelMatrix[2].y));
-		float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
-		float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
-
-		rotationVector = glm::vec3(pitch, yaw, roll);
-		SetRotation(rotationVector);
-	}
-
-	void Transform::SetRight(glm::vec3 right)
-	{
-		modelMatrix[0] = glm::vec4(glm::normalize(right), modelMatrix[3].w);
-
-		float pitch = glm::degrees(asin(-modelMatrix[2].y));
-		float yaw = glm::degrees(atan2(modelMatrix[2].x, modelMatrix[2].z));
-		float roll = glm::degrees(atan2(modelMatrix[1].x, modelMatrix[0].x));
-
-		rotationVector = glm::vec3(pitch, yaw, roll);
-		SetRotation(rotationVector);
-	}
-
-	glm::vec3 Transform::GetPosition()
-	{
-		return positionVector;
-	}
-
-	glm::vec3 Transform::GetRotation()
-	{
-		return rotationVector;
-	}
-
-	glm::vec3 Transform::GetScale()
-	{
-		return scaleVector;
-	}
-
-	glm::vec3 Transform::GetFront()
-	{
-		return -GetModelMatrix()[2];
-	}
-
-	glm::vec3 Transform::GetUp()
-	{
-		return GetModelMatrix()[1];
-	}
-
-	glm::vec3 Transform::GetRight()
-	{
-		return GetModelMatrix()[0];
-	}
-
-	glm::mat4 Transform::GetModelMatrix()
-	{
-		if (shouldUpdateModelMatrix)
+		if (parent)
 		{
-			UpdateModelMatrix();
+			glm::mat4 parentWorldMatrixInverse = glm::inverse(parent->worldTransform->matrix);
+			glm::vec4 localPos = parentWorldMatrixInverse * glm::vec4(worldPos, 1.0f);
+
+			localTransform->position->SetPosition(glm::vec3(localPos));
 		}
-		return modelMatrix;
+		else
+		{
+			localTransform->position->SetPosition(worldPos);
+		}
+
+		UpdateMatrices();
 	}
 
-	glm::mat4 Transform::GetWorldMatrix()
+	void Transform::SetLocalPosition(float x, float y, float z)
 	{
-		return worldMatrix;
+		localTransform->position->SetPosition(x, y, z);
+		UpdateMatrices();
 	}
 
-	void Transform::Translate(float x, float y, float z)
+	void Transform::SetWorldRotation(float x, float y, float z)
 	{
-		positionVector += glm::vec3(x, y, z);
-		translateMatrix = glm::translate(glm::mat4(1.0f), positionVector);
-		shouldUpdateModelMatrix = true;
+		glm::quat worldQuat = glm::quat(glm::radians(glm::vec3(x, y, z)));
+
+		if (parent)
+		{
+			glm::quat parentWorldQuat = glm::quat_cast(parent->worldTransform->matrix);
+			glm::quat localQuat = glm::inverse(parentWorldQuat) * worldQuat;
+			localTransform->rotation->SetRotation(localQuat);
+		}
+		else
+		{
+			localTransform->rotation->SetRotation(worldQuat);
+		}
+
+		UpdateMatrices();
 	}
 
-	void Transform::Translate(glm::vec3 pos)
+	void Transform::SetLocalRotation(float x, float y, float z)
 	{
-		Translate(pos.x, pos.y, pos.z);
+		localTransform->rotation->SetRotation(x,y,z);
+		UpdateMatrices();
 	}
 
-	void Transform::RotateAround(float x, float y, float z)
+	void Transform::SetWorldScale(float x, float y, float z)
 	{
-		/*glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
-			glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
-			glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
-			glm::quat rot = rotZ * rotY * rotX;
-			rotationQuaternion = rot * rotationQuaternion;
-			*/
-		const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f), glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
-		const glm::mat4 transformY = glm::rotate(glm::mat4(1.0f), glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
-		const glm::mat4 transformZ = glm::rotate(glm::mat4(1.0f), glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
-		rotationVector = glm::vec3(x, y, z);
-		rotationMatrix = transformY * transformX * transformZ;
-		//rotationVector = glm::eulerAngles(rotationQuaternion);
-		//rotationMatrix = glm::mat4_cast(rotationQuaternion);
-		shouldUpdateModelMatrix = true;
+		glm::vec3 worldScale = glm::vec3 (x, y, z);
+
+		if (parent)
+		{
+			glm::vec3 parentScale = parent->worldTransform->scale->GetScale();
+			glm::vec3 localScale = worldScale / parentScale;
+			localTransform->scale->SetScale(localScale);
+		}
+		else
+		{
+			localTransform->scale->SetScale(worldScale);
+		}
+
+		UpdateMatrices();
 	}
 
-	void Transform::Rotate(float x, float y, float z)
+	void Transform::SetLocalScale(float x, float y, float z)
 	{
-		glm::quat rotX = glm::angleAxis(glm::radians(x), GetRight());
-		glm::quat rotY = glm::angleAxis(glm::radians(y), GetUp());
-		glm::quat rotZ = glm::angleAxis(glm::radians(z), GetFront());
-		glm::quat rot = rotZ * rotY * rotX;
-		rotationQuaternion = rot * rotationQuaternion;
-
-		rotationVector = glm::eulerAngles(rotationQuaternion);
-		rotationMatrix = glm::mat4_cast(rotationQuaternion);
-		shouldUpdateModelMatrix = true;
+		localTransform->scale->SetScale(x, y, z);
+		UpdateMatrices();
 	}
 
-	void Transform::Rotate(glm::vec3 rot)
+	void Transform::WorldTranslate(float x, float y, float z)
 	{
-		Rotate(rot.x, rot.y, rot.z);
+		glm::vec3 worldTranslation(x, y, z);
+
+		if (parent)
+		{
+			glm::mat4 parentWorldMatrixInverse = glm::inverse(parent->worldTransform->matrix);
+			glm::vec4 localTranslation = parentWorldMatrixInverse * glm::vec4(worldTranslation, 0.0f);
+			localTransform->position->Translate(glm::vec3(localTranslation));
+		}
+		else
+		{
+			localTransform->position->Translate(worldTranslation);
+		}
+
+		UpdateMatrices();
+	}
+
+	void Transform::LocalTranslate(float x, float y, float z)
+	{
+		localTransform->position->Translate(x, y, z);
+		UpdateMatrices();
 	}
 
 	void Transform::WorldRotate(float x, float y, float z)
 	{
-		glm::quat rotX = glm::angleAxis(glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
-		glm::quat rotY = glm::angleAxis(glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::quat rotZ = glm::angleAxis(glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
-		glm::quat rot = rotZ * rotY * rotX;
-		rotationQuaternion = rot * rotationQuaternion;
-		rotationVector = glm::eulerAngles(rotationQuaternion);
-		rotationMatrix = glm::mat4_cast(rotationQuaternion);
-		shouldUpdateModelMatrix = true;
+		glm::quat worldQuat = glm::quat(glm::radians(glm::vec3(x, y, z)));
+
+		if (parent)
+		{
+			glm::quat parentWorldQuat = glm::quat_cast(parent->worldTransform->matrix);
+			glm::quat localQuat = glm::inverse(parentWorldQuat) * worldQuat;
+			localTransform->rotation->Rotate(localQuat);
+		}
+		else
+		{
+			localTransform->rotation->Rotate(worldQuat);
+		}
+
+		UpdateMatrices();
 	}
 
-	void Transform::WorldRotate(glm::vec3 rot)
+	void Transform::LocalRotate(float x, float y, float z)
 	{
-		WorldRotate(rot.x, rot.y, rot.z);
+		localTransform->rotation->Rotate(x, y, z);
+		UpdateMatrices();
 	}
 
-	void Transform::Scale(float x, float y, float z)
+	void Transform::WorldScale(float x, float y, float z)
 	{
-		scaleVector *= glm::vec3(x, y, z);
-		scaleMatrix = glm::scale(glm::mat4(1.0f), scaleVector);
-		shouldUpdateModelMatrix = true;
+		glm::vec3 worldScaling(x, y, z);
+
+		if (parent)
+		{
+			glm::vec3 parentScale = parent->worldTransform->scale->GetScale();
+			glm::vec3 localScaling = worldScaling / parentScale;
+			localTransform->scale->Scale(localScaling);
+		}
+		else
+		{
+			localTransform->scale->Scale(worldScaling);
+		}
+
+		UpdateMatrices();
 	}
 
-	void Transform::Scale(glm::vec3 scale)
+	void Transform::LocalScale(float x, float y, float z)
 	{
-		Scale(scale.x, scale.y, scale.z);
+		localTransform->scale->Scale(x, y, z);
+		UpdateMatrices();
 	}
 
-	void Transform::Scale(float scale)
+	glm::vec3 Transform::GetWorldPosition()
 	{
-		Scale(scale, scale, scale);
+		return worldTransform->position->GetPosition();
 	}
 
-	void Transform::UpdateModelMatrix()
+	glm::vec3 Transform::GetLocalPosition()
 	{
-		modelMatrix = translateMatrix * rotationMatrix * scaleMatrix;
+		return localTransform->position->GetPosition();
+	}
+
+	glm::vec3 Transform::GetWorldRotation()
+	{
+		return worldTransform->rotation->GetRotation();
+	}
+
+	glm::vec3 Transform::GetLocalRotation()
+	{
+		return localTransform->rotation->GetRotation();
+	}
+
+	glm::vec3 Transform::GetWorldScale()
+	{
+		return worldTransform->scale->GetScale();
+	}
+
+	glm::vec3 Transform::GetLocalScale()
+	{
+		return localTransform->scale->GetScale();
+	}
+
+
+	void Transform::UpdateLocalMatrix()
+	{
+		localTransform->UpdateTRS();
+	}
+
+	void Transform::UpdateWorldMatrix()
+	{
+		if (parent)
+		{
+			worldTransform->matrix = parent->worldTransform->matrix * localTransform->matrix;
+		}
+		else
+		{
+			worldTransform->matrix = localTransform->matrix;
+		}
 
 		for (auto child : children)
 		{
-			child->UpdateWorldMatrix(this);
+			child->UpdateWorldMatrix();
 		}
-
-		shouldUpdateModelMatrix = false;
-	}
-
-	void Transform::UpdateWorldMatrix(Transform* parent)
-	{
-		worldMatrix *= parent->GetWorldMatrix();
 	}
 
 	Transform* Transform::GetParent()
@@ -276,9 +238,9 @@ namespace FlyEngine
 		return parent;
 	}
 
-	std::vector<Transform*> Transform::GetChilds()
+	std::vector<Transform*> Transform::GetChildren()
 	{
-		return std::vector<Transform*>();
+		return children;
 	}
 
 	void Transform::AddChild(Transform* newChild)
@@ -287,22 +249,18 @@ namespace FlyEngine
 		if (newChild->GetParent() != this)
 		{
 			newChild->SetParent(this);
-			newChild->UpdateWorldMatrix(this);
+			newChild->UpdateWorldMatrix();
 		}
 	}
 
 	void Transform::SetParent(Transform* newParent)
 	{
+		RemoveParent();
+
 		parent = newParent;
-		if (newParent)
-		{
-			newParent->AddChild(this);
-			UpdateWorldMatrix(newParent);
-		}
-		else
-		{
-			worldMatrix = modelMatrix;
-		}
+
+		if (parent)
+			parent->AddChild(this);
 	}
 
 	void Transform::RemoveChild(Transform* child)
@@ -312,13 +270,15 @@ namespace FlyEngine
 		{
 			children.erase(it);
 			child->RemoveParent();
+			child->FreeLocalMatrix();
 		}
 	}
 
 	void Transform::RemoveParent()
 	{
-		parent = nullptr;
-		modelMatrix = worldMatrix;
+		if (parent)
+			parent->RemoveChild(this);
+		FreeLocalMatrix();
 	}
 
 	void Transform::SetEntity(Entities::Entity* entity)
@@ -326,186 +286,10 @@ namespace FlyEngine
 		this->entity = entity;
 	}
 
-	glm::quat Transform::EulerToQuat(glm::vec3 euler)
+	Entities::Entity* Transform::GetEntity()
 	{
-		euler *= deg2rad;
-
-		float cy = cos(euler.z * 0.5f);
-		float sy = sin(euler.z * 0.5f);
-		float cp = cos(euler.x * 0.5f);
-		float sp = sin(euler.x * 0.5f);
-		float cr = cos(euler.y * 0.5f);
-		float sr = sin(euler.y * 0.5f);
-
-		glm::quat q;
-		q.w = cr * cp * cy + sr * sp * sy;
-		q.x = cr * sp * cy + sr * cp * sy;
-		q.y = sr * cp * cy - cr * sp * sy;
-		q.z = cr * cp * sy - sr * sp * cy;
-		return q;
+		return entity;
 	}
 
-	glm::mat4 Transform::EulerToMat4(glm::vec3 euler)
-	{
-		// Calculate rotation about x axis
-		glm::mat4  R_x;
-		R_x[0] = { 1, 0, 0, 0 };
-		R_x[1] = { 0, cos(euler.x), -sin(euler.x), 0 };
-		R_x[2] = { 0, sin(euler.x), cos(euler.x), 0 };
-		R_x[3] = { 0, 0, 0, 1 };
-
-
-		// Calculate rotation about y axis
-		glm::mat4  R_y;
-		R_y[0] = { cos(euler.y), 0, sin(euler.y), 0 };
-		R_y[1] = { 0, 1, 0, 0 };
-		R_y[2] = { -sin(euler.x), 0, cos(euler.x), 0 };
-		R_y[3] = { 0, 0, 0, 1 };
-
-		// Calculate rotation about z axis
-		glm::mat4  R_z;
-		R_z[0] = { cos(euler.y), -sin(euler.y), 0, 0 };
-		R_z[1] = { sin(euler.x), cos(euler.x), 0, 0 };
-		R_z[2] = { 0, 0, 1, 0 };
-		R_z[3] = { 0, 0, 0, 1 };
-
-		// Combined rotation matrix
-		glm::mat4  R = R_z * R_y * R_x;
-
-		return R;
-	}
-
-	glm::vec3 Transform::Mat4ToEuler(glm::mat4 matrix)
-	{
-		glm::vec3 euler;
-
-		if (matrix[1][0] < 1.0f)
-		{
-			if (matrix[1][0] > -1.0f)
-			{
-				euler.y = asin(matrix[1][0]);
-				euler.x = atan2(-matrix[1][2], matrix[1][1]);
-				euler.z = atan2(-matrix[2][0], matrix[0][0]);
-			}
-			else
-			{
-				euler.y = -glm::half_pi<float>();
-				euler.x = -atan2(matrix[2][1], matrix[2][2]);
-				euler.z = 0.0f;
-			}
-		}
-		else
-		{
-			euler.y = glm::half_pi<float>();
-			euler.x = atan2(matrix[2][1], matrix[2][2]);
-			euler.z = 0.0f;
-		}
-
-		return euler;
-	}
-
-	glm::vec3 Transform::QuaternionToEuler(glm::quat quat)
-	{
-		glm::vec3 angles;
-
-		// Roll (x-axis rotation)
-		float sinr_cosp = 2 * (quat.x * quat.y + quat.z * quat.w);
-		float cosr_cosp = 1 - 2 * (quat.y * quat.y + quat.z * quat.z);
-		angles.x = glm::atan(sinr_cosp, cosr_cosp);
-
-		// Pitch (y-axis rotation)
-		float sinp = 2 * (quat.x * quat.z - quat.w * quat.y);
-		if (glm::abs(sinp) >= 1)
-			angles.y = glm::pi<float>() / 2 * glm::sign(sinp); // Use 90 degrees if out of range
-		else
-			angles.y = glm::asin(sinp);
-
-		// Yaw (z-axis rotation)
-		float siny_cosp = 2 * (quat.x * quat.w + quat.y * quat.z);
-		float cosy_cosp = 1 - 2 * (quat.z * quat.z + quat.w * quat.w);
-		angles.z = glm::atan(siny_cosp, cosy_cosp);
-
-		return angles;
-	}
-
-	glm::vec3 Transform::QuatToVec(glm::quat quat, glm::vec3 vec)
-	{
-		float x2 = quat.x * 2.f;
-		float y2 = quat.y * 2.f;
-		float z2 = quat.z * 2.f;
-		float xx2 = quat.x * x2;
-		float yy2 = quat.y * y2;
-		float zz2 = quat.z * z2;
-		float xy2 = quat.x * y2;
-		float xz2 = quat.x * z2;
-		float yz2 = quat.y * z2;
-		float wx2 = quat.w * x2;
-		float wy2 = quat.w * y2;
-		float wz2 = quat.w * z2;
-
-		glm::vec3 res;
-		res.x = (1.f - (yy2 + zz2)) * vec.x + (xy2 - wz2) * vec.y + (xz2 + wy2) * vec.z;
-		res.y = (xy2 + wz2) * vec.x + (1.f - (xx2 + zz2)) * vec.y + (yz2 - wx2) * vec.z;
-		res.z = (xz2 - wy2) * vec.x + (yz2 + wx2) * vec.y + (1.f - (xx2 + yy2)) * vec.z;
-		return res;
-	}
-
-	glm::quat Transform::QuaternionLookRotation(glm::vec3 forward, glm::vec3 upwards)
-	{
-		forward = glm::normalize(forward);
-		glm::vec3 right = glm::normalize(glm::cross(upwards, forward));
-		upwards = glm::cross(forward, right);
-
-		float m00 = right.x;
-		float m01 = right.y;
-		float m02 = right.z;
-		float m10 = upwards.x;
-		float m11 = upwards.y;
-		float m12 = upwards.z;
-		float m20 = forward.x;
-		float m21 = forward.y;
-		float m22 = forward.z;
-
-		float diagonal = m00 + m11 + m22;
-		float qw = 0;
-		float qx = 0;
-		float qy = 0;
-		float qz = 0;
-
-		if (diagonal > 0)
-		{
-			float wComponent = glm::sqrt(diagonal + 1.0f) * 2;
-			qw = 0.25f * wComponent;
-			qx = (m21 - m12) / wComponent;
-			qy = (m02 - m20) / wComponent;
-			qz = (m10 - m01) / wComponent;
-		}
-		else if ((m00 > m11) && (m00 > m22))
-		{
-			float wComponent = glm::sqrt(1.0f + m00 - m11 - m22) * 2;
-			qw = (m21 - m12) / wComponent;
-			qx = 0.25f * wComponent;
-			qy = (m01 + m10) / wComponent;
-			qz = (m02 + m20) / wComponent;
-		}
-		else if (m11 > m22)
-		{
-			float wComponent = glm::sqrt(1.0f + m11 - m00 - m22) * 2;
-			qw = (m02 - m20) / wComponent;
-			qx = (m01 + m10) / wComponent;
-			qy = 0.25f * wComponent;
-			qz = (m12 + m21) / wComponent;
-		}
-		else
-		{
-			float wComponent = glm::sqrt(1.0f + m22 - m00 - m11) * 2;
-			qw = (m10 - m01) / wComponent;
-			qx = (m02 + m20) / wComponent;
-			qy = (m12 + m21) / wComponent;
-			qz = 0.25f * wComponent;
-		}
-
-		return glm::quat(qx, qy, qz, qw);
-	}
 
 }
