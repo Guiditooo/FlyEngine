@@ -51,12 +51,12 @@ namespace FlyGame
 		//scene1 = CreateModel("res/Models/Scene/Guido_scene.fbx", "BSP_Scene1");
 		//scene2 = CreateModel("res/Models/Scene/PruebaGuido.fbx", "BSP_Scene2");
 		scene3 = CreateModel("res/Models/Scene/planes_scene.fbx", "BSP_Scene3");
-		
-		//scene2->SetScale(0.01);
 
 		robot = CreateModel("res/Models/Iron_Giant/irongiant_low.fbx", "Robot1");
 
-		robot->SetScale(0.01);
+		robot->GetTransform()->SetLocalPosition(0, 0, 0);
+		robot->GetTransform()->SetWorldPosition(0, 0, 0);
+
 		robot->SetColor(COLOR::GREY);
 
 		//scene->SetScale(100);
@@ -71,9 +71,9 @@ namespace FlyGame
 		piso->SetName("Piso");
 		triangle->SetName("Player");
 
-		pointLight = CreatePointLight(mainCamera->GetTransform()->GetPosition());
+		pointLight = CreatePointLight(mainCamera->GetTransform()->GetWorldPosition());
 		pointLightStatic = CreatePointLight();
-		spotLight = CreateSpotLight(mainCamera->GetTransform()->GetPosition(), -mainCamera->GetTransform()->GetFront());
+		spotLight = CreateSpotLight(mainCamera->GetTransform()->GetWorldPosition(), -mainCamera->GetTransform()->GetFront());
 
 		pointLightStatic->SetName("Static Light");
 
@@ -81,10 +81,10 @@ namespace FlyGame
 		//pointLightStatic->SetColor(COLOR::CYAN);
 
 		spotLight->SetPosition(glm::vec3(0, 2, 0));
-		spotLight->SetDirection(piso->GetTransform()->GetPosition() - spotLight->GetPosition());
+		spotLight->SetDirection(piso->GetTransform()->GetWorldPosition() - spotLight->GetPosition());
 
 		std::string boxMaterial = "Box_Mat";
-		
+
 		Managers::TextureManager::CreateTexture("Box", "res/Textures/Box"); //TODO HACER FACADE DESDE EL BASEGAME
 		Managers::TextureManager::CreateTexture("Box_S", "res/Textures/Box");
 
@@ -96,14 +96,14 @@ namespace FlyGame
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
 		//piso->SetMaterial(boxMat);
-		piso->SetScale(100, 100, 100);
-		piso->SetRotation(-90, 90, 0);
+		piso->GetTransform()->SetWorldScale(100, 100, 100);
+		piso->GetTransform()->SetWorldRotation(-90, 90, 0);
 
 		Managers::MaterialManager::CreateMaterial("Carito", Managers::ShaderManager::GetDefaultModelShader());
 		Managers::MaterialManager::AddTexture("Carito", "diffuse", Managers::TextureManager::GetDefaultTextureID());
 		Managers::MaterialManager::AddTexture("Carito", "specular", Managers::TextureManager::GetDefaultTextureID());
 		Managers::MaterialManager::AddTexture("Carito", "normal", Managers::TextureManager::GetDefaultTextureID());
-		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular", "normal"});
+		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular", "normal" });
 
 		Materials::Material* caritoMat = Managers::MaterialManager::GetMaterial("Carito");
 
@@ -140,11 +140,14 @@ namespace FlyGame
 
 		if (Input::GetKeyPressed(KeyCode::KEY_P))
 		{
-			robot->Translate(100, 0, 0);
+			//robot->GetTransform()->WorldTranslate(1, 0, 0);
+			robot->GetChildrenWithName("head_low")[1]->GetTransform()->WorldTranslate(1, 0, 0);
 		}
 		if (Input::GetKeyPressed(KeyCode::KEY_O))
 		{
-			robot->Translate(-100, 0, 0);
+			//robot->GetTransform()->WorldTranslate(-1, 0, 0);
+			Entities::Entity* cabeza = robot->GetChildrenWithName("head_low")[1];
+			cabeza->GetTransform()->WorldTranslate(-1, 0, 0);
 		}
 
 		//Debugger::ConsoleMessage("RobotPos:", robot->GetTransform()->GetPosition());
@@ -266,7 +269,7 @@ namespace FlyGame
 			entity->MoveRight(sensibility);
 			objectMoved = true;
 		}
-
+		/*
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_I))
 		{
 			entity->GetTransform()->Rotate(rotSensibility, 0.0f, 0.0f);
@@ -291,7 +294,7 @@ namespace FlyGame
 		{
 			entity->GetTransform()->Rotate(0.0f, 0.0f, rotSensibility);
 		}
-
+		*/
 		CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, entity);
 
 
@@ -300,7 +303,7 @@ namespace FlyGame
 			std::string text = "- ";
 			text += entity->GetName();
 			text += " Updated Position : ";
-			Debugger::ConsoleMessage(&text[0], entity->GetTransform()->GetPosition());
+			Debugger::ConsoleMessage(&text[0], entity->GetTransform()->GetWorldPosition());
 		}
 
 	}void Game::MoveObject(FlyEngine::Lights::Light* light, bool showMovement)
@@ -383,12 +386,12 @@ namespace FlyGame
 		if (Input::GetKeyPressed(maximizeKey))
 		{
 			float scaleSens = 1.01f;
-			thing->GetTransform()->Scale(scaleSens);
+			thing->GetTransform()->WorldScale(scaleSens, scaleSens, scaleSens);
 		}
 		if (Input::GetKeyPressed(minimizeKey))
 		{
 			float scaleSens = 0.99f;
-			thing->GetTransform()->Scale(scaleSens);
+			thing->GetTransform()->WorldScale(scaleSens, scaleSens, scaleSens);
 		}
 	}
 

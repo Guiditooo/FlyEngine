@@ -28,8 +28,6 @@ namespace FlyEngine
 
 	namespace Entities
 	{
-		class Mesh;
-
 		class FLY_API Entity
 		{
 		protected:
@@ -63,8 +61,6 @@ namespace FlyEngine
 			int vertexCount;
 			int vertexSize;
 
-			//void SetTransform();
-
 		public:
 			Entity(std::string name, Entity* parent = nullptr );
 			Entity(std::string name, glm::vec3 pos, Entity* parent = nullptr);
@@ -93,25 +89,23 @@ namespace FlyEngine
 
 			glm::mat4 GetModelMatrix();
 
-			virtual void SetPosition(float x, float y, float z);
-			virtual void SetPosition(float x);
-			virtual void SetPosition(glm::vec3 pos);
+			//void SetPosition(float x, float y, float z);
+			//void SetPosition(float x);
+			//void SetPosition(glm::vec3 pos);
 
-			virtual void SetRotation(float x, float y, float z);
-			virtual void SetRotation(glm::vec3 rot);
-			virtual void SetRotation(glm::quat rot);
+			//void SetRotation(float x, float y, float z);
+			//void SetRotation(glm::vec3 rot);
+			//void SetRotation(glm::quat rot);
 
-			virtual void SetScale(float x, float y, float z);
-			virtual void SetScale(glm::vec3 scale);
-			virtual void SetScale(float scale);
+			//void SetScale(float x, float y, float z);
+			//void SetScale(glm::vec3 scale);
+			//void SetScale(float scale);
 
 			void SetBoundingBox(Utils::BoundingBox bounds);
 			void SetBoundingBox(glm::vec3 min, glm::vec3 max);
 			void SetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
 			Utils::BoundingBox GetBoundingBox();
-
-			virtual std::vector<Mesh*> GetSubMeshes();
 
 			void AddChild(Entity* newChild);
 			void SetParent(Entity* newParent);
@@ -120,12 +114,13 @@ namespace FlyEngine
 			void RemoveParent();
 
 			Entity* GetParent();
-			std::vector<Entity*> GetChilds();
+			std::vector<Entity*> GetChildren();
+			std::vector<Entity*> GetChildrenWithName(std::string childName);
 
 			void Traverse(const std::function<void(Entity*)>& action);
 
 			Transform* GetTransform();
-			glm::mat4 GetWorldTransform();
+			//glm::mat4 GetWorldTransform();
 
 			void MoveForward(float amount);
 			void MoveBackward(float amount);
@@ -133,7 +128,7 @@ namespace FlyEngine
 			void MoveRight(float amount);
 			void MoveUp(float amount);
 			void MoveDown(float amount);
-
+			 
 			Materials::Material* GetMaterial();
 			Shader* GetShader();
 			int GetShaderID();

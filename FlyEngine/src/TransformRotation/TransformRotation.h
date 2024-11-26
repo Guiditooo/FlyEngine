@@ -12,6 +12,8 @@ namespace FlyEngine
 		glm::quat quaternion;
 
 	public:
+		TransformRotation();
+
 		void SetRotation(float x, float y, float z);
 		void SetRotation(glm::vec3 rot);
 		void SetRotation(glm::quat rot);

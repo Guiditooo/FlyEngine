@@ -136,7 +136,7 @@ namespace FlyEngine
 		{
 			if (model->IsActive())
 			{
-				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetPosition());
+				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetWorldPosition());
 			}
 		}
 	}
@@ -202,7 +202,7 @@ namespace FlyEngine
 		renderer->SetMatrix4Uniform(id, "view", mainCamera->GetViewMatrix());
 		renderer->SetMatrix4Uniform(id, "projection", mainCamera->GetProjMatrix());
 		renderer->SetMatrix4Uniform(id, "model", entity->GetModelMatrix());
-		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetTransform()->GetPosition());
+		renderer->SetVec3Uniform(id, "viewPos", mainCamera->GetTransform()->GetWorldPosition());
 	}
 
 	void BaseGame::SetLightUniforms(Lights::Light* light, int index, unsigned int shaderID)
@@ -249,8 +249,8 @@ namespace FlyEngine
 		Entities::Rectangle* rec = new Entities::Rectangle();
 		glm::vec2 windowSize = window->GetWindowSize();
 
-		rec->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
-		rec->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
+		rec->GetTransform()->SetWorldPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
+		rec->GetTransform()->SetWorldScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
 		rec->SetMaterial(MaterialManager::GetDefaultBasicMaterial(),false);
 
@@ -273,8 +273,8 @@ namespace FlyEngine
 		Entities::Triangle* tri = new Entities::Triangle();
 		glm::vec2 windowSize = window->GetWindowSize();
 
-		tri->SetPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
-		tri->SetScale(PixelsToEngine(base, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
+		tri->GetTransform()->SetWorldPosition(PixelsToEngine(posX, windowSize.x), PixelsToEngine(posY, windowSize.x), PixelsToEngine(posZ, windowSize.x));
+		tri->GetTransform()->SetWorldScale(PixelsToEngine(base, windowSize.x), PixelsToEngine(height, windowSize.x), 1);
 
 		tri->SetMaterial(MaterialManager::GetDefaultBasicMaterial(),false);
 
@@ -291,8 +291,8 @@ namespace FlyEngine
 	{
 		glm::vec2 windowSize = window->GetWindowSize();
 		Entities::Cube* cube = new Entities::Cube();
-		cube->SetPosition(posX, posY, posZ);
-		cube->SetScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
+		cube->GetTransform()->SetWorldPosition(posX, posY, posZ);
+		cube->GetTransform()->SetWorldScale(PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x), PixelsToEngine(width, windowSize.x));
 
 		cube->SetMaterial(MaterialManager::GetDefaultModelMaterial(), false);
 

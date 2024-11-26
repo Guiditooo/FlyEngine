@@ -4,6 +4,12 @@
 
 namespace FlyEngine
 {
+	TransformScale::TransformScale()
+	{
+		matrix = glm::mat4(1.0f);
+		vector = glm::vec3(1.0f);
+	}
+
 	void TransformScale::SetScale(float x, float y, float z)
 	{
 		vector = glm::vec3(x, y, z);

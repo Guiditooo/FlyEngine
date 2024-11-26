@@ -13,6 +13,9 @@ namespace FlyEngine
 	{
 	private:
 	public:
+		TransformComponent();
+		~TransformComponent();
+		
 		TransformPosition* position;
 		TransformRotation* rotation;
 		TransformScale* scale;

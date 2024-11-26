@@ -1,8 +1,6 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "glm/glm.hpp"
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -13,26 +11,29 @@
 
 namespace FlyEngine
 {
-	namespace Entities
+
+	class FLY_API Mesh
 	{
+	private:
+		std::vector<Entities::Vertex> vertices;
+		std::vector<unsigned int> indices;
 
-		class FLY_API Mesh
-		{
-		private:
-			std::vector<Vertex> vertices;
-			std::vector<unsigned int> indices;
+		Utils::Buffers* buffers;
 
-			Utils::Buffers* buffers;
+		std::string name;
 
-			void SetupMesh();
-		public:
+		void SetupMesh();
+	public:
 
-			Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string meshName = "Mesh");
+		Mesh(std::vector<Entities::Vertex> vertices, std::vector<unsigned int> indices, std::string meshName = "Mesh");
 
-			std::vector<Vertex> GetVertices();
-			std::vector<unsigned int> GetIndexes();
+		void SetName(std::string meshName);
 
-		};
-	}
+		Utils::Buffers* GetBuffers();
+		std::vector<Entities::Vertex> GetVertices();
+		std::vector<unsigned int> GetIndexes();
+
+	};
+
 }
 #endif

@@ -6,10 +6,11 @@
 #include "Shader/Shader.h"
 #include "Material/Material.h"
 
+using namespace FlyEngine::Entities;
+
 namespace FlyEngine
 {
-	namespace Entities
-	{
+
         Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string meshName)
 		{
             this->vertices = vertices;
@@ -17,8 +18,20 @@ namespace FlyEngine
 
             buffers = new Utils::Buffers();
 
+            name = meshName;
+
             SetupMesh();
 		}
+
+        void Mesh::SetName(std::string meshName)
+        {
+            name = meshName;
+        }
+
+        Utils::Buffers* Mesh::GetBuffers()
+        {
+            return buffers;
+        }
 
         std::vector<Vertex> Mesh::GetVertices()
         {
@@ -61,5 +74,5 @@ namespace FlyEngine
             glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
             glBindVertexArray(0);
 		}
-	}
+	
 }

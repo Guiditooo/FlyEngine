@@ -7,6 +7,8 @@
 const float deg2rad = (glm::pi<float>() * 2.0f) / 360.0f;
 const float pi = 3.14159265359f;
 
+glm::vec3 Mat4ToEuler(const glm::mat4& rotationMatrix);
+
 namespace FlyEngine
 {
 	void Transform::UpdateMatrices()
@@ -24,6 +26,9 @@ namespace FlyEngine
 	{
 		this->entity = entity;
 		
+		localTransform = new TransformComponent();
+		worldTransform = new TransformComponent();
+
 		localTransform->Reset();
 		worldTransform->Reset();
 
@@ -33,11 +38,22 @@ namespace FlyEngine
 
 	Transform::~Transform()
 	{
+		if (parent)
+			RemoveParent();
+
+		if (localTransform != nullptr)
+			delete localTransform;
+		localTransform = nullptr;
+
+		if (worldTransform != nullptr)
+			delete worldTransform;
+		worldTransform = nullptr;
 	}
 
 	void Transform::SetWorldPosition(float x, float y, float z)
 	{
 		glm::vec3 worldPos = glm::vec3(x, y, z);
+		worldTransform->position->SetPosition(x, y, z);
 
 		if (parent)
 		{
@@ -63,16 +79,22 @@ namespace FlyEngine
 	void Transform::SetWorldRotation(float x, float y, float z)
 	{
 		glm::quat worldQuat = glm::quat(glm::radians(glm::vec3(x, y, z)));
+		SetWorldRotation(worldQuat);
+	}
+
+	void Transform::SetWorldRotation(glm::quat rot)
+	{
+		worldTransform->rotation->SetRotation(rot);
 
 		if (parent)
 		{
 			glm::quat parentWorldQuat = glm::quat_cast(parent->worldTransform->matrix);
-			glm::quat localQuat = glm::inverse(parentWorldQuat) * worldQuat;
+			glm::quat localQuat = glm::inverse(parentWorldQuat) * rot;
 			localTransform->rotation->SetRotation(localQuat);
 		}
 		else
 		{
-			localTransform->rotation->SetRotation(worldQuat);
+			localTransform->rotation->SetRotation(rot);
 		}
 
 		UpdateMatrices();
@@ -84,9 +106,16 @@ namespace FlyEngine
 		UpdateMatrices();
 	}
 
+	void Transform::SetLocalRotation(glm::quat rot)
+	{
+		localTransform->rotation->SetRotation(rot);
+		UpdateMatrices();
+	}
+
 	void Transform::SetWorldScale(float x, float y, float z)
 	{
 		glm::vec3 worldScale = glm::vec3 (x, y, z);
+		worldTransform->scale->SetScale(x, y, z);
 
 		if (parent)
 		{
@@ -111,6 +140,7 @@ namespace FlyEngine
 	void Transform::WorldTranslate(float x, float y, float z)
 	{
 		glm::vec3 worldTranslation(x, y, z);
+		worldTransform->position->Translate(x, y, z);
 
 		if (parent)
 		{
@@ -135,6 +165,7 @@ namespace FlyEngine
 	void Transform::WorldRotate(float x, float y, float z)
 	{
 		glm::quat worldQuat = glm::quat(glm::radians(glm::vec3(x, y, z)));
+		worldTransform->rotation->Rotate(x, y, z);
 
 		if (parent)
 		{
@@ -156,9 +187,41 @@ namespace FlyEngine
 		UpdateMatrices();
 	}
 
+	void Transform::WorldRotateAround(float x, float y, float z)
+	{
+		glm::vec3 currentLocalRotation = worldTransform->rotation->GetRotation();
+
+		glm::mat4 globalRotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+		globalRotationMatrix = glm::rotate(globalRotationMatrix, glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+		globalRotationMatrix = glm::rotate(globalRotationMatrix, glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		worldTransform->rotation->SetRotation(globalRotationMatrix);
+
+		if (parent)
+		{
+			
+			glm::mat4 parentWorldMatrixInverse = glm::inverse(parent->GetWorldTRS());
+			glm::mat4 localRotationMatrix = parentWorldMatrixInverse * globalRotationMatrix * parent->GetWorldTRS();
+			glm::vec3 newLocalRotation = Mat4ToEuler(localRotationMatrix) + currentLocalRotation;
+			localTransform->rotation->SetRotation(newLocalRotation);
+
+		}
+
+		glm::vec3 newLocalRotation = Mat4ToEuler(globalRotationMatrix) + localTransform->rotation->GetRotation();
+		localTransform->rotation->SetRotation(newLocalRotation);
+		UpdateMatrices();
+	}
+
+	void Transform::LocalRotateAround(float x, float y, float z)
+	{
+		localTransform->rotation->RotateAround(x, y, z);
+		UpdateMatrices();
+	}
+
 	void Transform::WorldScale(float x, float y, float z)
 	{
 		glm::vec3 worldScaling(x, y, z);
+		worldTransform->scale->Scale(x, y, z);
 
 		if (parent)
 		{
@@ -210,6 +273,36 @@ namespace FlyEngine
 		return localTransform->scale->GetScale();
 	}
 
+	void Transform::SetFront(glm::vec3 front)
+	{
+		localTransform->SetFront(front);
+	}
+
+	void Transform::SetUp(glm::vec3 up)
+	{
+		localTransform->SetUp(up);
+	}
+
+	void Transform::SetRight(glm::vec3 right)
+	{
+		localTransform->SetRight(right);
+	}
+
+	glm::vec3 Transform::GetFront()
+	{
+		return localTransform->GetFront();
+	}
+
+	glm::vec3 Transform::GetUp()
+	{
+		return localTransform->GetUp();
+	}
+
+	glm::vec3 Transform::GetRight()
+	{
+		return localTransform->GetRight();
+	}
+
 
 	void Transform::UpdateLocalMatrix()
 	{
@@ -233,6 +326,16 @@ namespace FlyEngine
 		}
 	}
 
+	glm::mat4 Transform::GetLocalTRS()
+	{
+		return localTransform->GetTRS();
+	}
+
+	glm::mat4 Transform::GetWorldTRS()
+	{
+		return worldTransform->GetTRS();
+	}
+
 	Transform* Transform::GetParent()
 	{
 		return parent;
@@ -241,6 +344,25 @@ namespace FlyEngine
 	std::vector<Transform*> Transform::GetChildren()
 	{
 		return children;
+	}
+
+	std::vector<Transform*> Transform::GetChildrenWithName(std::string childName)
+	{
+		std::vector<Transform*> childVector;
+
+		if (entity && entity->GetName() == childName) 
+			childVector.push_back(this);
+
+		for (Transform* child : children) 
+		{
+			if (child) 
+			{
+				auto childResults = child->GetChildrenWithName(childName);
+				childVector.insert(childVector.end(), childResults.begin(), childResults.end());
+			}
+		}
+
+		return childVector;
 	}
 
 	void Transform::AddChild(Transform* newChild)
@@ -290,6 +412,28 @@ namespace FlyEngine
 	{
 		return entity;
 	}
+}
 
+glm::vec3 Mat4ToEuler(const glm::mat4& rotationMatrix)
+{
+	glm::vec3 euler;
 
+	// Extraer componentes de rotación
+	float sy = glm::sqrt(rotationMatrix[0][0] * rotationMatrix[0][0] + rotationMatrix[1][0] * rotationMatrix[1][0]);
+
+	bool singular = sy < 1e-6; // Cerca de cero indica una singularidad
+
+	if (!singular) {
+		euler.x = glm::atan(rotationMatrix[2][1], rotationMatrix[2][2]); // Rotación en X
+		euler.y = glm::atan(-rotationMatrix[2][0], sy);                  // Rotación en Y
+		euler.z = glm::atan(rotationMatrix[1][0], rotationMatrix[0][0]); // Rotación en Z
+	}
+	else {
+		euler.x = glm::atan(-rotationMatrix[1][2], rotationMatrix[1][1]); // Rotación en X
+		euler.y = glm::atan(-rotationMatrix[2][0], sy);                   // Rotación en Y
+		euler.z = 0;                                                      // Rotación en Z (indeterminado)
+	}
+
+	// Convertir a grados
+	return glm::degrees(euler);
 }

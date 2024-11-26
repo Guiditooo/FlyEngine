@@ -7,7 +7,16 @@
 
 namespace FlyEngine
 {
-	
+	TransformComponent::TransformComponent()
+	{
+		position = new TransformPosition();
+		rotation = new TransformRotation();
+		scale = new TransformScale();
+		matrix = glm::mat4(1.0f);
+	}
+	TransformComponent::~TransformComponent()
+	{
+	}
 	glm::mat4 TransformComponent::GetTRS()
 	{
 		return matrix;

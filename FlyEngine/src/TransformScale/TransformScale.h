@@ -10,6 +10,8 @@ namespace FlyEngine
 	struct FLY_API TransformScale : TransformElement
 	{
 	public:
+		TransformScale();
+
 		void SetScale(float x, float y, float z);
 		void SetScale(glm::vec3 scale);
 		void SetScale(float scale);

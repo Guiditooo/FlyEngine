@@ -18,6 +18,13 @@ namespace FlyEngine
 		return quaternion * glm::vec3(0.0f, 0.0f, -1.0f);
 	}
 
+	TransformRotation::TransformRotation()
+	{
+		matrix = glm::mat4(1.0f);
+		vector = glm::vec3(0.0f);
+		quaternion = glm::quat();
+	}
+
 	void TransformRotation::SetRotation(float x, float y, float z)
 	{
 		vector = glm::vec3(x, y, z);

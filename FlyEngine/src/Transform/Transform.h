@@ -1,6 +1,7 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
+#include <iostream>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -40,7 +41,9 @@ namespace FlyEngine
 		void SetLocalPosition(float x, float y, float z);
 
 		void SetWorldRotation(float x, float y, float z);
+		void SetWorldRotation(glm::quat rot);
 		void SetLocalRotation(float x, float y, float z);
+		void SetLocalRotation(glm::quat rot);
 
 		void SetWorldScale(float x, float y, float z);
 		void SetLocalScale(float x, float y, float z);
@@ -50,6 +53,9 @@ namespace FlyEngine
 
 		void WorldRotate(float x, float y, float z);
 		void LocalRotate(float x, float y, float z);
+
+		void WorldRotateAround(float x, float y, float z);
+		void LocalRotateAround(float x, float y, float z);
 
 		void WorldScale(float x, float y, float z);
 		void LocalScale(float x, float y, float z);
@@ -63,11 +69,24 @@ namespace FlyEngine
 		glm::vec3 GetWorldScale();
 		glm::vec3 GetLocalScale();
 
+		void SetFront(glm::vec3 front);
+		void SetUp(glm::vec3 up);
+		void SetRight(glm::vec3 right);
+
+		glm::vec3 GetFront();
+		glm::vec3 GetUp();
+		glm::vec3 GetRight();
+
 		void UpdateLocalMatrix();
 		void UpdateWorldMatrix();
 
+		glm::mat4 GetLocalTRS();
+		glm::mat4 GetWorldTRS();
+
 		Transform* GetParent();
 		std::vector<Transform*> GetChildren();
+
+		std::vector<Transform*> GetChildrenWithName(std::string childName);
 
 		void AddChild(Transform* newChild);
 		void SetParent(Transform* newParent);

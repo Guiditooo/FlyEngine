@@ -26,12 +26,12 @@ namespace FlyEngine
 	//class SceneGraph;
 	//class SceneNode;
 	class Scene;
+	class Mesh;
 
 	namespace Entities
 	{
 		class Entity;
 		class Model;
-		class Mesh;
 	}
 
 	namespace Materials
@@ -44,7 +44,7 @@ namespace FlyEngine
 	private:
 		Color* bgColor;
 
-		void DrawMesh(Entities::Mesh* mesh, Materials::Material* mat);
+		void DrawMesh(Mesh* mesh, Materials::Material* mat);
 
 	public:
 		Renderer();

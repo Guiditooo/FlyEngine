@@ -88,7 +88,7 @@ namespace FlyEngine
 			}
 		}
 
-		Entities::Mesh* ModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model)
+		Mesh* ModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model)
 		{
 			std::vector<Entities::Vertex> vertices;
 			std::vector<unsigned int> indices;
@@ -233,15 +233,16 @@ namespace FlyEngine
 				{
 					mat->SetTextureOrder(order);
 					Managers::MaterialManager::SetMaterial(matName, mat);
-					return new Entities::Mesh(vertices, indices, mat);
+					model->SetMaterial(mat,false);
+					return new Mesh(vertices, indices);
 				}
 				if (alreadyCreatedTexture)
 				{
-					return new Entities::Mesh(vertices, indices, mat);
+					return new Mesh(vertices, indices);
 				}
 			}
 
-			return new Entities::Mesh(vertices, indices, Managers::MaterialManager::GetDefaultModelMaterial());
+			return new Mesh(vertices, indices);
 
 		}
 

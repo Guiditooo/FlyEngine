@@ -36,9 +36,10 @@ namespace FlyEngine
 		SetProjectionType(projType);
 
 
-		glm::vec3 direction = GetTransform()->GetPosition() - GetTransform()->GetFront();
+		glm::vec3 direction = GetTransform()->GetWorldPosition() - GetTransform()->GetFront();
 
-		viewMatrix = glm::lookAt(GetTransform()->GetPosition(), direction, GetTransform()->GetUp());
+		viewMatrix = glm::lookAt(GetTransform()->GetWorldPosition(), direction, GetTransform()->GetUp());
+		
 		//viewMatrix = glm::lookAt(glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 		//viewMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
@@ -72,8 +73,8 @@ namespace FlyEngine
 		case FlyEngine::ProjectionType::Ortho:
 			projMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, this->nearPlane, this->farPlane);
 			transform->SetFront(glm::vec3(0, 0, 1));
-			transform->SetRotation(glm::vec3(0, 0, 0));
-			transform->SetPosition(0, 0, -10);
+			transform->SetWorldRotation(glm::vec3(0, 0, 0));
+			transform->SetWorldPosition(0, 0, -10);
 			break;
 		case FlyEngine::ProjectionType::Perspective:
 			projMatrix = glm::perspective(this->fov, this->aspectRatio, this->nearPlane, this->farPlane);
@@ -109,6 +110,8 @@ namespace FlyEngine
 		return viewMatrix;
 	}
 
+
+	/*
 	void Camera::Translate(float x, float y, float z)
 	{
 		GetTransform()->Translate(x, y, z);
@@ -153,5 +156,5 @@ namespace FlyEngine
 		glm::vec3 direction = GetTransform()->GetPosition() - GetTransform()->GetFront();
 		//viewMatrix = glm::lookAt(positionVector, direction, GetUp());
 	}
-
+	*/
 }

@@ -53,8 +53,8 @@ namespace FlyEngine
 		void WorldRotate(float x, float y, float z);
 		void WorldRotate(glm::vec3 rot);
 
-		void SetPosition(float x, float y, float z) override;
-		void SetRotation(float x, float y, float z) override;
+		//void SetPosition(float x, float y, float z) override;
+		//void SetRotation(float x, float y, float z) override;
 	};
 }
 

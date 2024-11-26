@@ -4,6 +4,12 @@
 
 namespace FlyEngine
 {
+	TransformPosition::TransformPosition()
+	{
+		matrix = glm::mat4(1.0f);
+		vector = glm::vec3(0.0f);
+	}
+
 	void TransformPosition::SetPosition(float x, float y, float z)
 	{
 		vector = glm::vec3(x, y, z);

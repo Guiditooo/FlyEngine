@@ -12,7 +12,7 @@ namespace FlyEngine
 			node = root;
 
 		action(node);
-		for (Entities::Entity* child : node->GetChilds())
+		for (Entities::Entity* child : node->GetChildren())
 		{
 			Traverse(action, child);
 		}

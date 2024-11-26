@@ -10,6 +10,8 @@ namespace FlyEngine
 	struct FLY_API TransformPosition : TransformElement
 	{
 	public:
+		TransformPosition();
+
 		void SetPosition(float x, float y, float z);
 		void SetPosition(float x);
 		void SetPosition(glm::vec3 pos);

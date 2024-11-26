@@ -93,26 +93,21 @@ namespace FlyEngine
 
 	void Renderer::DrawModel(Entities::Model* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos)
 	{
-		std::vector<Entities::Mesh*> meshes = toDraw->GetMeshes();
+		std::vector<Mesh*> meshes = toDraw->GetMeshes();
 
 		for (int i = 0; i < meshes.size(); i++)
 		{
 			unsigned int id;
 			Materials::Material* renderingMat = nullptr;
 
-			if (meshes[i]->GetMaterial() == nullptr)
-			{
-				toDraw->UseShader();
-				id = toDraw->GetShaderID();
+			toDraw->UseShader();
+			id = toDraw->GetShaderID();
+			
+			if (toDraw->GetMaterial() != nullptr)
 				renderingMat = toDraw->GetMaterial();
-			}
 			else
-			{
-				meshes[i]->UseShader();
-				id = meshes[i]->GetShaderID();
-				renderingMat = meshes[i]->GetMaterial();
-			}
-
+				renderingMat = MaterialManager::GetDefaultMissingMaterial();
+			
 			SetMatrix4Uniform(id, "view", viewMat);
 			SetMatrix4Uniform(id, "projection", projMat);
 			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix()); // Usar la transformación acumulada
@@ -353,10 +348,10 @@ namespace FlyEngine
 		SetVec3Uniform(shaderID, "dirLight.lightColor", light->GetColor().GetColorV3());
 	}
 
-	void Renderer::DrawMesh(Entities::Mesh* mesh, Materials::Material* mat)
+	void Renderer::DrawMesh(Mesh* mesh, Materials::Material* mat)
 	{
 		std::vector<std::string> order = mat->GetTextureOrder();
-
+		
 		for (unsigned int i = 0; i < order.size(); i++)
 		{
 			std::string base = "material.";
@@ -365,16 +360,16 @@ namespace FlyEngine
 			uniformVariable += order[i];
 
 			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-			int txID = mesh->GetMaterial()->GetTexture(order[i]);
+			int txID = mat->GetTexture(order[i]);
 
 			TextureManager::BindTexture(txID, i);
 
-			SetIntUniform(mesh->GetShaderID(), &uniformVariable[0], i);
+			SetIntUniform(mat->GetShaderID(), &uniformVariable[0], i);
 		}
 
-		SetVec3Uniform(mesh->GetShaderID(), "baseColor", mat->GetColorV3());
+		SetVec3Uniform(mat->GetShaderID(), "baseColor", mat->GetColorV3());
 
-		SetFloatUniform(mesh->GetShaderID(), "material.shininess", mat->GetSpecs()->GetShininess());
+		SetFloatUniform(mat->GetShaderID(), "material.shininess", mat->GetSpecs()->GetShininess());
 
 		// draw mesh
 		DrawRequest(*(mesh->GetBuffers()), mesh->GetIndexes().size());

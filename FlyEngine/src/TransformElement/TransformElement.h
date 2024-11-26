@@ -13,8 +13,8 @@ namespace FlyEngine
 	struct FLY_API TransformElement
 	{
 	public:
-		glm::mat4 matrix;
-		glm::vec3 vector;
+		glm::mat4 matrix = glm::mat4();
+		glm::vec3 vector = glm::vec3();
 
 	protected:
 		glm::quat EulerToQuat(glm::vec3 euler);
