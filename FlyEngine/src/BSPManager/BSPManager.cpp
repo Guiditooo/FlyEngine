@@ -59,8 +59,17 @@ namespace FlyEngine
 		}
 		void BSPManager::AddPlane(Plane* newPlane)
 		{
-			int planeID = newPlane->GetID();
+			for (const auto& entry : planes)
+			{
+				const Plane* existingPlane = entry.second;
 
+				if (newPlane->Equals(existingPlane))
+				{
+					return;
+				}
+			}
+
+			int planeID = newPlane->GetID();
 			planes[planeID] = newPlane;
 
 			if (IsPlaneAble(newPlane))
@@ -80,10 +89,25 @@ namespace FlyEngine
 				Plane* plane = planes[id];
 				glm::vec3 normal = plane->GetNormal();
 
+				if (!IsPlaneAble(plane)) continue;
+
 				float distanceToCamera = glm::abs(plane->GetDistanceToPoint(cameraPos));
 
-				if (closestPlanes.find(normal) == closestPlanes.end() ||
-					distanceToCamera < glm::abs(closestPlanes[normal]->GetDistanceToPoint(cameraPos)))
+				bool isNewPlane = true;
+				for (auto& entry : closestPlanes)
+				{
+					if (glm::dot(glm::normalize(normal), glm::normalize(entry.first)) > 0.9999f)
+					{
+						if (distanceToCamera < glm::abs(entry.second->GetDistanceToPoint(cameraPos)))
+						{
+							entry.second = plane;
+						}
+						isNewPlane = false;
+						break;
+					}
+				}
+
+				if (isNewPlane)
 				{
 					closestPlanes[normal] = plane;
 				}

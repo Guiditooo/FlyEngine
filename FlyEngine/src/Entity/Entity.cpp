@@ -73,6 +73,8 @@ namespace FlyEngine
 			localBoundingBox = Utils::BoundingBox();
 			worldBoundingBox = Utils::BoundingBox();
 
+			isBSPModel = false;
+
 		}
 
 		Entity::~Entity()
@@ -99,6 +101,16 @@ namespace FlyEngine
 		bool Entity::IsActive()
 		{
 			return active;
+		}
+
+		void Entity::SetBSPModel(bool isBSP)
+		{
+			isBSPModel = isBSP;
+		}
+
+		bool Entity::IsBSPModel()
+		{
+			return isBSPModel;
 		}
 
 		bool Entity::IsActiveInHierarchy()

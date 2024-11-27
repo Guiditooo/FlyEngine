@@ -59,6 +59,7 @@ namespace FlyEngine
 		void AddToObjectList(Entities::Entity* newRenderizableObject);//Cambiar a component
 
 		void DrawObjects();
+		void DrawModel(Entities::Model* model);
 		void DrawModels();
 		void DrawModelRecursive(Entities::Model* model);
 		void Draw2DEntities();

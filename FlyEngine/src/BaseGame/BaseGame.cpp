@@ -136,13 +136,33 @@ namespace FlyEngine
 		}
 	}
 
+	void BaseGame::DrawModel(Entities::Model* model)
+	{
+		renderer->DrawModel(model,
+			mainCamera->GetViewMatrix(),
+			mainCamera->GetProjMatrix(),
+			mainCamera->GetTransform()->GetWorldPosition());
+
+		for (Entities::Entity* child : model->GetChildren())
+		{
+			DrawModel(dynamic_cast<Entities::Model*>(child));
+		}
+	}
+
 	void BaseGame::DrawModels()
 	{
 		for (Entities::Model* model : modelList)
 		{
 			if (model->IsActive())
 			{
-				DrawModelRecursive(model);
+				if (model->IsBSPModel())
+				{
+					DrawModel(model);
+				}
+				else
+				{
+					DrawModelRecursive(model);
+				}
 			}
 		}
 	}

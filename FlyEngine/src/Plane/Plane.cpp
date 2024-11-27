@@ -1,5 +1,7 @@
 #include "Plane.h"
 
+#include "glm/glm.hpp"
+
 namespace FlyEngine
 {
 	int Plane::planeCount = 0;
@@ -56,6 +58,19 @@ namespace FlyEngine
 	float Plane::GetDistanceToPoint(glm::vec3 point)
 	{
 		return glm::dot(normal, point) - distance;
+	}
+
+	bool Plane::Equals(const Plane* other)
+	{
+		if (other == nullptr) return false;
+
+		const float epsilon = 1e-6f;
+
+		bool normalEquals = glm::length(this->normal - other->normal) < epsilon;
+
+		bool distanceEquals = std::fabs(this->distance - other->distance) < epsilon;
+
+		return normalEquals && distanceEquals;
 	}
 
 	bool Plane::IsPointInFront(glm::vec3 point)

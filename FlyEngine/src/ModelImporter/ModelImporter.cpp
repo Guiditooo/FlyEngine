@@ -27,8 +27,6 @@ namespace FlyEngine
 
 			bool createdMaterial = false;
 
-			//modelVector.push_back(model);
-
 			Assimp::Importer importer;
 
 			const aiScene* scene = importer.ReadFile(path,
@@ -42,7 +40,7 @@ namespace FlyEngine
 				aiProcess_GenBoundingBoxes |
 				aiProcess_GlobalScale);
 
-			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
 				std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
 				return nullptr;
@@ -57,7 +55,38 @@ namespace FlyEngine
 			if (modelMaterial != nullptr)
 				model->SetMaterial(modelMaterial, true);
 
+			// Agregar planos si el nombre del modelo contiene "BSP"
+			if (modelName.find("BSP") != std::string::npos || modelName.find("bsp") != std::string::npos)
+			{
+				model->SetBSPModel(true);
+				RegisterModelPlanes(model);
+			}
+
 			return model;
+		}
+
+		void ModelImporter::RegisterModelPlanes(Entities::Model* model)
+		{
+			for (auto& mesh : model->GetMeshes())
+			{
+				const auto& vertices = mesh->GetVertices();
+				const auto& indices = mesh->GetIndexes();
+
+				for (size_t i = 0; i < indices.size(); i += 3)
+				{
+					glm::vec3 v0 = vertices[indices[i]].Position;
+					glm::vec3 v1 = vertices[indices[i + 1]].Position;
+					glm::vec3 v2 = vertices[indices[i + 2]].Position;
+
+					Plane* plane = new Plane(v0, v1, v2); // Suponiendo que `Plane` tiene un constructor con 3 puntos.
+					Managers::BSPManager::AddPlane(plane);
+				}
+			}
+
+			for (Entities::Entity* childModel : model->GetChildren())
+			{
+				RegisterModelPlanes(dynamic_cast<Entities::Model*>(childModel));
+			}
 		}
 
 		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, bool& createdMaterial)

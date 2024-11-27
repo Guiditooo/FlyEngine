@@ -29,6 +29,7 @@ namespace FlyEngine
 		int GetID();
 		glm::vec3 GetNormal();
 		float GetDistanceToPoint(glm::vec3 point);
+		bool Equals(const Plane* other);
 
 		bool IsPointInFront(glm::vec3 point);
 	};

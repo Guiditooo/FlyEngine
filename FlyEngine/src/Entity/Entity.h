@@ -37,6 +37,8 @@ namespace FlyEngine
 
 			Utils::Buffers* buffers;
 
+			bool isBSPModel;
+
 			bool active;
 			bool activeInHierarchy;
 
@@ -71,6 +73,9 @@ namespace FlyEngine
 
 			void SetActive(bool isActive);
 			bool IsActive();
+
+			void SetBSPModel(bool isBSP);
+			bool IsBSPModel();
 
 			bool IsActiveInHierarchy();
 
