@@ -17,9 +17,41 @@ namespace FlyEngine
 		UpdateWorldMatrix();
 	}
 
+	void Transform::UpdateBoundingBox()
+	{
+		Utils::BoundingBox updatedBoundingBox;
+
+		updatedBoundingBox = entity->GetLocalBoundingBox(); 
+	
+		for (auto child : children) 
+		{
+			child->UpdateBoundingBox(); 
+			updatedBoundingBox = Utils::BoundingBox::Merge(updatedBoundingBox, child->GetWorldBoundingBox());
+		}
+
+		entity->SetWorldBoundingBox(updatedBoundingBox);
+
+		if (parent) 
+			parent->UpdateBoundingBox();
+	}
+
 	void Transform::FreeLocalMatrix()
 	{
 		localTransform->matrix = worldTransform->matrix;
+	}
+
+	void Transform::MarkDirty()
+	{
+		dirty = true;
+		if (parent) 
+			parent->MarkDirty();
+	}
+
+	void Transform::UpdateIfDirty()
+	{
+		if (dirty) 
+			UpdateBoundingBox(); // Recalcula el bounding box.
+			dirty = false;
 	}
 
 	Transform::Transform(Entities::Entity* entity)
@@ -34,6 +66,9 @@ namespace FlyEngine
 
 		parent = nullptr;
 		children = std::vector<Transform*>();
+
+		dirty = false;
+
 	}
 
 	Transform::~Transform()
@@ -189,32 +224,36 @@ namespace FlyEngine
 
 	void Transform::WorldRotateAround(float x, float y, float z)
 	{
-		glm::vec3 currentLocalRotation = worldTransform->rotation->GetRotation();
+		glm::vec3 currentLocalRotation = localTransform->rotation->GetRotation();
 
-		glm::mat4 globalRotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
-		globalRotationMatrix = glm::rotate(globalRotationMatrix, glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
-		globalRotationMatrix = glm::rotate(globalRotationMatrix, glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::quat globalRotation = glm::quat(glm::radians(glm::vec3(x, y, z)));
+		glm::mat4 globalRotationMatrix = glm::toMat4(globalRotation);
 
 		worldTransform->rotation->SetRotation(globalRotationMatrix);
 
 		if (parent)
 		{
-			
 			glm::mat4 parentWorldMatrixInverse = glm::inverse(parent->GetWorldTRS());
 			glm::mat4 localRotationMatrix = parentWorldMatrixInverse * globalRotationMatrix * parent->GetWorldTRS();
-			glm::vec3 newLocalRotation = Mat4ToEuler(localRotationMatrix) + currentLocalRotation;
-			localTransform->rotation->SetRotation(newLocalRotation);
 
+			glm::vec3 newLocalRotation = Mat4ToEuler(localRotationMatrix);
+			localTransform->rotation->SetRotation(newLocalRotation);
+		}
+		else
+		{
+			glm::vec3 newLocalRotation = Mat4ToEuler(globalRotationMatrix);
+			localTransform->rotation->SetRotation(newLocalRotation);
 		}
 
-		glm::vec3 newLocalRotation = Mat4ToEuler(globalRotationMatrix) + localTransform->rotation->GetRotation();
-		localTransform->rotation->SetRotation(newLocalRotation);
 		UpdateMatrices();
 	}
 
 	void Transform::LocalRotateAround(float x, float y, float z)
 	{
-		localTransform->rotation->RotateAround(x, y, z);
+		glm::quat localRotation = glm::quat(glm::radians(glm::vec3(x, y, z)));
+		glm::mat4 localRotationMatrix = glm::toMat4(localRotation);
+
+		localTransform->rotation->SetRotation(localRotationMatrix * localTransform->rotation->matrix);
 		UpdateMatrices();
 	}
 
@@ -290,7 +329,7 @@ namespace FlyEngine
 
 	glm::vec3 Transform::GetFront()
 	{
-		return localTransform->GetFront();
+		return -localTransform->GetFront();
 	}
 
 	glm::vec3 Transform::GetUp()
@@ -324,6 +363,13 @@ namespace FlyEngine
 		{
 			child->UpdateWorldMatrix();
 		}
+		UpdateIfDirty();
+	}
+
+	Utils::BoundingBox Transform::GetWorldBoundingBox()
+	{
+		Utils::BoundingBox bb = entity->GetLocalBoundingBox();
+		return Utils::BoundingBox::TransformBoundingBox(bb, worldTransform->matrix);
 	}
 
 	glm::mat4 Transform::GetLocalTRS()
@@ -339,6 +385,13 @@ namespace FlyEngine
 	Transform* Transform::GetParent()
 	{
 		return parent;
+	}
+
+	Transform* Transform::GetRoot()
+	{
+		if (!parent)
+			return this;
+		return parent->GetRoot();
 	}
 
 	std::vector<Transform*> Transform::GetChildren()

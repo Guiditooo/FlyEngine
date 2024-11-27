@@ -1,6 +1,8 @@
 #include "BSPManager.h"
 #include "glm/gtx/hash.hpp"
 
+#include "BoundingBox/BoundingBox.h"
+
 struct Vector3Hash
 {
 	std::size_t operator()(const glm::vec3& v) const
@@ -17,6 +19,7 @@ namespace FlyEngine
 		std::unordered_map<int, Plane*> BSPManager::planes;
 		std::vector<int> BSPManager::ablePlanes;
 		std::vector<int> BSPManager::checkingPlanes;
+		bool BSPManager::isActive;
 
 		bool BSPManager::IsPlaneAble(Plane* plane)
 		{
@@ -51,6 +54,7 @@ namespace FlyEngine
 			planes.clear();
 			ablePlanes.clear();
 			checkingPlanes.clear();
+			isActive = false;
 		}
 		void BSPManager::AddPlane(Plane* newPlane)
 		{
@@ -65,6 +69,9 @@ namespace FlyEngine
 		}
 		void BSPManager::Update(glm::vec3 cameraPos)
 		{
+			if (!isActive)
+				return;
+
 			std::unordered_map<glm::vec3, Plane*, Vector3Hash> closestPlanes;
 
 			for (int id : ablePlanes)
@@ -100,17 +107,48 @@ namespace FlyEngine
 				}
 			}
 		}
-		bool BSPManager::CheckInside(glm::vec3 otherEntityPos)
+
+		void BSPManager::SetActive(bool state)
 		{
+			isActive = state;
+		}
+
+		bool BSPManager::CheckInside(Utils::BoundingBox entity)
+		{
+			if (!isActive)
+				return false;
+
 			for (int planeID : checkingPlanes)
 			{
 				Plane* plane = planes[planeID];
-				if (!plane->IsPointInFront(otherEntityPos))
+				int pointsInFront = 0;
+
+				glm::vec3 corners[8] = {
+					entity.min,
+					{entity.min.x, entity.min.y, entity.max.z},
+					{entity.min.x, entity.max.y, entity.min.z},
+					{entity.min.x, entity.max.y, entity.max.z},
+					{entity.max.x, entity.min.y, entity.min.z},
+					{entity.max.x, entity.min.y, entity.max.z},
+					{entity.max.x, entity.max.y, entity.min.z},
+					entity.max
+				};
+
+				for (const glm::vec3& corner : corners)
 				{
-					return false; // El punto está fuera del espacio definido por el plano
+					if (plane->IsPointInFront(corner))
+					{
+						pointsInFront++;
+					}
+				}
+
+				if (pointsInFront == 0)
+				{
+					return false; // Auera de este plano.
 				}
 			}
-			return true;
+
+			return true; // Está dentro de todos los planos.
 		}
 	}
 }

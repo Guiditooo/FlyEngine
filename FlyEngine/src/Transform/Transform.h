@@ -11,6 +11,7 @@
 #include "Exports/Exports.h"
 
 #include "TransformComponent/TransformComponent.h"
+#include "BoundingBox/BoundingBox.h"
 
 namespace FlyEngine
 {
@@ -30,8 +31,15 @@ namespace FlyEngine
 
 		Entities::Entity* entity;
 
+		bool dirty;
+
 		void UpdateMatrices();
 		void FreeLocalMatrix();
+		
+		void UpdateBoundingBox();
+
+		void MarkDirty();
+		void UpdateIfDirty();
 
 	public:
 		Transform(Entities::Entity* entity = nullptr);
@@ -80,12 +88,14 @@ namespace FlyEngine
 		void UpdateLocalMatrix();
 		void UpdateWorldMatrix();
 
+		Utils::BoundingBox GetWorldBoundingBox();
+
 		glm::mat4 GetLocalTRS();
 		glm::mat4 GetWorldTRS();
 
 		Transform* GetParent();
+		Transform* GetRoot();
 		std::vector<Transform*> GetChildren();
-
 		std::vector<Transform*> GetChildrenWithName(std::string childName);
 
 		void AddChild(Transform* newChild);

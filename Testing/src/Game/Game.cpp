@@ -50,16 +50,29 @@ namespace FlyGame
 
 		//scene1 = CreateModel("res/Models/Scene/Guido_scene.fbx", "BSP_Scene1");
 		//scene2 = CreateModel("res/Models/Scene/PruebaGuido.fbx", "BSP_Scene2");
-		scene3 = CreateModel("res/Models/Scene/planes_scene.fbx", "BSP_Scene3");
+		//scene3->SetColor(COLOR::MAGENTA);
+		//scene3->GetTransform()->SetWorldScale(3, 3, 3);
 
 		robot = CreateModel("res/Models/Iron_Giant/irongiant_low.fbx", "Robot1");
+		cubos = CreateModel("res/Models/Cubos/CubitoDubiDuuu.fbx", "Cubos");
+		scene3 = CreateModel("res/Models/Scene/planes_scene.fbx", "BSP_Scene3");
+		silla = CreateModel("res/Models/Silla/Silla.fbx", "Silla");
+		bp = CreateModel("res/Models/Backpack/backpack.obj", "BP");
 
-		robot->GetTransform()->SetLocalPosition(0, 0, 0);
-		robot->GetTransform()->SetWorldPosition(0, 0, 0);
+		bp->GetTransform()->SetWorldScale(0.05f, 0.05f, 0.05f);
+		bp->GetTransform()->SetWorldPosition(0, 0.1, 0.8f);
 
-		robot->SetColor(COLOR::GREY);
+		cubos->GetTransform()->SetWorldScale(2, 2, 2);
 
-		//scene->SetScale(100);
+		scene3->GetTransform()->SetWorldScale(10, 1, 10);
+
+		silla->GetTransform()->SetWorldScale(6, 6, 6);
+		silla->GetTransform()->SetWorldPosition(0, 0.1, -0.8f);
+
+		cubos->SetMaterial(Managers::MaterialManager::GetDefaultModelMaterial(), true);
+		cubos->SetColor(COLOR::RED);
+		
+		//robot->SetColor(COLOR::BLACK);
 
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
@@ -80,8 +93,8 @@ namespace FlyGame
 		pointLightStatic->SetPosition(glm::vec3(1, 5, 0));
 		//pointLightStatic->SetColor(COLOR::CYAN);
 
-		spotLight->SetPosition(glm::vec3(0, 2, 0));
-		spotLight->SetDirection(piso->GetTransform()->GetWorldPosition() - spotLight->GetPosition());
+		spotLight->SetPosition(glm::vec3(0, 3, 0));
+		spotLight->SetDirection(glm::vec3(0, 0, 0));
 
 		std::string boxMaterial = "Box_Mat";
 
@@ -111,14 +124,15 @@ namespace FlyGame
 
 		//cube->SetMaterial(caritoMat);
 		cube->SetMaterial(boxMat, true);
-
+		
+		//cubos->SetMaterial(boxMat, true);
 		//cube->SetColor(COLOR::MAGENTA);
+		//robot->SetMaterial(boxMat, true);
 
-		robot->SetMaterial(boxMat, true);
-
-		//robot->SetActive(true);
-
-		scene3->SetActive(false);
+		silla->SetActive(true);
+		cubos->SetActive(true);
+		robot->SetActive(false);
+		scene3->SetActive(true);
 		piso->SetActive(false);
 		triangle->SetActive(false);
 		cube->SetActive(false);
@@ -127,6 +141,11 @@ namespace FlyGame
 
 	void Game::Update()
 	{
+		//MoveObject(spotLight);
+		//spotLight->SetDirection(mainCamera->GetTransform()->GetFront());
+		//spotLight->SetPosition(mainCamera->GetTransform()->GetWorldPosition());
+
+
 		if (Input::GetKeyPressed(KeyCode::KEY_1))
 		{
 			cameraController->SetMouseMovementOn(true);
@@ -137,35 +156,31 @@ namespace FlyGame
 			cameraController->SetMouseMovementOn(false);
 			ShowCursor();
 		}
-
+		
 		if (Input::GetKeyPressed(KeyCode::KEY_P))
 		{
-			//robot->GetTransform()->WorldTranslate(1, 0, 0);
-			robot->GetChildrenWithName("head_low")[1]->GetTransform()->WorldTranslate(1, 0, 0);
-		}
-		if (Input::GetKeyPressed(KeyCode::KEY_O))
-		{
-			//robot->GetTransform()->WorldTranslate(-1, 0, 0);
-			Entities::Entity* cabeza = robot->GetChildrenWithName("head_low")[1];
-			cabeza->GetTransform()->WorldTranslate(-1, 0, 0);
+			Entities::Entity* cubito3 = cubos->GetChildrenWithName("Cubito16")[0];
+			cubito3->GetTransform()->LocalRotate(0, 0.05, 0);
+
+			Debugger::ConsoleMessage("BB MIN >", cubos->GetWorldBoundingBox().min);
+			Debugger::ConsoleMessage("BB MAX >", cubos->GetWorldBoundingBox().max);
 		}
 
-		//Debugger::ConsoleMessage("RobotPos:", robot->GetTransform()->GetPosition());
-		//if (Input::GetKeyPressed(KeyCode::KEY_1))
-		//{
-		//	if (movingEntity != nullptr)
-		//		cameraController->SetFirstTarget(movingEntity);
-		//}
-		//
-		//if (Input::GetKeyPressed(KeyCode::KEY_2))
-		//{
-		//	cameraController->SetMode(CameraMode::Free);
-		//}
+		if (Input::GetKeyPressed(KeyCode::KEY_O))
+		{
+			Entities::Entity* cubito3 = cubos->GetChildrenWithName("Cubito16")[0];
+			cubito3->GetTransform()->LocalRotate(0, -0.05, 0);
+
+			Debugger::ConsoleMessage("BB MIN >", cubos->GetWorldBoundingBox().min);
+			Debugger::ConsoleMessage("BB MAX >", cubos->GetWorldBoundingBox().max);
+		}
+		
+
+		MoveObject(cubos/*->GetChildrenWithName("Cubito3")[0]*/);
 
 		if (Input::GetKeyPressed(KeyCode::KEY_3))
 		{
-			//if (movingEntity != nullptr)
-				//cameraController->SetThirdTarget(movingEntity, 5);
+
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_0))
@@ -194,22 +209,24 @@ namespace FlyGame
 			movingObject = MovingObject::Player;
 		}
 
-		if (Input::GetKeyPressed(KeyCode::KEY_KP_2))
+		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
-
+			cubos->GetChildrenWithName("Cubito2")[0]->GetTransform()->LocalRotate(0, 0.1, 0);
 		}
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_3))
 		{
-
+			cubos->GetChildrenWithName("Cubito2")[0]->GetTransform()->LocalRotate(0, -0.1, 0);
 		}
 
-		CheckForEnabling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, GetDirectionalLight());
-		CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, spotLight);
-		CheckForEnabling(KeyCode::KEY_T, KeyCode::KEY_G, pointLight);
-		CheckForEnabling(KeyCode::KEY_R, KeyCode::KEY_F, pointLightStatic);
+		//CheckForEnabling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, silla);
+		//CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, spotLight);
+		//CheckForEnabling(KeyCode::KEY_T, KeyCode::KEY_G, pointLight);
+		//CheckForEnabling(KeyCode::KEY_R, KeyCode::KEY_F, pointLightStatic);
 
-		//cameraController->SetMode(CameraMode::Free);
+		CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, cubos->GetChildrenWithName("Cubito3")[0]);
+
+		//cameraController->SetMode(CameraMode::Free);ee
 
 		if (movingEntity != nullptr)
 		{
@@ -224,7 +241,7 @@ namespace FlyGame
 			}
 		}
 
-		cameraController->Update(false);
+		cameraController->Update(false);  
 
 	}
 
@@ -239,32 +256,32 @@ namespace FlyGame
 		float sensibility = 0.01f;
 		float rotSensibility = 1;
 
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_W))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_8))
 		{
 			entity->MoveForward(sensibility);
 			objectMoved = true;
 		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_S))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_2))
 		{
 			entity->MoveBackward(sensibility);
 			objectMoved = true;
 		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_SPACE))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_0))
 		{
 			entity->MoveUp(sensibility);
 			objectMoved = true;
 		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_LEFT_SHIFT))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_5))
 		{
 			entity->MoveDown(sensibility);
 			objectMoved = true;
 		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_A))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_4))
 		{
 			entity->MoveLeft(sensibility);
 			objectMoved = true;
 		}
-		if (Input::GetKeyPressed(Utils::KeyCode::KEY_D))
+		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_6))
 		{
 			entity->MoveRight(sensibility);
 			objectMoved = true;
@@ -295,7 +312,6 @@ namespace FlyGame
 			entity->GetTransform()->Rotate(0.0f, 0.0f, rotSensibility);
 		}
 		*/
-		CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, entity);
 
 
 		if (objectMoved && showMovement)

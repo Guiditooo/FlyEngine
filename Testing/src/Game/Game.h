@@ -31,6 +31,11 @@ namespace FlyGame
 		Entities::Model* scene2;
 		Entities::Model* scene3;
 		Entities::Model* robot;
+		Entities::Model* silla;
+		Entities::Model* bp;
+
+		Entities::Model* cubos;
+
 		//Entities::Model* scene;
 		//Entities::Model* scene;
 

@@ -18,8 +18,8 @@ namespace FlyEngine
 			static std::vector<Entities::Model*> LoadModel(std::string modelName, std::string const& path, bool gamma = false);
 			static Entities::Model* LoadBSPScene(std::string modelName, std::string const& path, bool gamma = false);
 		private:
-			static void ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector);
-			static Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model);
+			static void ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector, bool& createdMaterial);
+			static Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model, bool& createdMaterial);
 			static std::vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Entities::Model* model);
 			
 		

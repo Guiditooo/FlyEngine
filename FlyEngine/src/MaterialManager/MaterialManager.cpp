@@ -30,6 +30,17 @@ namespace FlyEngine
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
 		}
 
+		void MaterialManager::EraseMaterial(std::string materialName)
+		{
+			auto it = materialsMap.find(materialName);
+			if (it != materialsMap.end())
+			{
+				if (it->second);
+					delete it->second;
+				it->second = nullptr;
+			}
+		}
+
 		Materials::Material* MaterialManager::GetMaterial(std::string name)
 		{
 			auto it = materialsMap.find(name);

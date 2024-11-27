@@ -29,6 +29,7 @@ namespace FlyEngine
 		public:
 			static void InitializeManager();
 			static void CreateMaterial(std::string materialName, Shader* shader);
+			static void EraseMaterial(std::string materialName);
 			static Materials::Material* GetMaterial(std::string name);
 			static void SetMaterial(std::string matName, Materials::Material* mat);
 			static Materials::Material* GetDefaultModelMaterial();

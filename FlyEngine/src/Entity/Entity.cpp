@@ -69,6 +69,10 @@ namespace FlyEngine
 			printModificationMessage = false;
 
 			transform->SetEntity(this);
+
+			localBoundingBox = Utils::BoundingBox();
+			worldBoundingBox = Utils::BoundingBox();
+
 		}
 
 		Entity::~Entity()
@@ -77,7 +81,19 @@ namespace FlyEngine
 
 		void Entity::SetActive(bool isActive)
 		{
+			activeInHierarchy = active;
 			active = isActive;
+			for (auto child : transform->GetChildren())
+			{
+				if (!active)
+				{
+					child->GetEntity()->SetActive(isActive);
+				}
+				else
+				{
+					child->GetEntity()->SetActive(activeInHierarchy);
+				}
+			}
 		}
 
 		bool Entity::IsActive()
@@ -241,11 +257,11 @@ namespace FlyEngine
 
 		void Entity::SetBoundingBox(Utils::BoundingBox bounds)
 		{
-			boundingBox = bounds;
+			localBoundingBox = bounds;
 
 			if (transform->GetParent() != nullptr)
 			{
-				Utils::BoundingBox pbb = transform->GetParent()->GetEntity()->GetBoundingBox();
+				Utils::BoundingBox pbb = transform->GetParent()->GetEntity()->GetLocalBoundingBox();
 
 				pbb.min.x = bounds.min.x < pbb.min.x ? bounds.min.x : pbb.min.x;
 				pbb.min.y = bounds.min.y < pbb.min.y ? bounds.min.y : pbb.min.y;
@@ -261,53 +277,29 @@ namespace FlyEngine
 
 		void Entity::SetBoundingBox(glm::vec3 min, glm::vec3 max)
 		{
-			boundingBox.min = min;
-			boundingBox.max = max;
-
-			if (transform->GetParent() != nullptr)
-			{
-				Utils::BoundingBox pbb = transform->GetParent()->GetEntity()->GetBoundingBox();
-
-				pbb.min.x = min.x < pbb.min.x ? min.x : pbb.min.x;
-				pbb.min.y = min.y < pbb.min.y ? min.y : pbb.min.y;
-				pbb.min.z = min.z < pbb.min.z ? min.z : pbb.min.z;
-
-				pbb.max.x = max.x > pbb.max.x ? max.x : pbb.max.x;
-				pbb.max.y = max.y > pbb.max.y ? max.y : pbb.max.y;
-				pbb.max.z = max.z > pbb.max.z ? max.z : pbb.max.z;
-
-				transform->GetParent()->GetEntity()->SetBoundingBox(pbb);
-			}
+			SetBoundingBox(BoundingBox(min,max));
 		}
 
 		void Entity::SetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 		{
-			boundingBox.min.x = minX;
-			boundingBox.min.y = minY;
-			boundingBox.min.z = minZ;
-			boundingBox.max.x = maxX;
-			boundingBox.max.y = maxY;
-			boundingBox.max.z = maxZ;
-
-			if (transform->GetParent() != nullptr)
-			{
-				Utils::BoundingBox pbb = transform->GetParent()->GetEntity()->GetBoundingBox();
-
-				pbb.min.x = minX < pbb.min.x ? minX : pbb.min.x;
-				pbb.min.y = minY < pbb.min.y ? minY : pbb.min.y;
-				pbb.min.z = minZ < pbb.min.z ? minZ : pbb.min.z;
-
-				pbb.max.x = maxX > pbb.max.x ? maxX : pbb.max.x;
-				pbb.max.y = maxY > pbb.max.y ? maxY : pbb.max.y;
-				pbb.max.z = maxZ > pbb.max.z ? maxZ : pbb.max.z;
-
-				transform->GetParent()->GetEntity()->SetBoundingBox(pbb);
-			}
+			SetBoundingBox(BoundingBox(glm::vec3(minX, minY, minZ), glm::vec3(maxX, maxY, maxZ)));
 		}
 
-		Utils::BoundingBox Entity::GetBoundingBox()
+		void Entity::SetWorldBoundingBox(Utils::BoundingBox bounds)
 		{
-			return boundingBox;
+			worldBoundingBox = bounds;
+		}
+
+		Utils::BoundingBox Entity::GetLocalBoundingBox()
+		{
+			return localBoundingBox;
+		}
+
+		Utils::BoundingBox Entity::GetWorldBoundingBox()
+		{
+			glm::mat4 worldTRS = transform->GetWorldTRS();
+			worldBoundingBox = Utils::BoundingBox::TransformBoundingBox(localBoundingBox, worldTRS);
+			return worldBoundingBox;
 		}
 
 		void Entity::AddChild(Entity* newChild)
@@ -351,6 +343,11 @@ namespace FlyEngine
 		Entity* Entity::GetParent()
 		{
 			return transform->GetParent()->GetEntity();
+		}
+
+		Entity* Entity::GetRoot()
+		{
+			return transform->GetRoot()->GetEntity();
 		}
 
 		std::vector<Entity*> Entity::GetChildren()

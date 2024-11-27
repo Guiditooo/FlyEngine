@@ -35,8 +35,6 @@ namespace FlyEngine
 			std::vector<unsigned int> index;
 			std::vector<float> vertex;
 
-			Utils::BoundingBox boundingBox;
-
 			Utils::Buffers* buffers;
 
 			bool active;
@@ -47,6 +45,9 @@ namespace FlyEngine
 			Transform* transform;
 
 			Utils::Color color;
+
+			Utils::BoundingBox localBoundingBox;
+			Utils::BoundingBox worldBoundingBox;
 
 			bool settedAsCameraTarget = false;
 			bool printModificationMessage;
@@ -105,7 +106,10 @@ namespace FlyEngine
 			void SetBoundingBox(glm::vec3 min, glm::vec3 max);
 			void SetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-			Utils::BoundingBox GetBoundingBox();
+			void SetWorldBoundingBox(Utils::BoundingBox bounds);
+
+			Utils::BoundingBox GetLocalBoundingBox();
+			Utils::BoundingBox GetWorldBoundingBox();
 
 			void AddChild(Entity* newChild);
 			void SetParent(Entity* newParent);
@@ -114,6 +118,7 @@ namespace FlyEngine
 			void RemoveParent();
 
 			Entity* GetParent();
+			Entity* GetRoot();
 			std::vector<Entity*> GetChildren();
 			std::vector<Entity*> GetChildrenWithName(std::string childName);
 

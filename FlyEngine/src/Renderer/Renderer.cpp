@@ -93,6 +93,12 @@ namespace FlyEngine
 
 	void Renderer::DrawModel(Entities::Model* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos)
 	{
+		if (!toDraw->IsActive())
+			return;
+
+		std::string modelName = toDraw->GetRoot()->GetName();
+		bool a = modelName == "BP";
+
 		std::vector<Mesh*> meshes = toDraw->GetMeshes();
 
 		for (int i = 0; i < meshes.size(); i++)
@@ -102,18 +108,25 @@ namespace FlyEngine
 
 			toDraw->UseShader();
 			id = toDraw->GetShaderID();
-			
-			if (toDraw->GetMaterial() != nullptr)
-				renderingMat = toDraw->GetMaterial();
-			else
+
+			renderingMat = toDraw->GetMaterial();
+			std::string matName = renderingMat->GetName();
+			bool b = matName == "BP_mat";
+
+			if (renderingMat == nullptr || Managers::MaterialManager::GetMaterial(renderingMat->GetName()) == nullptr)
+			{
 				renderingMat = MaterialManager::GetDefaultMissingMaterial();
-			
+			}
+
+			if (id == ShaderManager::GetDefaultModelShader()->GetShaderID())
+				SetVec3Uniform(id, "viewPos", camPos);
+
 			SetMatrix4Uniform(id, "view", viewMat);
 			SetMatrix4Uniform(id, "projection", projMat);
-			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix()); // Usar la transformación acumulada
-			SetVec3Uniform(id, "viewPos", camPos);
+			SetMatrix4Uniform(id, "model", toDraw->GetModelMatrix());
 
-			SetVec3Uniform(id, "entityColor", toDraw->GetColorV3());
+			SetVec3Uniform(id, "baseColor", renderingMat->GetColorV3());
+			SetVec3Uniform(id, "entityColor", toDraw->GetRoot()->GetColorV3());
 
 			DrawMesh(meshes[i], renderingMat);
 		}
@@ -351,7 +364,7 @@ namespace FlyEngine
 	void Renderer::DrawMesh(Mesh* mesh, Materials::Material* mat)
 	{
 		std::vector<std::string> order = mat->GetTextureOrder();
-		
+
 		for (unsigned int i = 0; i < order.size(); i++)
 		{
 			std::string base = "material.";
@@ -366,8 +379,6 @@ namespace FlyEngine
 
 			SetIntUniform(mat->GetShaderID(), &uniformVariable[0], i);
 		}
-
-		SetVec3Uniform(mat->GetShaderID(), "baseColor", mat->GetColorV3());
 
 		SetFloatUniform(mat->GetShaderID(), "material.shininess", mat->GetSpecs()->GetShininess());
 

@@ -23,6 +23,8 @@ namespace FlyEngine
 			void SetDirectory(std::string directory);
 			void AddMesh(Mesh* mesh);
 
+			Model* GetRoot();
+
 			glm::vec3 GetDimesions();
 			std::vector<Mesh*> GetMeshes();
 			std::string GetDirectory();

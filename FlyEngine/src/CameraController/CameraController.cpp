@@ -19,10 +19,10 @@ namespace FlyEngine
 	float CameraController::translateSensitivity = 0.1f;
 
 	CameraMode CameraController::cameraMode = CameraMode::Free;
-	
+
 	float CameraController::lastX = 0.0f;
 	float CameraController::lastY = 0.0f;
-	
+
 	ObjetiveParams* CameraController::objetiveParams = nullptr;
 	bool CameraController::isMouseMovementOn = false;
 
@@ -72,7 +72,7 @@ namespace FlyEngine
 		objetiveParams->target = target;
 		//glm::vec3 targetPos = target->GetPosition() + camera->GetFront() * distance;
 		glm::vec3 targetPos = camera->GetTransform()->GetWorldPosition();
-		camera->GetTransform()->SetWorldPosition(targetPos.x, targetPos.y+2, targetPos.z-5);
+		camera->GetTransform()->SetWorldPosition(targetPos.x, targetPos.y + 2, targetPos.z - 5);
 
 	}
 
@@ -87,7 +87,7 @@ namespace FlyEngine
 
 		rotationSensitivity = 0.3f;
 		translateSensitivity = 0.05f;
-		
+
 		previousRot = glm::vec3(0);
 
 		cameraRotation = CameraRotation();
@@ -136,8 +136,8 @@ namespace FlyEngine
 
 		if (showMessage)
 		{
-			Debugger::ConsoleMessage("- Camera Updated Front :",camera->GetTransform()->GetFront());
-			if(cameraMoved)
+			Debugger::ConsoleMessage("- Camera Updated Front :", camera->GetTransform()->GetFront());
+			if (cameraMoved)
 				Debugger::ConsoleMessage("- Camera Updated Position :", camera->GetTransform()->GetWorldPosition());
 		}
 	}
@@ -146,15 +146,13 @@ namespace FlyEngine
 	{
 		if (!isMouseMovementOn)
 			return;
-		
-		//El mouse se mueve
-		float sensitivity = 0.1f;
 
+		float sensitivity = 0.1f;
 		xOffset *= sensitivity;
 		yOffset *= sensitivity;
 
 		cameraRotation.yaw += xOffset;
-		cameraRotation.pitch += yOffset;
+		cameraRotation.pitch -= yOffset;
 
 		if (cameraRotation.pitch > 89.0f)
 			cameraRotation.pitch = 89.0f;
@@ -165,15 +163,19 @@ namespace FlyEngine
 		front.x = cos(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 		front.y = sin(glm::radians(cameraRotation.pitch));
 		front.z = sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
-		//camera->SetFront(glm::normalize(front));
+		front = glm::normalize(front);
 
-		camera->GetTransform()->WorldRotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
-		/*
-		std::string text = "- ";
-		text += camera->GetName();
-		text += " Updated Rot: ";
-		Debugger::ConsoleMessage(&text[0], camera->GetRotation());
-		*/
+		camera->GetTransform()->SetFront(front);
+		//camera->GetTransform()->LocalRotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+		//camera->GetTransform()->WorldRotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
+
+		Debugger::ConsoleMessage("Camera Front:", front);
+
+		camera->viewMatrix = glm::lookAt(
+			camera->GetTransform()->GetLocalPosition(),
+			camera->GetTransform()->GetLocalPosition() + front,
+			camera->GetTransform()->GetUp()
+		);
 	}
 
 	void CameraController::FreeMovement(bool& cameraMoved)
@@ -209,9 +211,12 @@ namespace FlyEngine
 			camera->MoveRight(translateSensitivity);
 			cameraMoved = true;
 		}
-
-		camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetWorldPosition(), camera->GetTransform()->GetWorldPosition() + camera->GetTransform()->GetFront(), camera->GetTransform()->GetUp());
-
+		
+		camera->viewMatrix = glm::lookAt(
+			camera->GetTransform()->GetLocalPosition(), 
+			camera->GetTransform()->GetLocalPosition() + camera->GetTransform()->GetFront(), 
+			camera->GetTransform()->GetUp());
+		
 	}
 
 	void CameraController::FirstPersonMovement(bool& cameraMoved)
@@ -251,12 +256,18 @@ namespace FlyEngine
 			Debugger::ConsoleMessage("ERROR - CAMERA CONTROLLER HAS NOT TARGET");
 		}
 
-		camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetWorldPosition(), camera->GetTransform()->GetWorldPosition() + camera->GetTransform()->GetFront(), camera->GetTransform()->GetUp());
+		
+		camera->viewMatrix = glm::lookAt(
+			camera->GetTransform()->GetWorldPosition(), 
+			camera->GetTransform()->GetWorldPosition() + camera->GetTransform()->GetFront(), 
+			camera->GetTransform()->GetUp());
+		
+
 	}
 
 	void CameraController::ThirdPersonMovement(bool& cameraMoved)
 	{
-		
+
 		if (Input::GetKeyPressed(Utils::KeyCode::KEY_KP_ADD))
 		{
 			float coef = 1.01f;
@@ -279,7 +290,11 @@ namespace FlyEngine
 			float cameraY = targetPosition.y + distanceToTarget * sin(glm::radians(cameraRotation.pitch));
 			float cameraZ = targetPosition.z + distanceToTarget * sin(glm::radians(cameraRotation.yaw)) * cos(glm::radians(cameraRotation.pitch));
 			*/
+
+			
 			camera->viewMatrix = glm::lookAt(camera->GetTransform()->GetWorldPosition(), objetiveParams->target->GetTransform()->GetWorldPosition(), camera->GetTransform()->GetUp());
+			
+
 
 			glm::vec3 targetPos = objetiveParams->target->GetTransform()->GetWorldPosition() + camera->GetTransform()->GetFront() * 5.0f;
 			camera->GetTransform()->SetWorldPosition(targetPos.x, targetPos.y, targetPos.z);
@@ -288,7 +303,7 @@ namespace FlyEngine
 			cameraRotation.yaw += glm::degrees(rotY);
 
 			camera->GetTransform()->WorldRotateAround(cameraRotation.pitch, -cameraRotation.yaw, 0);
-			
+
 			previousRot = objetiveParams->target->GetTransform()->GetWorldRotation();
 
 		}
@@ -306,7 +321,7 @@ namespace FlyEngine
 
 	CameraController* CameraController::GetInstance()
 	{
-		if (instance == nullptr) 
+		if (instance == nullptr)
 		{
 			instance = new CameraController(); // Se crea la instancia si no existe
 		}
@@ -319,7 +334,7 @@ namespace FlyEngine
 			delete objetiveParams;
 		objetiveParams = nullptr;
 
-		if (instance != nullptr) 	
+		if (instance != nullptr)
 			delete instance;
 		instance = nullptr;
 	}

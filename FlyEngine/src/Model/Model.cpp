@@ -32,6 +32,11 @@ namespace FlyEngine
             meshes.push_back(mesh);
         }
 
+        Model* Model::GetRoot()
+        {
+            return dynamic_cast<Model*>(transform->GetRoot()->GetEntity());
+        }
+
         glm::vec3 Model::GetDimesions()
         {
             glm::vec3 min(std::numeric_limits<float>::max());

@@ -31,54 +31,54 @@ namespace FlyEngine
 	{
 		glm::vec3 newFront = glm::normalize(front);
 
-		glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newFront));
+		glm::vec3 upVector = fabs(newFront.y) > 0.999f ? glm::vec3(0.0f, 0.0f, 1.0f) : glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 right = glm::normalize(glm::cross(upVector, newFront));
 		glm::vec3 up = glm::cross(newFront, right);
 
-		matrix[0] = glm::vec4(right, 0.0f);   
-		matrix[1] = glm::vec4(up, 0.0f);      
+		matrix[0] = glm::vec4(right, 0.0f);
+		matrix[1] = glm::vec4(up, 0.0f);
 		matrix[2] = glm::vec4(newFront, 0.0f);
 
-		float pitch = glm::degrees(asin(-newFront.y)); // Inclinación
-		float yaw = glm::degrees(atan2(newFront.x, newFront.z)); // Rotación horizontal
-		float roll = glm::degrees(atan2(up.x, right.x)); // Rotación en el eje Z
+		float pitch = glm::degrees(asin(-newFront.y));
+		float yaw = glm::degrees(atan2(newFront.x, newFront.z)); 
 
-		rotation->SetRotation(glm::vec3(pitch, yaw, roll));
+		rotation->SetRotation(glm::vec3(pitch, yaw, 0.0f));
 	}
 
 	void TransformComponent::SetUp(glm::vec3 up)
 	{
 		glm::vec3 newUp = glm::normalize(up);
 
-		glm::vec3 front = glm::normalize(glm::cross(newUp, glm::vec3(1.0f, 0.0f, 0.0f))); 
-		glm::vec3 right = glm::cross(newUp, front); 
+		glm::vec3 reference = fabs(newUp.x) > 0.999f ? glm::vec3(0.0f, 0.0f, 1.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 front = glm::normalize(glm::cross(newUp, reference));
+		glm::vec3 right = glm::cross(newUp, front);
 
-		matrix[0] = glm::vec4(right, 0.0f); 
-		matrix[1] = glm::vec4(newUp, 0.0f); 
-		matrix[2] = glm::vec4(front, 0.0f); 
+		matrix[0] = glm::vec4(right, 0.0f);
+		matrix[1] = glm::vec4(newUp, 0.0f);
+		matrix[2] = glm::vec4(front, 0.0f);
 
 		float pitch = glm::degrees(asin(-front.y));
 		float yaw = glm::degrees(atan2(front.x, front.z));
-		float roll = glm::degrees(atan2(newUp.x, right.x));
 
-		rotation->SetRotation(glm::vec3(pitch, yaw, roll));
+		rotation->SetRotation(glm::vec3(pitch, yaw, 0.0f)); 
 	}
 
 	void TransformComponent::SetRight(glm::vec3 right)
 	{
 		glm::vec3 newRight = glm::normalize(right);
 
-		glm::vec3 front = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newRight)); 
-		glm::vec3 up = glm::cross(front, newRight); 
+		glm::vec3 reference = fabs(newRight.y) > 0.999f ? glm::vec3(0.0f, 0.0f, 1.0f) : glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 front = glm::normalize(glm::cross(reference, newRight));
+		glm::vec3 up = glm::cross(front, newRight);
 
-		matrix[0] = glm::vec4(newRight, 0.0f); 
-		matrix[1] = glm::vec4(up, 0.0f);       
-		matrix[2] = glm::vec4(front, 0.0f);    
+		matrix[0] = glm::vec4(newRight, 0.0f);
+		matrix[1] = glm::vec4(up, 0.0f);
+		matrix[2] = glm::vec4(front, 0.0f);
 
 		float pitch = glm::degrees(asin(-front.y));
 		float yaw = glm::degrees(atan2(front.x, front.z));
-		float roll = glm::degrees(atan2(up.x, newRight.x));
 
-		rotation->SetRotation(glm::vec3(pitch, yaw, roll));
+		rotation->SetRotation(glm::vec3(pitch, yaw, 0.0f)); 
 	}
 
 	glm::vec3 TransformComponent::GetRight()
@@ -95,6 +95,7 @@ namespace FlyEngine
 	{
 		return glm::vec3(matrix[2]);
 	}
+
 	void TransformComponent::Reset()
 	{
 		position->SetPosition(0, 0, 0);

@@ -56,7 +56,7 @@ namespace FlyEngine
 			stbi_image_free(localBuffer);
 
 			if (sendMessage)
-				std::cout << " Texture ID=" << textureID << " Successfully Loaded!\n";
+				std::cout << " Texture ID=" << textureID << " Successfully Loaded!";
 
 			return new Texture(textureID, width, height, path);
 		}

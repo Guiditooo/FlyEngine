@@ -8,6 +8,7 @@
 
 #include "MaterialManager/MaterialManager.h"
 #include "ShaderManager/ShaderManager.h"
+#include "TextureManager/TextureManager.h"
 #include "BSPManager/BSPManager.h"
 
 #include "TextureImporter/TextureImporter.h"
@@ -25,6 +26,8 @@ namespace FlyEngine
 			std::vector<Entities::Model*> modelVector;
 
 			Entities::Model* model = new Entities::Model(modelName);
+
+			bool createdMaterial = false;
 
 			modelVector.push_back(model);
 
@@ -49,7 +52,13 @@ namespace FlyEngine
 
 			model->SetDirectory(path.substr(0, path.find_last_of('/')) + "/");
 
-			ProcessNode(scene->mRootNode, scene, model, modelVector);
+			ProcessNode(scene->mRootNode, scene, model, modelVector, createdMaterial);
+
+			Materials::Material* modelMaterial = Managers::MaterialManager::GetMaterial(modelVector[0]->GetName() + "_mat");
+
+			if (modelMaterial != nullptr)
+				modelVector[0]->SetMaterial(modelMaterial, true);
+
 			return modelVector;
 		}
 
@@ -57,18 +66,18 @@ namespace FlyEngine
 		{
 			return nullptr;
 		}
-		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector)
+		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector, bool& createdMaterial)
 		{
 			Entities::Model* currentEntity = new Entities::Model(node->mName.C_Str());
-			
+
 			modelVector.push_back(currentEntity);
 
-			if (parentEntity) 
+			if (parentEntity)
 			{
 				currentEntity->SetParent(parentEntity);
 			}
 
-			for (unsigned int i = 0; i < node->mNumMeshes; i++) 
+			for (unsigned int i = 0; i < node->mNumMeshes; i++)
 			{
 				aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 				currentEntity->SetBoundingBox(
@@ -79,16 +88,16 @@ namespace FlyEngine
 					mesh->mAABB.mMax.y,
 					mesh->mAABB.mMax.z
 				);
-				currentEntity->AddMesh(ProcessMesh(mesh, scene, currentEntity));
+				currentEntity->AddMesh(ProcessMesh(mesh, scene, currentEntity, createdMaterial));
 			}
 
-			for (unsigned int i = 0; i < node->mNumChildren; i++) 
+			for (unsigned int i = 0; i < node->mNumChildren; i++)
 			{
-				ProcessNode(node->mChildren[i], scene, currentEntity, modelVector);
+				ProcessNode(node->mChildren[i], scene, currentEntity, modelVector, createdMaterial);
 			}
 		}
 
-		Mesh* ModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model)
+		Mesh* ModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, Entities::Model* model, bool& createdMaterial)
 		{
 			std::vector<Entities::Vertex> vertices;
 			std::vector<unsigned int> indices;
@@ -100,7 +109,7 @@ namespace FlyEngine
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
 				Entities::Vertex vertex;
-				glm::vec3 vector; 
+				glm::vec3 vector;
 
 				// positions
 				vector.x = mesh->mVertices[i].x;
@@ -145,7 +154,7 @@ namespace FlyEngine
 
 				vertices.push_back(vertex);
 			}
-			
+
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 			{
 				aiFace face = mesh->mFaces[i];
@@ -157,13 +166,13 @@ namespace FlyEngine
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 
-			if (mesh->mMaterialIndex > 0) //Si el modelo reconoce que hay materiales
+			if (mesh->mMaterialIndex > 0 && !createdMaterial) //Si el modelo reconoce que hay materiales
 			{
-				std::string path = model->GetDirectory();
+				std::string path = model->GetRoot()->GetDirectory();
 				std::vector<std::string> order;
 				std::string type;
 
-				std::string matName = model->GetName() + "_mat";
+				std::string matName = model->GetRoot()->GetName() + "_mat";
 				Managers::MaterialManager::CreateMaterial(matName, Managers::ShaderManager::GetDefaultModelShader());
 				Materials::Material* mat = Managers::MaterialManager::GetMaterial(matName);
 
@@ -174,7 +183,9 @@ namespace FlyEngine
 					type = "diffuse";
 					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
+						std::string txName = model->GetRoot()->GetName() + "_" + type;
+						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
+						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
 						changed = true;
 					}
 					else
@@ -189,7 +200,9 @@ namespace FlyEngine
 					type = "specular";
 					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
+						std::string txName = model->GetRoot()->GetName() + "_" + type;
+						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
+						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
 						changed = true;
 					}
 					else
@@ -204,7 +217,9 @@ namespace FlyEngine
 					type = "normal";
 					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
+						std::string txName = model->GetRoot()->GetName() + "_" + type;
+						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
+						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
 						changed = true;
 					}
 					else
@@ -219,7 +234,9 @@ namespace FlyEngine
 					type = "height";
 					if (mat->GetTexture(type) == -1)
 					{
-						mat->AddTexture(type, TextureImporter::SearchTexture(&(path)[0], &type[0])->GetID());
+						std::string txName = model->GetRoot()->GetName() + "_" + type;
+						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
+						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
 						changed = true;
 					}
 					else
@@ -233,8 +250,13 @@ namespace FlyEngine
 				{
 					mat->SetTextureOrder(order);
 					Managers::MaterialManager::SetMaterial(matName, mat);
-					model->SetMaterial(mat,false);
+					createdMaterial = true;
+
 					return new Mesh(vertices, indices);
+				}
+				else
+				{
+					Managers::MaterialManager::EraseMaterial(matName);
 				}
 				if (alreadyCreatedTexture)
 				{

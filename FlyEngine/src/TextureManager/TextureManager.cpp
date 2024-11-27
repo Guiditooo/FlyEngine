@@ -40,6 +40,21 @@ namespace FlyEngine
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
 		}
 
+		void TextureManager::CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage)
+		{
+			if (GetTexture(textureName) != -1)
+			{
+				std::string text = "Texture [" + textureName + "] already created!";
+				Debugger::ConsoleMessage(&text[0]);
+				return;
+			}
+
+			textureMap[textureName] = Importers::TextureImporter::SearchTexture(directory, filename, false);
+
+			std::string text = "Texture Created: [" + textureName + "]!";
+			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+		}
+
 		int TextureManager::GetTexture(std::string textureName)
 		{
 			auto it = textureMap.find(textureName);

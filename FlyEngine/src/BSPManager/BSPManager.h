@@ -9,9 +9,12 @@
 
 #include "Plane/Plane.h"
 
-
 namespace FlyEngine
 {
+	namespace Utils
+	{
+		struct BoundingBox;
+	}
 
 	namespace Managers
 	{
@@ -22,9 +25,11 @@ namespace FlyEngine
 			AxisZ,
 		};
 
+
 		class FLY_API BSPManager
 		{
 		private:
+			static bool isActive;
 			static BSPType type;
 			static std::unordered_map<int, Plane*> planes;
 			static std::vector<int> ablePlanes;
@@ -35,8 +40,9 @@ namespace FlyEngine
 			static void AddPlane(Plane* newPlane);
 			static void Update(glm::vec3 cameraPos);
 			static void ChangeType(BSPType newType);
-			
-			static bool CheckInside(glm::vec3 otherEntityPos);
+			static void SetActive(bool state);
+
+			static bool CheckInside(Utils::BoundingBox entity);
 		};
 	}
 }

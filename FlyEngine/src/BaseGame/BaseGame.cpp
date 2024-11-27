@@ -10,6 +10,7 @@
 #include "ModelImporter/ModelImporter.h"
 
 #include "MaterialManager/MaterialManager.h"
+#include "BSPManager/BSPManager.h"
 
 #include "Material/Material.h"
 #include "FlyFunctions/Debugger/Debugger.h"
@@ -132,6 +133,7 @@ namespace FlyEngine
 
 	void BaseGame::DrawModels()
 	{
+		//AplicarBSP
 		for (Entities::Model* model : modelList)
 		{
 			if (model->IsActive())
@@ -462,7 +464,9 @@ namespace FlyEngine
 				isRunning = false;
 			}
 		}
+
 		Update();
+		BSPManager::Update(mainCamera->GetTransform()->GetWorldPosition());
 	}
 
 	void BaseGame::InternalDraw()
