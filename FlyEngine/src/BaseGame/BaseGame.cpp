@@ -103,6 +103,11 @@ namespace FlyEngine
 		return mainCamera;
 	}
 
+	void BaseGame::SetBSP(bool isActive)
+	{
+		BSPManager::SetActive(isActive);
+	}
+
 	void BaseGame::CreateBuffers(Buffers* buffers)
 	{
 		renderer->CreateBaseBuffers(*buffers);
@@ -133,13 +138,30 @@ namespace FlyEngine
 
 	void BaseGame::DrawModels()
 	{
-		//AplicarBSP
 		for (Entities::Model* model : modelList)
 		{
 			if (model->IsActive())
 			{
-				renderer->DrawModel(model, mainCamera->GetViewMatrix(), mainCamera->GetProjMatrix(), mainCamera->GetTransform()->GetWorldPosition());
+				DrawModelRecursive(model);
 			}
+		}
+	}
+
+	void BaseGame::DrawModelRecursive(Entities::Model* model)
+	{
+		if (!BSPManager::CheckInside(model->GetWorldBoundingBox()))
+		{
+			return; 
+		}
+
+		renderer->DrawModel(model,
+			mainCamera->GetViewMatrix(),
+			mainCamera->GetProjMatrix(),
+			mainCamera->GetTransform()->GetWorldPosition());
+
+		for (Entities::Entity* child : model->GetChildren())
+		{
+			DrawModelRecursive(dynamic_cast<Entities::Model*>(child));
 		}
 	}
 
@@ -450,6 +472,8 @@ namespace FlyEngine
 
 		glfwSetCursorPosCallback(window->GetWindow(), CameraController::MouseCallback);
 
+		BSPManager::InitializeManager();
+
 		Init();
 	}
 
@@ -563,16 +587,13 @@ namespace FlyEngine
 
 	Entities::Model* BaseGame::CreateModel(std::string const& path, std::string name)
 	{
-		std::vector<Entities::Model*> modelVector = Importers::ModelImporter::LoadModel(name, path);
+		Entities::Model* model = Importers::ModelImporter::LoadModel(name, path);
 
 		std::string text = "Model Loaded: (" + name + ")!";
 		Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
-		for (auto model : modelVector)
-		{
-			modelList.push_back(model);
-		}
+		modelList.push_back(model);
 	
-		return modelVector[0];
+		return model;
 	}
 
 	float BaseGame::FindMiddleNumber(float a, float b, float c)

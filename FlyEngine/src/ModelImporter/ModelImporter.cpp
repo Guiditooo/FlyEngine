@@ -21,15 +21,13 @@ namespace FlyEngine
 {
 	namespace Importers
 	{
-		std::vector<Entities::Model*> ModelImporter::LoadModel(std::string modelName, std::string const& path, bool gamma)
+		Entities::Model* ModelImporter::LoadModel(std::string modelName, std::string const& path, bool gamma)
 		{
-			std::vector<Entities::Model*> modelVector;
-
 			Entities::Model* model = new Entities::Model(modelName);
 
 			bool createdMaterial = false;
 
-			modelVector.push_back(model);
+			//modelVector.push_back(model);
 
 			Assimp::Importer importer;
 
@@ -47,30 +45,24 @@ namespace FlyEngine
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 			{
 				std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-				return modelVector;
+				return nullptr;
 			}
 
 			model->SetDirectory(path.substr(0, path.find_last_of('/')) + "/");
 
-			ProcessNode(scene->mRootNode, scene, model, modelVector, createdMaterial);
+			ProcessNode(scene->mRootNode, scene, model, createdMaterial);
 
-			Materials::Material* modelMaterial = Managers::MaterialManager::GetMaterial(modelVector[0]->GetName() + "_mat");
+			Materials::Material* modelMaterial = Managers::MaterialManager::GetMaterial(model->GetName() + "_mat");
 
 			if (modelMaterial != nullptr)
-				modelVector[0]->SetMaterial(modelMaterial, true);
+				model->SetMaterial(modelMaterial, true);
 
-			return modelVector;
+			return model;
 		}
 
-		Entities::Model* ModelImporter::LoadBSPScene(std::string modelName, std::string const& path, bool gamma)
-		{
-			return nullptr;
-		}
-		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, std::vector<Entities::Model*>& modelVector, bool& createdMaterial)
+		void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, Entities::Entity* parentEntity, bool& createdMaterial)
 		{
 			Entities::Model* currentEntity = new Entities::Model(node->mName.C_Str());
-
-			modelVector.push_back(currentEntity);
 
 			if (parentEntity)
 			{
@@ -93,7 +85,7 @@ namespace FlyEngine
 
 			for (unsigned int i = 0; i < node->mNumChildren; i++)
 			{
-				ProcessNode(node->mChildren[i], scene, currentEntity, modelVector, createdMaterial);
+				ProcessNode(node->mChildren[i], scene, currentEntity, createdMaterial);
 			}
 		}
 
@@ -271,33 +263,6 @@ namespace FlyEngine
 		std::vector<Texture> ModelImporter::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Entities::Model* model)
 		{
 			std::vector<Texture> textures;
-			/*
-			for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-			{
-				aiString str;
-				mat->GetTexture(type, i, &str);
-				// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-				bool skip = false;
-				for (unsigned int j = 0; j < model->textures_loaded.size(); j++)
-				{
-					if (std::strcmp(model->textures_loaded[j].path.data(), str.C_Str()) == 0)
-					{
-						textures.push_back(model->textures_loaded[j]);
-						skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-						break;
-					}
-				}
-				if (!skip)
-				{   // if texture hasn't been loaded already, load it
-					Texture texture;
-					texture.id = Importers::TextureImporter::TextureFromFile(str.C_Str(), model->directory);
-					texture.type = typeName;
-					texture.path = str.C_Str();
-					textures.push_back(texture);
-					model->textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
-				}
-			}
-			*/
 			return textures;
 		}
 	}

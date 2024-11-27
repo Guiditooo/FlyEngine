@@ -54,6 +54,7 @@ namespace FlyEngine
 			planes.clear();
 			ablePlanes.clear();
 			checkingPlanes.clear();
+			type = BSPType::AxisY;
 			isActive = false;
 		}
 		void BSPManager::AddPlane(Plane* newPlane)
@@ -116,7 +117,7 @@ namespace FlyEngine
 		bool BSPManager::CheckInside(Utils::BoundingBox entity)
 		{
 			if (!isActive)
-				return false;
+				return true;
 
 			for (int planeID : checkingPlanes)
 			{

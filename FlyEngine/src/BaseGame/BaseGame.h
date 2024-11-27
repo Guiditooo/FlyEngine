@@ -60,6 +60,7 @@ namespace FlyEngine
 
 		void DrawObjects();
 		void DrawModels();
+		void DrawModelRecursive(Entities::Model* model);
 		void Draw2DEntities();
 		void Draw3DEntities();
 		//void DrawSceneGraph(SceneGraph* sceneGraph);
@@ -93,6 +94,8 @@ namespace FlyEngine
 		glm::vec2 GetWindowSize();
 
 		Camera* GetMainCamera();
+
+		void SetBSP(bool isActive);
 
 		void ToggleClosingWithEsc();
 
