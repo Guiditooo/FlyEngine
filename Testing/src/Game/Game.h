@@ -27,13 +27,12 @@ namespace FlyGame
 
 		Entities::Cube* cube;
 
-		Entities::Model* scene1;
-		Entities::Model* scene2;
-		Entities::Model* scene3;
-		Entities::Model* robot;
-		Entities::Model* silla;
-		Entities::Model* bp;
-
+		//Entities::Model* scene1;
+		//Entities::Model* scene2;
+		//Entities::Model* scene3;
+		//Entities::Model* robot;
+		//Entities::Model* silla;
+		//Entities::Model* bp;
 		Entities::Model* cubos;
 
 		//Entities::Model* scene;

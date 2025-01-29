@@ -72,9 +72,9 @@ namespace FlyEngine
 		{
 		case FlyEngine::ProjectionType::Ortho:
 			projMatrix = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, this->nearPlane, this->farPlane);
-			transform->SetFront(glm::vec3(0, 0, 1));
-			transform->SetWorldRotation(glm::vec3(0, 0, 0));
-			transform->SetWorldPosition(0, 0, -10);
+			//transform->SetFront(glm::vec3(0, 0, 1));
+			//transform->SetWorldRotation(glm::vec3(0, 0, 0));
+			//transform->SetWorldPosition(0, 0, -10);
 			break;
 		case FlyEngine::ProjectionType::Perspective:
 			projMatrix = glm::perspective(this->fov, this->aspectRatio, this->nearPlane, this->farPlane);

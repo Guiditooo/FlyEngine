@@ -35,8 +35,6 @@ namespace FlyEngine
 
 		Lights::DirectionalLight* directionalLight;
 
-		EngineMode engineMode;
-
 		CameraController* cameraController;
 
 		const int MAX_POINT_LIGHTS = 4;
@@ -139,6 +137,8 @@ namespace FlyEngine
 
 		Window* window;
 		Camera* mainCamera;
+
+		EngineMode engineMode;
 
 		virtual void Init() = 0;
 		virtual void Update() = 0;
