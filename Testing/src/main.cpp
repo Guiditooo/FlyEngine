@@ -10,7 +10,7 @@ void main()
 	srand(time(NULL));
 	
 	Game* game = new Game(1000, 800, "Testing Environment");
-	game->RunGame();
+	game->RunGame(); 
 	
 	if (game != nullptr)
 		delete game;

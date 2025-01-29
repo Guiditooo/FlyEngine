@@ -180,6 +180,9 @@
     <Filter Include="TransformComponent">
       <UniqueIdentifier>{97b4bdf9-e955-4361-97d1-a2ab68c427bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{b9fbb919-d04c-4441-8f36-b1999ecb58ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -330,6 +333,9 @@
     </ClCompile>
     <ClCompile Include="src\TransformComponent\TransformComponent.cpp">
       <Filter>TransformComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Timer\Timer.cpp">
+      <Filter>Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -501,6 +507,9 @@
     </ClInclude>
     <ClInclude Include="src\TransformComponent\TransformComponent.h">
       <Filter>TransformComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer\Timer.h">
+      <Filter>Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

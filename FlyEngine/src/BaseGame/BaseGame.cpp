@@ -1,10 +1,12 @@
 #include "BaseGame.h"
 
-#include <GLEW/glew.h>
-#include <GLFW/glfw3.h>
 #include <string>
 
+#include <GLEW/glew.h>
+#include <GLFW/glfw3.h>
+
 #include "Renderer/Renderer.h"
+#include "Timer/Timer.h"
 
 #include "TextureImporter/TextureImporter.h"
 #include "ModelImporter/ModelImporter.h"
@@ -480,6 +482,8 @@ namespace FlyEngine
 			return;
 		}
 
+		Timer::InitTimer({ Timer::Window });
+
 		mainCamera = new Camera();
 
 		SetUpOpenGlFunctions();
@@ -511,6 +515,8 @@ namespace FlyEngine
 
 		Update();
 		BSPManager::Update(mainCamera->GetTransform()->GetWorldPosition());
+
+		Timer::UpdateTimer();
 	}
 
 	void BaseGame::InternalDraw()
@@ -557,6 +563,9 @@ namespace FlyEngine
 
 	void BaseGame::RunGame()
 	{
+		Timer::InitTimer({ Timer::Total, Timer::Delta});
+		Timer::EnablePrintMessages(true);
+
 		isRunning = true;
 		InternalInit();
 

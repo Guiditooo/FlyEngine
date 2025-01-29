@@ -54,6 +54,20 @@ namespace FlyEngine
 			ConsoleMessage(initialMsg, vector3, 1, 0, 1, 0);
 		}
 
+		void Debugger::ConsoleMessage(const char* initialMsg, double value)
+		{
+			ConsoleMessage(initialMsg, static_cast<float>(value));
+		}
+
+		void Debugger::ConsoleMessage(const char* initialMsg, float value)
+		{
+			std::string text = initialMsg;
+			text += ": ";
+			text += std::to_string(value);
+
+			ConsoleMessage(&text[0], 1, 0, 1, 0);
+		}
+
 		void Debugger::ConsoleMessage(const char* initialMsg, vec3 vector3, short beforeSpacesCount, short afterSpacesCount, short beforeEndlCount, short afterEndlCount)
 		{
 			std::string text = initialMsg;

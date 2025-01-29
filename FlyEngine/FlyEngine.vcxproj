@@ -60,6 +60,7 @@
     <ClCompile Include="src\TextureImporter\TextureImporter.cpp" />
     <ClCompile Include="src\TextureManager\TextureManager.cpp" />
     <ClCompile Include="src\Texture\Texture.cpp" />
+    <ClCompile Include="src\Timer\Timer.cpp" />
     <ClCompile Include="src\TinyXML2\tinyxml2.cpp" />
     <ClCompile Include="src\TransformComponent\TransformComponent.cpp" />
     <ClCompile Include="src\TransformElement\TransformElement.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="src\TextureImporter\TextureImporter.h" />
     <ClInclude Include="src\TextureManager\TextureManager.h" />
     <ClInclude Include="src\Texture\Texture.h" />
+    <ClInclude Include="src\Timer\Timer.h" />
     <ClInclude Include="src\TinyXML2\tinyxml2.h" />
     <ClInclude Include="src\TransformComponent\TransformComponent.h" />
     <ClInclude Include="src\TransformElement\TransformElement.h" />
