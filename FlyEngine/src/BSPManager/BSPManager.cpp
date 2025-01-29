@@ -169,7 +169,7 @@ namespace FlyEngine
 
 				if (pointsInFront == 0)
 				{
-					return false; // Auera de este plano.
+					return false; // Afuera de este plano.
 				}
 			}
 
