@@ -183,6 +183,12 @@
     <Filter Include="Timer">
       <UniqueIdentifier>{b9fbb919-d04c-4441-8f36-b1999ecb58ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Frame">
+      <UniqueIdentifier>{e40f65f9-908e-4dfb-93db-5818bf302e5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{8a466b8d-7047-416a-ba8e-2699adcbddcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -336,6 +342,12 @@
     </ClCompile>
     <ClCompile Include="src\Timer\Timer.cpp">
       <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Animation.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frame\Frame.cpp">
+      <Filter>Frame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -510,6 +522,12 @@
     </ClInclude>
     <ClInclude Include="src\Timer\Timer.h">
       <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frame\Frame.h">
+      <Filter>Frame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

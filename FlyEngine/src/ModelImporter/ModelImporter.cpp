@@ -206,7 +206,7 @@ namespace FlyEngine
 					{
 						std::string txName = model->GetRoot()->GetName() + "_" + type;
 						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
-						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
+						mat->AddTexture(type, Managers::TextureManager::GetTextureID(txName));
 						changed = true;
 					}
 					else
@@ -223,7 +223,7 @@ namespace FlyEngine
 					{
 						std::string txName = model->GetRoot()->GetName() + "_" + type;
 						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
-						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
+						mat->AddTexture(type, Managers::TextureManager::GetTextureID(txName));
 						changed = true;
 					}
 					else
@@ -240,7 +240,7 @@ namespace FlyEngine
 					{
 						std::string txName = model->GetRoot()->GetName() + "_" + type;
 						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
-						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
+						mat->AddTexture(type, Managers::TextureManager::GetTextureID(txName));
 						changed = true;
 					}
 					else
@@ -257,7 +257,7 @@ namespace FlyEngine
 					{
 						std::string txName = model->GetRoot()->GetName() + "_" + type;
 						Managers::TextureManager::CreateSearchedTexture(&(path)[0], &type[0], txName, true);
-						mat->AddTexture(type, Managers::TextureManager::GetTexture(txName));
+						mat->AddTexture(type, Managers::TextureManager::GetTextureID(txName));
 						changed = true;
 					}
 					else

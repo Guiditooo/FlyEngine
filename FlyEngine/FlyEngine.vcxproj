@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\Animation.cpp" />
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
     <ClCompile Include="src\BoundingBox\BoundingBox.cpp" />
     <ClCompile Include="src\BSPManager\BSPManager.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\FlyFunctions\Color\Color.cpp" />
     <ClCompile Include="src\FlyFunctions\Commons\Commons.cpp" />
     <ClCompile Include="src\FlyFunctions\Debugger\Debugger.cpp" />
+    <ClCompile Include="src\Frame\Frame.cpp" />
     <ClCompile Include="src\Frustum\Frustum.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Input\Input.cpp" />
@@ -73,6 +75,7 @@
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\Animation.h" />
     <ClInclude Include="src\BaseGame\BaseGame.h" />
     <ClInclude Include="src\BoundingBox\BoundingBox.h" />
     <ClInclude Include="src\BSPManager\BSPManager.h" />
@@ -91,6 +94,7 @@
     <ClInclude Include="src\FlyFunctions\Commons\Commons.h" />
     <ClInclude Include="src\FlyFunctions\Debugger\Debugger.h" />
     <ClInclude Include="src\FlyFunctions\KeyCode\KeyCode.h" />
+    <ClInclude Include="src\Frame\Frame.h" />
     <ClInclude Include="src\Frustum\Frustum.h" />
     <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Lights\DirectionalLight\DirectionalLight.h" />

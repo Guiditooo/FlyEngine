@@ -23,6 +23,7 @@ namespace FlyGame
 		CameraController* cameraController;
 		
 		Entities::Rectangle* piso;
+		Entities::Rectangle* rectangle;
 		Entities::Triangle* triangle;
 
 		Entities::Cube* cube;
@@ -37,8 +38,6 @@ namespace FlyGame
 
 		//Entities::Model* scene;
 		//Entities::Model* scene;
-
-		Texture* texture;
 
 		Lights::PointLight* pointLight;
 		Lights::PointLight* pointLightStatic;

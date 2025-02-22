@@ -19,12 +19,14 @@ namespace FlyEngine
 
 		public:
 			static void InitializeManager();
-			static void CreateTexture(std::string textureName, const char* path);
-			static void CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage = true);
+			static int CreateTexture(std::string textureName, const char* path);
+			static int CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage = true);
 
-			static int GetTexture(std::string textureName);
+			static int GetTextureID(std::string textureName);
 			static int GetDefaultTextureID();
+
 			static Texture* GetDefaultTexture();
+			static Texture* GetTexture(std::string textureName);
 
 			static void SetTextureType(int textureID, std::string type);
 

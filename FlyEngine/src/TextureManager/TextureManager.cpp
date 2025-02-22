@@ -25,37 +25,43 @@ namespace FlyEngine
 		{
 			CreateDefaultTexture();
 		}
-		void TextureManager::CreateTexture(std::string textureName, const char* path)
+		int TextureManager::CreateTexture(std::string textureName, const char* path)
 		{
-			if (GetTexture(textureName) != -1)
+			int txID = GetTextureID(textureName);
+			if (txID != -1)
 			{
 				std::string text = "Texture [" + textureName + "] already created!";
 				Debugger::ConsoleMessage(&text[0]);
-				return;
+				return txID;
 			}
 			
-			textureMap[textureName] = Importers::TextureImporter::SearchTexture(path, textureName, false);
+			textureMap[textureName] = Importers::TextureImporter::SearchTexture(path, textureName, true);
 
 			std::string text = "Texture Created: [" + textureName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+
+			return txID;
 		}
 
-		void TextureManager::CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage)
+		int TextureManager::CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage)
 		{
-			if (GetTexture(textureName) != -1)
+			int txID = GetTextureID(textureName);
+			if (GetTextureID(textureName) != -1)
 			{
 				std::string text = "Texture [" + textureName + "] already created!";
 				Debugger::ConsoleMessage(&text[0]);
-				return;
+				return txID;
 			}
 
 			textureMap[textureName] = Importers::TextureImporter::SearchTexture(directory, filename, false);
 
 			std::string text = "Texture Created: [" + textureName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+			
+			return txID;
 		}
 
-		int TextureManager::GetTexture(std::string textureName)
+		int TextureManager::GetTextureID(std::string textureName)
 		{
 			auto it = textureMap.find(textureName);
 			if (it != textureMap.end())
@@ -67,12 +73,17 @@ namespace FlyEngine
 
 		int TextureManager::GetDefaultTextureID()
 		{
-			return GetTexture(DEFAULT_TEXTURE_NAME);
+			return GetTextureID(DEFAULT_TEXTURE_NAME);
 		}
 
 		Texture* TextureManager::GetDefaultTexture()
 		{
 			return textureMap[DEFAULT_TEXTURE_NAME];
+		}
+
+		Texture* TextureManager::GetTexture(std::string textureName)
+		{
+			return textureMap[textureName];
 		}
 
 		void TextureManager::SetTextureType(int textureID, std::string type)

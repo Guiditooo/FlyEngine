@@ -27,15 +27,13 @@ namespace FlyGame
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
 
-		texture = nullptr;
-
 		movingEntity = nullptr;
 
 		cameraController = nullptr;
 
 		movingObject = MovingObject::Cube;
 
-		SetEngineMode(EngineMode::Engine2D);
+		SetEngineMode(EngineMode::Only2D);
 	}
 
 	Game::~Game()
@@ -78,6 +76,7 @@ namespace FlyGame
 		piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
 		triangle = CreateTriangle(0, 1, 0, 10, 10);
+		rectangle = CreateRectangle(0, 0, 0, 10, 10);
 
 		cube = CreateCube(0, 1, 0, 500);
 		cube->SetName("BOX");
@@ -103,8 +102,8 @@ namespace FlyGame
 		Managers::TextureManager::CreateTexture("Box_S", "res/Textures/Box");
 
 		Managers::MaterialManager::CreateMaterial(boxMaterial, Managers::ShaderManager::GetDefaultModelShader());
-		Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", Managers::TextureManager::GetTexture("Box"));
-		Managers::MaterialManager::AddTexture(boxMaterial, "specular", Managers::TextureManager::GetTexture("Box_S"));
+		Managers::MaterialManager::AddTexture(boxMaterial, "diffuse", Managers::TextureManager::GetTextureID("Box"));
+		Managers::MaterialManager::AddTexture(boxMaterial, "specular", Managers::TextureManager::GetTextureID("Box_S"));
 		Managers::MaterialManager::SetTextureOrder(boxMaterial, { "diffuse", "specular" });
 
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
@@ -130,13 +129,24 @@ namespace FlyGame
 		//robot->SetMaterial(boxMat, true);
 
 		//silla->SetActive(true);
-		cubos->SetActive(true);
+		cubos->SetActive(false);
 		//robot->SetActive(false);
 		//scene3->SetActive(true);
 		
 		piso->SetActive(false);
 		triangle->SetActive(false);
+		rectangle->SetActive(true);
 		cube->SetActive(false);
+
+		int hTexID = Managers::TextureManager::CreateTexture("facha2", "res/Textures");
+
+		Managers::MaterialManager::CreateMaterial("HMaterial", Managers::ShaderManager::GetDefaultBasicShader());
+		Managers::MaterialManager::AddTexture("HMaterial", "diffuse", hTexID);
+		Managers::MaterialManager::SetTextureOrder("HMaterial", { "diffuse" });
+		Materials::Material* hMat = Managers::MaterialManager::GetMaterial("HMaterial");
+
+		rectangle->SetMaterial(hMat,false);
+		rectangle->GetTransform()->WorldScale(3,5,3);
 
 	}
 
@@ -145,6 +155,7 @@ namespace FlyGame
 		//MoveObject(spotLight);
 		//spotLight->SetDirection(mainCamera->GetTransform()->GetFront());
 		//spotLight->SetPosition(mainCamera->GetTransform()->GetWorldPosition());
+
 
 		if (Input::GetKeyPressed(KeyCode::KEY_1))
 		{
