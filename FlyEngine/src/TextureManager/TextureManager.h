@@ -10,6 +10,12 @@ namespace FlyEngine
 {
 	namespace Managers
 	{
+		struct TextureData
+		{
+			std::string textureName = "ERROR NAME";
+			Texture* texture = nullptr;
+		};
+
 		class FLY_API TextureManager
 		{
 		private:
@@ -19,7 +25,7 @@ namespace FlyEngine
 
 		public:
 			static void InitializeManager();
-			static int CreateTexture(std::string textureName, const char* path);
+			static int CreateTexture(std::string textureName, const char* path, bool textureNameIsSpriteName = false, bool sendMessage = true);
 			static int CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage = true);
 
 			static int GetTextureID(std::string textureName);
@@ -27,6 +33,7 @@ namespace FlyEngine
 
 			static Texture* GetDefaultTexture();
 			static Texture* GetTexture(std::string textureName);
+			static TextureData GetTexture(int textureID);
 
 			static void SetTextureType(int textureID, std::string type);
 

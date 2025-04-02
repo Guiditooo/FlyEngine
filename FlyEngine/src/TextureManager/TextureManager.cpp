@@ -25,7 +25,7 @@ namespace FlyEngine
 		{
 			CreateDefaultTexture();
 		}
-		int TextureManager::CreateTexture(std::string textureName, const char* path)
+		int TextureManager::CreateTexture(std::string textureName, const char* path, bool textureNameIsSpriteName, bool sendMessage)
 		{
 			int txID = GetTextureID(textureName);
 			if (txID != -1)
@@ -34,13 +34,19 @@ namespace FlyEngine
 				Debugger::ConsoleMessage(&text[0]);
 				return txID;
 			}
-			
-			textureMap[textureName] = Importers::TextureImporter::SearchTexture(path, textureName, true);
+			if (textureNameIsSpriteName)
+			{
+				textureMap[textureName] = Importers::TextureImporter::LoadTexture(path);
+			}
+			else
+			{
+				textureMap[textureName] = Importers::TextureImporter::SearchTexture(path, textureName);
+			}
 
-			std::string text = "Texture Created: [" + textureName + "]!";
-			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
+			if(sendMessage)
+				Utils::Debugger::ConsoleMessageTextureCreation(textureMap[textureName]->GetID());
 
-			return txID;
+			return textureMap[textureName]->GetID();
 		}
 
 		int TextureManager::CreateSearchedTexture(std::string directory, std::string filename, std::string textureName, bool sendMessage)
@@ -53,7 +59,7 @@ namespace FlyEngine
 				return txID;
 			}
 
-			textureMap[textureName] = Importers::TextureImporter::SearchTexture(directory, filename, false);
+			textureMap[textureName] = Importers::TextureImporter::SearchTexture(directory, filename);
 
 			std::string text = "Texture Created: [" + textureName + "]!";
 			Utils::Debugger::ConsoleMessage(&text[0], 1, 0, 1, 1);
@@ -86,7 +92,7 @@ namespace FlyEngine
 			return textureMap[textureName];
 		}
 
-		void TextureManager::SetTextureType(int textureID, std::string type)
+		TextureData TextureManager::GetTexture(int textureID)
 		{
 			int key = -1; // Valor de clave por defecto si no se encuentra
 
@@ -94,14 +100,21 @@ namespace FlyEngine
 			{
 				if (pair.second->GetID() == textureID)
 				{
-					pair.second->SetType(type);
-					key = pair.second->GetID();
-					break;
+					TextureData result;
+					result.textureName = pair.first;
+					result.texture = pair.second;
+					return result;
 				}
 			}
 
 			if (key == -1)
 				Debugger::ConsoleMessage("The provided Texture ID is not loaded!");
+
+		}
+
+		void TextureManager::SetTextureType(int textureID, std::string type)
+		{
+			GetTexture(textureID).texture->SetType(type);
 		}
 
 		void TextureManager::BindTexture(int textureID, unsigned int slot)
