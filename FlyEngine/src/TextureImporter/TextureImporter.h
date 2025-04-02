@@ -16,8 +16,8 @@ namespace FlyEngine
 		{
 		private:
 		public:
-			static Texture* LoadTexture(const char* path, bool sendMessage = true);
-			static Texture* SearchTexture(std::string directory, std::string filename, bool sendMessage = true);
+			static Texture* LoadTexture(const char* path);
+			static Texture* SearchTexture(std::string directory, std::string filename);
 			static unsigned int TextureFromFile(const char* path, std::string& directory, bool gamma = false);
 			static void Init(bool flip);
 		};

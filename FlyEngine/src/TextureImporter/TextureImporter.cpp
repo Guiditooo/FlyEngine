@@ -4,13 +4,14 @@
 #include <filesystem>
 #include <vector>
 #include <set>
-#include <string>
 #include <algorithm>
 
 #include "TextureManager/TextureManager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#include "FlyFunctions/Debugger/Debugger.h"
 
 const std::vector<std::string> supportedExtensions = { ".png", ".jpg", ".jpeg", ".bmp", ".tga" };
 
@@ -21,7 +22,7 @@ namespace FlyEngine
 	namespace Importers
 	{
 
-		Texture* TextureImporter::LoadTexture(const char* path, bool sendMessage)
+		Texture* TextureImporter::LoadTexture(const char* path)
 		{
 			unsigned int textureID;
 			glGenTextures(1, &textureID);
@@ -55,17 +56,13 @@ namespace FlyEngine
 
 			stbi_image_free(localBuffer);
 
-			if (sendMessage)
-				std::cout << " Texture ID=" << textureID << " Successfully Loaded! Path: " << path << std::endl;
-
 			return new Texture(textureID, width, height, path);
 		}
 
-		Texture* TextureImporter::SearchTexture(std::string directory, std::string filename, bool sendMessage)
+		Texture* TextureImporter::SearchTexture(std::string directory, std::string filename)
 		{
 			try
 			{
-				//std::cout << "Searching in directory: " << directory << std::endl;
 				for (const auto& entry : std::filesystem::directory_iterator(directory))
 				{
 					if (entry.is_regular_file())
@@ -74,7 +71,7 @@ namespace FlyEngine
 						std::string name = entry.path().stem().string(); // Get the filename without extension
 						if (name == filename && std::find(supportedExtensions.begin(), supportedExtensions.end(), extension) != supportedExtensions.end())
 						{
-							return LoadTexture(entry.path().string().c_str(), true);
+							return LoadTexture(entry.path().string().c_str());
 						}
 					}
 				}
