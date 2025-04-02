@@ -16,6 +16,7 @@
 #include "Rectangle/Rectangle.h"
 #include "Triangle/Triangle.h"
 #include "Cube/Cube.h"
+#include "Sprite/Sprite.h"
 #include "ShaderManager/ShaderManager.h"
 #include "EngineMode/EngineMode.h"
 
@@ -108,6 +109,8 @@ namespace FlyEngine
 		Entities::Rectangle* CreateRectangle(float posX, float posY, float posZ, float width);
 		Entities::Triangle* CreateTriangle(float posX, float posY, float posZ, float base, float height);
 		Entities::Cube* CreateCube(float posX, float posY, float posZ, float width);
+
+		Entities::Sprite* CreateSprite(const char* path, bool creationMessage = false);
 
 		Lights::DirectionalLight* CreateDirectionalLight(glm::vec3 direction = glm::vec3(0, -1, 0));
 		Lights::PointLight* CreatePointLight(glm::vec3 position = glm::vec3(0, 0, 0));

@@ -127,6 +127,7 @@ namespace FlyEngine
 
 	void BaseGame::DrawObjects()
 	{
+		/*
 		if (calculatingLights)
 			CalculateLights();
 		if (using2DEntities)
@@ -136,6 +137,8 @@ namespace FlyEngine
 			Draw3DEntities();
 			DrawModels();
 		}
+		*/
+		DrawTextures();
 	}
 
 	void BaseGame::DrawModel(Entities::Model* model)
@@ -226,6 +229,11 @@ namespace FlyEngine
 				}
 			}
 		}
+	}
+
+	void BaseGame::DrawTextures()
+	{
+		
 	}
 
 	void BaseGame::CalculateLights()
@@ -347,6 +355,25 @@ namespace FlyEngine
 		SetVertexAttributes(cube->GetVertexAttributes());
 		entity3DList.push_back(cube);
 		return cube;
+	}
+
+	Entities::Sprite* BaseGame::CreateSprite(const char* path, bool creationMessage)
+	{
+		glm::vec2 windowSize = window->GetWindowSize();
+		Entities::Sprite* sprite = new Entities::Sprite(path, creationMessage);
+
+		sprite->GetTransform()->SetWorldPosition(PixelsToEngine(0, windowSize.x), PixelsToEngine(0, windowSize.x), PixelsToEngine(0, windowSize.x));
+		sprite->GetTransform()->SetWorldScale(PixelsToEngine(sprite->GetDimentions().width, windowSize.x), PixelsToEngine(sprite->GetDimentions().height, windowSize.x), 1);
+
+		sprite->SetMaterial(MaterialManager::GetDefaultModelMaterial(), false);
+
+		CreateBuffers(sprite->GetBuffers());
+		BindBuffers(sprite->GetBuffers(), sprite->GetVertexList(), sprite->GetIndexList());
+		SetVertexAttributes(sprite->GetVertexAttributes());
+
+		entity2DList.push_back(sprite);
+
+		return sprite;
 	}
 
 	Lights::DirectionalLight* BaseGame::CreateDirectionalLight(glm::vec3 direction)
@@ -592,7 +619,7 @@ namespace FlyEngine
 
 	Texture* BaseGame::CreateTexture(const char* path)
 	{
-		return Importers::TextureImporter::LoadTexture(path, true);
+		return Importers::TextureImporter::LoadTexture(path);
 	}
 
 	CameraController* BaseGame::CreateCameraController(Camera* controllingCamera, float translateSens, float rotationSens, CameraMode cameraMode, Entities::Entity* target, float followDistance)
