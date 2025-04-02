@@ -138,15 +138,17 @@ namespace FlyGame
 		rectangle->SetActive(true);
 		cube->SetActive(false);
 
-		int hTexID = Managers::TextureManager::CreateTexture("facha2", "res/Textures");
+		//int hTexID = Managers::TextureManager::CreateTexture("facha2", "res/Textures");
 
-		Managers::MaterialManager::CreateMaterial("HMaterial", Managers::ShaderManager::GetDefaultBasicShader());
-		Managers::MaterialManager::AddTexture("HMaterial", "diffuse", hTexID);
-		Managers::MaterialManager::SetTextureOrder("HMaterial", { "diffuse" });
-		Materials::Material* hMat = Managers::MaterialManager::GetMaterial("HMaterial");
+		//Managers::MaterialManager::CreateMaterial("HMaterial", Managers::ShaderManager::GetDefaultBasicShader());
+		//Managers::MaterialManager::AddTexture("HMaterial", "diffuse", hTexID);
+		//Managers::MaterialManager::SetTextureOrder("HMaterial", { "diffuse" });
+		//Materials::Material* hMat = Managers::MaterialManager::GetMaterial("HMaterial");
+		//rectangle->SetMaterial(hMat,false);
 
-		rectangle->SetMaterial(hMat,false);
 		rectangle->GetTransform()->WorldScale(3,5,3);
+
+		Entities::Sprite* s = CreateSprite("res/Textures/facha2.jpeg",true);
 
 	}
 

@@ -28,7 +28,7 @@ void FlyEngine::Texture::UnBind() const
 
 void FlyEngine::Texture::SetType(std::string type)
 {
-	this->type = type;
+	this->type = type; //Normal, Base, Height, etc.
 }
 
 int FlyEngine::Texture::GetID() const
