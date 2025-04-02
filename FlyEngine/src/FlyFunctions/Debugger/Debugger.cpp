@@ -5,6 +5,8 @@
 #include "Debugger.h"
 #include <string>
 
+#include <TextureManager/TextureManager.h>
+
 using namespace glm;
 
 namespace FlyEngine
@@ -114,6 +116,27 @@ namespace FlyEngine
 			text += std::to_string(vector3.z);
 			text += ")";
 			ConsoleMessageID(&text[0], beforeSpacesCount, afterSpacesCount, beforeEndlCount, afterEndlCount);
+		}
+
+		void Debugger::ConsoleMessageTextureCreation(int textureID)
+		{
+			//Creada texture id <textID> [Width x Height]
+
+			using namespace Managers;
+
+			TextureData t = TextureManager::GetTexture(textureID);
+
+			std::string text = "Created Texture ID=";
+			text += std::to_string(textureID);
+			text += " [";
+			text += std::to_string(t.texture->GetWidth());
+			text += " x ";
+			text += std::to_string(t.texture->GetHeight());
+			text += "] Named \"";
+			text += t.textureName;
+			text += "\"!";
+
+			ConsoleMessageID(&text[0], 0, 1, 0, 1);
 		}
 
 	}
