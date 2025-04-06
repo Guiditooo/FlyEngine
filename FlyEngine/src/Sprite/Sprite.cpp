@@ -99,6 +99,12 @@ namespace FlyEngine
 			return texture;
 		}
 
+		void Sprite::SetSpriteDims(SpriteDims dims)
+		{
+			width = dims.width;
+			height = dims.height;
+		}
+
 		Sprite::~Sprite()
 		{
 
