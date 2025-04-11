@@ -3,7 +3,6 @@
 
 #include <Entity/Entity.h>
 
-
 namespace FlyEngine
 {
 	class Window;

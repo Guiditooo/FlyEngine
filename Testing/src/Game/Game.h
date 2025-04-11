@@ -22,11 +22,11 @@ namespace FlyGame
 	private:
 		CameraController* cameraController;
 		
-		Entities::Rectangle* piso;
-		Entities::Rectangle* rectangle;
-		Entities::Triangle* triangle;
+		//Entities::Rectangle* piso;
+		//Entities::Rectangle* rectangle;
+		//Entities::Triangle* triangle;
 
-		Entities::Cube* cube;
+		//Entities::Cube* cube;
 
 		//Entities::Model* scene1;
 		//Entities::Model* scene2;
@@ -34,10 +34,12 @@ namespace FlyGame
 		//Entities::Model* robot;
 		//Entities::Model* silla;
 		//Entities::Model* bp;
-		Entities::Model* cubos;
+		//Entities::Model* cubos;
 
 		//Entities::Model* scene;
 		//Entities::Model* scene;
+
+		Entities::Sprite* sprite;
 
 		Lights::PointLight* pointLight;
 		Lights::PointLight* pointLightStatic;
@@ -47,7 +49,7 @@ namespace FlyGame
 
 		MovingObject movingObject;
 
-		Entities::Entity* movingEntity;
+		//Entities::Entity* movingEntity;
 
 
 		void MoveObject(FlyEngine::Entities::Entity* entity, bool showMovement = true);

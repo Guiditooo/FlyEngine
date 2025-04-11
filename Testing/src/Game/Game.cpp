@@ -22,12 +22,12 @@ namespace FlyGame
 
 		cameraController = nullptr;
 
-		piso = nullptr;
+		//piso = nullptr;
 		pointLight = nullptr;
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
 
-		movingEntity = nullptr;
+		//movingEntity = nullptr;
 
 		cameraController = nullptr;
 
@@ -53,7 +53,7 @@ namespace FlyGame
 		//scene3->GetTransform()->SetWorldScale(3, 3, 3);
 
 		//robot = CreateModel("res/Models/Iron_Giant/irongiant_low.fbx", "Robot1");
-		cubos = CreateModel("res/Models/Cubos/CubitoDubiDuuu.fbx", "Cubos");
+		//cubos = CreateModel("res/Models/Cubos/CubitoDubiDuuu.fbx", "Cubos");
 		//scene3 = CreateModel("res/Models/Scene/planes_scene.fbx", "BSP_Scene3");
 		//silla = CreateModel("res/Models/Silla/Silla.fbx", "Silla");
 		//bp = CreateModel("res/Models/Backpack/backpack.obj", "BP");
@@ -61,28 +61,28 @@ namespace FlyGame
 		//bp->GetTransform()->SetWorldScale(0.05f, 0.05f, 0.05f);
 		//bp->GetTransform()->SetWorldPosition(0, 0.1, 0.8f);
 
-		cubos->GetTransform()->SetWorldScale(2, 2, 2);
+		//cubos->GetTransform()->SetWorldScale(2, 2, 2);
 
 		//scene3->GetTransform()->SetWorldScale(10, 1, 10);
 
 		//silla->GetTransform()->SetWorldScale(6, 6, 6);
 		//silla->GetTransform()->SetWorldPosition(0, 0.1, -0.8f);
 
-		cubos->SetMaterial(Managers::MaterialManager::GetDefaultModelMaterial(), true);
-		cubos->SetColor(COLOR::RED);
+		//cubos->SetMaterial(Managers::MaterialManager::GetDefaultModelMaterial(), true);
+		//cubos->SetColor(COLOR::RED);
 		
 		//robot->SetColor(COLOR::BLACK);
 
-		piso = CreateRectangle(0, 0, 0, 1000, 1000);
+		//piso = CreateRectangle(0, 0, 0, 1000, 1000);
 
-		triangle = CreateTriangle(0, 1, 0, 10, 10);
-		rectangle = CreateRectangle(0, 0, 0, 10, 10);
+		//triangle = CreateTriangle(0, 1, 0, 10, 10);
+		//rectangle = CreateRectangle(0, 0, 0, 10, 10);
 
-		cube = CreateCube(0, 1, 0, 500);
-		cube->SetName("BOX");
+		//cube = CreateCube(0, 1, 0, 500);
+		//cube->SetName("BOX");
 
-		piso->SetName("Piso");
-		triangle->SetName("Player");
+		//piso->SetName("Piso");
+		//triangle->SetName("Player");
 
 		pointLight = CreatePointLight(mainCamera->GetTransform()->GetWorldPosition());
 		pointLightStatic = CreatePointLight();
@@ -109,8 +109,8 @@ namespace FlyGame
 		Materials::Material* boxMat = Managers::MaterialManager::GetMaterial(boxMaterial);
 
 		//piso->SetMaterial(boxMat);
-		piso->GetTransform()->SetWorldScale(100, 100, 100);
-		piso->GetTransform()->SetWorldRotation(-90, 90, 0);
+		//piso->GetTransform()->SetWorldScale(100, 100, 100);
+		//piso->GetTransform()->SetWorldRotation(-90, 90, 0);
 
 		Managers::MaterialManager::CreateMaterial("Carito", Managers::ShaderManager::GetDefaultModelShader());
 		Managers::MaterialManager::AddTexture("Carito", "diffuse", Managers::TextureManager::GetDefaultTextureID());
@@ -123,20 +123,20 @@ namespace FlyGame
 		caritoMat->SetSpecs(Materials::MaterialList::Ruby);
 
 		//cube->SetMaterial(caritoMat);
-		cube->SetMaterial(boxMat, true);
+		//cube->SetMaterial(boxMat, true);
 		
 		//cube->SetColor(COLOR::MAGENTA);
 		//robot->SetMaterial(boxMat, true);
 
 		//silla->SetActive(true);
-		cubos->SetActive(false);
+		//cubos->SetActive(false);
 		//robot->SetActive(false);
 		//scene3->SetActive(true);
 		
-		piso->SetActive(false);
-		triangle->SetActive(false);
-		rectangle->SetActive(true);
-		cube->SetActive(false);
+		//piso->SetActive(false);
+		//triangle->SetActive(false);
+		//rectangle->SetActive(true);
+		//cube->SetActive(false);
 
 		//int hTexID = Managers::TextureManager::CreateTexture("facha2", "res/Textures");
 
@@ -146,9 +146,9 @@ namespace FlyGame
 		//Materials::Material* hMat = Managers::MaterialManager::GetMaterial("HMaterial");
 		//rectangle->SetMaterial(hMat,false);
 
-		rectangle->GetTransform()->WorldScale(3,5,3);
+		//rectangle->GetTransform()->WorldScale(3,5,3);
 
-		Entities::Sprite* s = CreateSprite("res/Textures/facha2.jpeg",true);
+		sprite = CreateSprite("res/Textures/facha2.jpeg",true);
 
 	}
 
@@ -218,7 +218,7 @@ namespace FlyGame
 
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
-			movingEntity = triangle;
+			//movingEntity = triangle;
 			movingObject = MovingObject::Player;
 		}
 
@@ -240,7 +240,7 @@ namespace FlyGame
 		//CheckForScaling(KeyCode::KEY_KP_ADD, KeyCode::KEY_KP_SUBTRACT, cubos->GetChildrenWithName("Cubito3")[0]);
 
 		//cameraController->SetMode(CameraMode::Free);ee
-
+		/*
 		if (movingEntity != nullptr)
 		{
 			if (movingObject == MovingObject::Camera)
@@ -255,7 +255,7 @@ namespace FlyGame
 		}
 
 		cameraController->Update(false);  
-
+		*/
 	}
 
 	void Game::Deinit()

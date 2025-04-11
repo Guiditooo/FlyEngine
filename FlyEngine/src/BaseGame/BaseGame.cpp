@@ -22,12 +22,6 @@
 #include "Input/Input.h"
 #include "Lights/LightType.h"
 
-//static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
-//FlyEngine::CameraController* newCamera;
-//bool isFirstTime = true;
-//static double lastMouseX;
-//static double  lastMouseY;
-
 template <typename T>
 static void EraseList(std::list<T*>& list);
 
@@ -234,6 +228,8 @@ namespace FlyEngine
 	void BaseGame::DrawTextures()
 	{
 		
+
+
 	}
 
 	void BaseGame::CalculateLights()

@@ -7,7 +7,6 @@
 #include "Exports/Exports.h"
 
 #include "Renderer/Renderer.h"
-//#include "Window/Window.h"
 #include "Camera/Camera.h"
 
 #include "Material/Material.h"
@@ -22,8 +21,6 @@
 
 namespace FlyEngine
 {
-	class Window;
-
 	class FLY_API BaseGame
 	{
 	private:
