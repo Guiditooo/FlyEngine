@@ -6,8 +6,12 @@ const char* DEFAULT_MODEL_FRAGMENT_PATH = "res/Shaders/defaultModelFragment.shad
 const char* DEFAULT_BASIC_VERTEX_PATH = "res/Shaders/defaultBasicVertex.shader";
 const char* DEFAULT_BASIC_FRAGMENT_PATH = "res/Shaders/defaultBasicFragment.shader";
 
+const char* TEXTURE_VERTEX_PATH = "res/Shaders/textureShaderVertex.shader";
+const char* TEXTURE_FRAGMENT_PATH = "res/Shaders/textureShaderFragment.shader";
+
 const char* BASIC_SHADER_NAME = "BasicShader";
 const char* MODEL_SHADER_NAME = "ModelShader";
+const char* TEXTURE_SHADER_NAME = "TextureShader";
 
 namespace FlyEngine
 {
@@ -42,10 +46,16 @@ namespace FlyEngine
 			return GetShader(MODEL_SHADER_NAME);
 		}
 
+		Shader* ShaderManager::GetTextureShader()
+		{
+			return GetShader(TEXTURE_SHADER_NAME);
+		}
+
 		void ShaderManager::InitializeManager()
 		{
 			CreateShader(BASIC_SHADER_NAME, DEFAULT_BASIC_FRAGMENT_PATH, DEFAULT_BASIC_VERTEX_PATH);
 			CreateShader(MODEL_SHADER_NAME, DEFAULT_MODEL_FRAGMENT_PATH, DEFAULT_MODEL_VERTEX_PATH);
+			CreateShader(TEXTURE_SHADER_NAME, TEXTURE_FRAGMENT_PATH, TEXTURE_VERTEX_PATH);
 		}
 
 	}

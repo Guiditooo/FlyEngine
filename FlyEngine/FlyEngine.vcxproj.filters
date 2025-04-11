@@ -349,6 +349,9 @@
     <ClCompile Include="src\Frame\Frame.cpp">
       <Filter>Frame</Filter>
     </ClCompile>
+    <ClCompile Include="res\Shaders\textureShaderFragment.shader">
+      <Filter>Shader\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Exports\Exports.h" />
@@ -541,6 +544,9 @@
       <Filter>Shader\Shaders</Filter>
     </None>
     <None Include="res\Shaders\defaultModelVertex.shader">
+      <Filter>Shader\Shaders</Filter>
+    </None>
+    <None Include="res\Shaders\textureShaderVertex.shader">
       <Filter>Shader\Shaders</Filter>
     </None>
   </ItemGroup>
