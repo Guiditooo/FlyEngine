@@ -13,6 +13,7 @@
 #include "MaterialManager/MaterialManager.h"
 
 #include "Entity/Entity.h"
+#include "Sprite/Sprite.h"
 #include "Model/Model.h"
 #include "Mesh/Mesh.h"
 #include "Material/Material.h"
@@ -130,6 +131,14 @@ namespace FlyEngine
 
 			DrawMesh(meshes[i], renderingMat);
 		}
+	}
+
+	void Renderer::DrawTexture(Entities::Sprite* sprite)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		TextureManager::BindTexture(sprite->GetTexture());
+		SetIntUniform(sprite->GetShaderID(), "theTexture", 0);
+		glActiveTexture(GL_TEXTURE0);
 	}
 
 	void Renderer::DrawScene(Scene* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos)

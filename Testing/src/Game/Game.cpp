@@ -9,7 +9,6 @@
 #include "FlyFunctions/Debugger/Debugger.h"
 //#include "MaterialSpecification/MaterialSpecification.h"
 
-
 namespace FlyGame
 {
 	//using namespace std;
@@ -27,6 +26,8 @@ namespace FlyGame
 		pointLightStatic = nullptr;
 		spotLight = nullptr;
 
+		sprite = nullptr;
+
 		//movingEntity = nullptr;
 
 		cameraController = nullptr;
@@ -36,10 +37,7 @@ namespace FlyGame
 		SetEngineMode(EngineMode::Only2D);
 	}
 
-	Game::~Game()
-	{
-
-	}
+	Game::~Game() {}
 
 	void Game::Init()
 	{
@@ -148,8 +146,10 @@ namespace FlyGame
 
 		//rectangle->GetTransform()->WorldScale(3,5,3);
 
-		sprite = CreateSprite("res/Textures/facha2.jpeg",true);
-
+		sprite = CreateSprite("res/Textures/hamster.png",true);
+		int a = 3;
+		int b = 3;
+		int c = a - b;
 	}
 
 	void Game::Update()
@@ -158,6 +158,8 @@ namespace FlyGame
 		//spotLight->SetDirection(mainCamera->GetTransform()->GetFront());
 		//spotLight->SetPosition(mainCamera->GetTransform()->GetWorldPosition());
 
+		CheckForScaling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, sprite); 
+		CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, sprite);
 
 		if (Input::GetKeyPressed(KeyCode::KEY_1))
 		{
@@ -195,7 +197,7 @@ namespace FlyGame
 		{
 
 		}
-
+		/*
 		if (Input::GetKeyPressed(KeyCode::KEY_0))
 		{
 			SetEngineMode(EngineMode::Engine2D);
@@ -215,7 +217,6 @@ namespace FlyGame
 		{
 			SetEngineMode(EngineMode::Only3D);
 		}
-
 		if (Input::GetKeyPressed(KeyCode::KEY_KP_1))
 		{
 			//movingEntity = triangle;
@@ -232,6 +233,7 @@ namespace FlyGame
 			//cubos->GetChildrenWithName("Cubito2")[0]->GetTransform()->LocalRotate(0, -0.1, 0);
 		}
 
+		*/
 		//CheckForEnabling(KeyCode::KEY_RIGHT, KeyCode::KEY_LEFT, silla);
 		//CheckForEnabling(KeyCode::KEY_UP, KeyCode::KEY_DOWN, spotLight);
 		//CheckForEnabling(KeyCode::KEY_T, KeyCode::KEY_G, pointLight);

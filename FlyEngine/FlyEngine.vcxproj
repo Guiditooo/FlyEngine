@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="res\Shaders\textureShaderFragment.shader" />
+    <None Include="res\Shaders\textureShaderFragment.shader">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="src\Animation\Animation.cpp" />
     <ClCompile Include="src\BaseGame\BaseGame.cpp" />
     <ClCompile Include="src\BoundingBox\BoundingBox.cpp" />

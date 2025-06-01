@@ -13,6 +13,7 @@ namespace FlyEngine
 	{
 		const std::string DEFAULT_MODEL_MAT_NAME = "Default_Model_Material";
 		const std::string DEFAULT_BASIC_MAT_NAME = "Default_Basic_Material";
+		const std::string DEFAULT_TEXTURE_MAT_NAME = "Default_Texture_Material";
 		const std::string DEFAULT_MISSING_MAT_NAME = "Missing_Material";
 	}
 
@@ -25,6 +26,7 @@ namespace FlyEngine
 			static std::unordered_map<std::string, Materials::Material*> materialsMap;
 			static void CreateBasicMaterial();
 			static void CreateModelMaterial();
+			static void CreateTextureMaterial();
 			static void CreateMissingMaterial();
 		public:
 			static void InitializeManager();
@@ -34,6 +36,7 @@ namespace FlyEngine
 			static void SetMaterial(std::string matName, Materials::Material* mat);
 			static Materials::Material* GetDefaultModelMaterial();
 			static Materials::Material* GetDefaultBasicMaterial();
+			static Materials::Material* GetDefaultTextureMaterial();
 			static Materials::Material* GetDefaultMissingMaterial();
 
 			static bool AddTexture(std::string materialName, std::string name, int texture);

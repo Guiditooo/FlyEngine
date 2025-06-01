@@ -33,6 +33,7 @@ namespace FlyEngine
             RedRubber,
             WhiteRubber,
             YellowRubber,
+            AllAtOne,
             None
 		};
 	}

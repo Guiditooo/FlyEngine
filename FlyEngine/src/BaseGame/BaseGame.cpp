@@ -79,7 +79,7 @@ namespace FlyEngine
 		EraseList(entity3DList);
 		EraseList(entity2DList);
 		EraseList(lightList);
-		EraseList(textureList);
+		EraseList(spriteList);
 	}
 
 	void BaseGame::SetWindowParameters(int width, int height, std::string name)
@@ -227,9 +227,27 @@ namespace FlyEngine
 
 	void BaseGame::DrawTextures()
 	{
-		
+		for (Entities::Sprite * entity : spriteList)
+		{
+			if (entity->IsActive())
+			{
+				if (!entity->IsCameraTarget())
+				{
+					std::cout << "Shader activo: " << entity->GetShaderID() << std::endl;
+					entity->UseShader();
+					SetMatrixUniforms(entity);
+					//SetMaterialUniforms(entity);
 
+					renderer->DrawTexture(entity);
 
+					GLint currentShader;
+					glGetIntegerv(GL_CURRENT_PROGRAM, &currentShader);
+					std::cout << "Shader activo: " << currentShader << std::endl;
+
+					renderer->DrawRequest(*(entity->GetBuffers()), entity->GetIndexCount());
+				}
+			}
+		}
 	}
 
 	void BaseGame::CalculateLights()
@@ -361,13 +379,14 @@ namespace FlyEngine
 		sprite->GetTransform()->SetWorldPosition(PixelsToEngine(0, windowSize.x), PixelsToEngine(0, windowSize.x), PixelsToEngine(0, windowSize.x));
 		sprite->GetTransform()->SetWorldScale(PixelsToEngine(sprite->GetDimentions().width, windowSize.x), PixelsToEngine(sprite->GetDimentions().height, windowSize.x), 1);
 
-		sprite->SetMaterial(MaterialManager::GetDefaultModelMaterial(), false);
+		sprite->SetMaterial(MaterialManager::GetDefaultTextureMaterial(), false);
 
 		CreateBuffers(sprite->GetBuffers());
 		BindBuffers(sprite->GetBuffers(), sprite->GetVertexList(), sprite->GetIndexList());
 		SetVertexAttributes(sprite->GetVertexAttributes());
 
 		entity2DList.push_back(sprite);
+		spriteList.push_back(sprite);
 
 		return sprite;
 	}

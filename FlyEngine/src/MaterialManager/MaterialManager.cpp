@@ -16,6 +16,7 @@ namespace FlyEngine
 		{
 			CreateBasicMaterial();
 			CreateModelMaterial();
+			CreateTextureMaterial();
 			CreateMissingMaterial();
 		}
 
@@ -66,6 +67,10 @@ namespace FlyEngine
 		Materials::Material* MaterialManager::GetDefaultBasicMaterial()
 		{
 			return GetMaterial(DEFAULT_BASIC_MAT_NAME);
+		}
+		Materials::Material* MaterialManager::GetDefaultTextureMaterial()
+		{
+			return GetMaterial(DEFAULT_TEXTURE_MAT_NAME);
 		}
 		Materials::Material* MaterialManager::GetDefaultMissingMaterial()
 		{
@@ -138,6 +143,21 @@ namespace FlyEngine
 			defMat->SetColor(Utils::Color(Utils::COLOR::WHITE));
 
 			SetMaterial(DEFAULT_MODEL_MAT_NAME, defMat);
+		}
+
+		void MaterialManager::CreateTextureMaterial()
+		{
+			CreateMaterial(DEFAULT_TEXTURE_MAT_NAME, ShaderManager::GetTextureShader());
+			Materials::Material* defMat = GetMaterial(DEFAULT_TEXTURE_MAT_NAME);
+			defMat->AddTexture("diffuse", TextureManager::GetDefaultTextureID());
+			defMat->AddTexture("specular", TextureManager::GetDefaultTextureID());
+
+			std::vector<std::string> textureOrder = { "diffuse", "specular" };
+			defMat->SetTextureOrder(textureOrder);
+
+			defMat->SetColor(Utils::Color(Utils::COLOR::WHITE));
+
+			SetMaterial(DEFAULT_TEXTURE_MAT_NAME, defMat);
 		}
 
 		void MaterialManager::CreateMissingMaterial()

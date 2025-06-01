@@ -25,10 +25,11 @@ namespace FlyEngine
 	{
 	private:
 		Renderer* renderer;
+
 		std::list<Entities::Model*> modelList;
 		std::list<Entities::Entity3D*> entity3DList;
 		std::list<Entities::Entity2D*> entity2DList;
-		std::list<Texture*> textureList;
+		std::list<Entities::Sprite*> spriteList;
 		std::list<Lights::Light*> lightList;
 
 		Lights::DirectionalLight* directionalLight;

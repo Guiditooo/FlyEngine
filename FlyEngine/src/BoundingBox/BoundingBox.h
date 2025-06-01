@@ -53,7 +53,7 @@ namespace FlyEngine
 
 				BoundingBox transformedBBox;
 
-				for (auto corner : corners) 
+				for (const glm::vec3& corner : corners)
 				{
 					glm::vec3 transformedCorner = glm::vec3(modelMatrix * glm::vec4(corner, 1.0f));
 					BoundingBox aux = BoundingBox(transformedCorner, transformedCorner);

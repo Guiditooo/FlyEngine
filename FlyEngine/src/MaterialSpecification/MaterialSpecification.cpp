@@ -167,6 +167,12 @@ namespace FlyEngine
                 specular = glm::vec3(0.7, 0.7, 0.04);
                 shininess = 0.078125f;
                 break;
+            case MaterialList::AllAtOne:
+                ambient = glm::vec3(1.0, 1.0, 1.0);
+                diffuse = glm::vec3(1.0, 1.0, 1.0);
+                specular = glm::vec3(1.0, 1.0, 1.0);
+                shininess = 1.0f;
+                break;
             default:
                 ambient = glm::vec3(0, 0, 0);
                 diffuse = glm::vec3(0, 0, 0);

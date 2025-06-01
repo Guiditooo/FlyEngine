@@ -32,6 +32,7 @@ namespace FlyEngine
 	{
 		class Entity;
 		class Model;
+		class Sprite;
 	}
 
 	namespace Materials
@@ -52,6 +53,7 @@ namespace FlyEngine
 
 		void DrawObject(Entities::Entity* toDraw);//Pasar a component, porque quizas quiero UI
 		void DrawModel(Entities::Model* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos);
+		void DrawTexture(Entities::Sprite* sprite);
 		void DrawScene(Scene* toDraw, glm::mat4 viewMat, glm::mat4 projMat, glm::vec3 camPos);
 		//void DrawSceneGraph(SceneGraph* sceneGraph);
 		//void DrawNode(SceneNode* node, const glm::mat4& parentTransform);

@@ -13,7 +13,7 @@ namespace FlyEngine
 		Material::Material(std::string name, Shader* shader)
 		{
 			specs = new MaterialSpecification();
-			specs->SetSpecs(MaterialList::Chrome);
+			specs->SetSpecs(MaterialList::AllAtOne);
 			this->name = name;
 
 			this->shader = shader;
